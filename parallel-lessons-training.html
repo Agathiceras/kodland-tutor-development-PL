@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parallel Lessons — Kodland Tutor Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#498BFF;--blue-d:#2E6FDB;--blue-l:#8FB8FF;
+  --coral:#FF6B54;--coral-d:#E8503C;--pink-hover:#FB89C3;--pink-hover-d:#E871AE;
+  --green:#D6FF6B;--green-d:#6B9A1E;--green-l:#E9FFB0;
+  --ink:#262626;--ink2:#4A4A4A;--muted:#8A8A8A;
+  --bg:#4f5c8d;--bg-gradient:#4f5c8d;--surface:#FFFFFF;--surface2:#FDF3F7;--border:#F7D9E6;
+  --text:var(--ink);--text2:var(--ink2);--text-muted:var(--muted);
+  --nav-bg:rgba(255,255,255,0.94);--nav-b:#F7D9E6;
+  --shadow:0 2px 14px rgba(11,31,69,.08);--shadow-h:0 10px 30px rgba(18,59,132,.16);
+  --hi-bg:#EEF5FF;--hi-b:#AECBF7;--hi-t:#123B9A;
+  --opt-h:#EEF5FF;
+  --ok-bg:#EAFBF1;--ok-b:#8FE3B4;--ok-t:#0F7A45;
+  --no-bg:#FFF1EF;--no-b:#FFC3B8;--no-t:#B23A26;
+  --cute-bg:#FFF9E1;--cute-b:#F6DE94;--cute-t:#8A6412;
+  --onbg:#F5F7FF;--onbg2:#C9CEE0;--onbg-muted:#9198B8;
+  --r:16px;--rsm:10px;--rpill:999px;
+}
+[data-theme="dark"]{
+  --ink:#ECECEC;--ink2:#B7B7C2;--muted:#8D8D99;
+  --bg:#12141A;--bg-gradient:linear-gradient(180deg,#10131a 0%,#161a24 45%,#1b2030 72%,#12141a 100%);
+  --surface:#1C1F27;--surface2:#242830;--border:#333A4A;
+  --nav-bg:rgba(18,20,26,0.92);--nav-b:#2A2E3A;
+  --shadow:0 2px 14px rgba(0,0,0,.45);--shadow-h:0 10px 30px rgba(0,0,0,.55);
+  --hi-bg:rgba(73,139,255,.12);--hi-b:rgba(73,139,255,.4);--hi-t:#8FB8FF;
+  --opt-h:#232838;
+  --ok-bg:rgba(15,122,69,.15);--ok-b:rgba(15,122,69,.45);--ok-t:#6FE3A4;
+  --no-bg:rgba(178,58,38,.15);--no-b:rgba(178,58,38,.45);--no-t:#FF8B76;
+  --cute-bg:rgba(138,100,18,.18);--cute-b:rgba(138,100,18,.45);--cute-t:#F6DE94;
+  --onbg:var(--ink);--onbg2:var(--ink2);--onbg-muted:var(--muted);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg-gradient);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;transition:background .25s,color .25s}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:66px;background:var(--nav-bg);backdrop-filter:blur(14px);border-bottom:2px solid var(--nav-b);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.logo-mark{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.5px;color:var(--blue);line-height:1;white-space:nowrap}
+.logo-sub{font-family:'Inter',sans-serif;font-weight:700;font-size:12.5px;color:var(--pink-hover);white-space:nowrap;line-height:1.3;max-width:170px}
+.logo-div{width:1px;height:26px;background:var(--border);margin:0 5px}
+.nav-r{display:flex;align-items:center;gap:8px;position:relative}
+.tbtn{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--surface);border:2px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;transition:all .15s;flex-shrink:0}
+.tbtn:hover{border-color:var(--blue-l);background:var(--surface2)}
+/* HERO */
+.hero{padding:56px 40px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;bottom:58%;background:radial-gradient(ellipse 65% 100% at 50% 0%,#ffffff 0%,var(--blue-l) 25%,var(--pink-hover) 52%,var(--green-l) 75%,transparent 92%);opacity:.55;pointer-events:none}
+.hero-inner{position:relative;max-width:640px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:2px solid var(--border);border-radius:var(--rpill);padding:6px 16px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:800;color:var(--blue);margin-bottom:22px;text-transform:uppercase;letter-spacing:.5px}
+.hero h1{font-family:'Baloo 2',sans-serif;font-size:clamp(32px,5.2vw,52px);font-weight:800;line-height:1.08;letter-spacing:-1px;color:var(--onbg);margin-bottom:16px}
+.h-pill{display:inline-block;background:#FB89C3;color:#fff;border-radius:var(--rpill);padding:2px 20px;margin:0 2px;font-size:.92em}
+.hero p{color:#20222c;font-size:16px;line-height:1.65;margin-bottom:22px;max-width:520px;margin-left:auto;margin-right:auto;position:relative;z-index:1}
+.hero-reasons{max-width:540px;margin:0 auto 24px;text-align:left;display:flex;flex-direction:column;gap:10px}
+.hr-item{display:flex;gap:11px;align-items:flex-start;background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:13px 17px;font-size:14.5px;color:var(--text2);line-height:1.55;box-shadow:var(--shadow)}
+.hr-item .hr-ic{flex-shrink:0;font-size:18px;line-height:1.4}
+.hr-item .hr-txt{flex:1;min-width:0}
+.start-btn{display:inline-block;padding:16px 38px;background:var(--blue);color:#fff;border:none;border-radius:var(--rpill);font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 6px 20px rgba(29,79,216,.3);margin-top:4px}
+.start-btn:hover{background:var(--pink-hover-d);transform:translateY(-2px);box-shadow:0 8px 24px rgba(251,137,195,.4)}
+/* ROUTE / DASHBOARD */
+.msec{padding:8px 32px 70px;max-width:1080px;margin:0 auto;width:100%}
+.slbl{font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--onbg-muted);margin-bottom:16px;margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.mc{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;box-shadow:var(--shadow)}
+.mc:hover:not(.locked){transform:translateY(-4px);box-shadow:var(--shadow-h)}
+.mc.locked{opacity:.5;cursor:not-allowed}
+.mc.done{border-color:var(--green)}
+.mc-stripe{height:7px}
+.mc-body{padding:22px}
+.mc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.mc-num{font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted)}
+.mc-em{font-size:32px}
+.mc-title{font-family:'Baloo 2',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.2px;color:var(--text);margin-bottom:7px;line-height:1.15}
+.mc-desc{font-size:14.5px;color:var(--text2);line-height:1.6}
+.mc-foot{margin-top:16px;display:flex;align-items:center;justify-content:space-between}
+.badge{font-family:'Inter',sans-serif;font-size:11px;font-weight:800;letter-spacing:.3px;padding:5px 13px;border-radius:var(--rpill);text-transform:uppercase}
+.bd{background:#E4F5D3;color:var(--green-d);border:1.5px solid var(--green)}
+.bs{background:var(--coral);color:#fff;border:1.5px solid var(--coral-d)}
+.bl{background:var(--surface2);color:var(--text-muted);border:1.5px solid var(--border)}
+.br{background:#DCEBFF;color:var(--blue-d);border:1.5px solid var(--blue-l)}
+[data-theme="dark"] .bd{background:rgba(211,255,95,.15);color:var(--green);border-color:rgba(211,255,95,.4)}
+[data-theme="dark"] .br{background:rgba(73,139,255,.15);color:var(--blue-l);border-color:rgba(73,139,255,.4)}
+[data-theme="dark"] .mh1{color:var(--onbg)}
+[data-theme="dark"] .hero p{color:var(--onbg2)}
+.stag{font-size:12.5px;color:var(--text-muted);font-weight:600}
+.stag b{color:var(--text)}
+/* CONTENT */
+.cbody{padding:38px 40px 60px;max-width:820px;margin:0 auto;width:100%;flex:1}
+.meyebrow{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--onbg-muted);margin-bottom:9px}
+.mh1{font-family:'Baloo 2',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.6px;line-height:1.12;color:#14161c;margin-bottom:16px}
+.mobj{background:var(--surface);border:2px solid var(--border);border-left:5px solid #FB89C3;border-radius:0 var(--rsm) var(--rsm) 0;padding:14px 18px;font-size:14.5px;color:var(--text2);line-height:1.6;margin-bottom:34px}
+.mobj strong{color:var(--text)}
+.sch{font-family:'Baloo 2',sans-serif;font-size:25px;font-weight:800;margin:44px 0 18px;color:var(--onbg);display:flex;align-items:center;gap:10px;letter-spacing:-.3px}
+.sch::after{content:'';flex:1;height:3px;background:#FB89C3;border-radius:2px}
+.card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:19px 21px;margin-bottom:11px;box-shadow:var(--shadow)}
+.card h4{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.card p,.card li{font-size:14.5px;color:var(--text2);line-height:1.7}
+.card ul,.card ol{padding-left:18px}
+.card li{margin-bottom:5px}
+.card p strong,.card li strong{color:var(--text)}
+.tbl-wrap{overflow-x:auto;margin-top:4px}
+.card table{width:100%;border-collapse:collapse;font-size:13.8px;line-height:1.55}
+.card th{text-align:left;padding:9px 11px;border-bottom:2px solid var(--border);font-family:'Baloo 2',sans-serif;font-size:13px;color:var(--text)}
+.card td{padding:9px 11px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.card tr:last-child td{border-bottom:none}
+.card.hi{background:var(--hi-bg);border-color:var(--hi-b)}
+.card.hi h4{color:var(--hi-t);font-size:16.5px}
+.card.hi p,.card.hi li{color:var(--hi-t);opacity:.9}
+.card.ok{background:var(--ok-bg);border-color:var(--ok-b)}
+.card.ok h4{color:var(--ok-t)}
+.card.ok p,.card.ok li{color:var(--ok-t);opacity:.92}
+.card.danger{background:var(--no-bg);border-color:var(--no-b)}
+.card.danger h4{color:var(--no-t)}
+.card.danger p,.card.danger li{color:var(--no-t);opacity:.92}
+.card.cute{background:var(--cute-bg);border-color:var(--cute-b)}
+.card.cute h4{color:var(--cute-t);font-size:16.5px}
+.card.cute p,.card.cute li{color:var(--cute-t);opacity:.92}
+.callout{display:flex;gap:11px;border-radius:var(--rsm);padding:13px 16px;margin-bottom:11px;font-size:14px;line-height:1.65;border:1.5px solid}
+.ci{font-size:16px;flex-shrink:0;margin-top:1px}
+.cw{background:#FFF6EE;border-color:#FBD9B0;color:#9A5B12}
+.ct{background:#EFFAFF;border-color:#B9E6FA;color:#0B5E85}
+.cg{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t)}
+[data-theme="dark"] .cw{background:rgba(154,91,18,.18);border-color:rgba(154,91,18,.45);color:#F5B971}
+[data-theme="dark"] .ct{background:rgba(11,94,133,.18);border-color:rgba(11,94,133,.45);color:#7FD4F5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:560px){.two-col{grid-template-columns:1fr}}
+.media-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:11px;box-shadow:var(--shadow)}
+.media-card img,.media-card video{width:100%;display:block;border-radius:var(--rsm);background:#0f1428}
+.media-cap{font-size:12.5px;color:var(--text-muted);text-align:center;margin-top:9px;font-style:italic}
+.icl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:11px}
+@media(max-width:560px){.icl-grid{grid-template-columns:1fr}}
+.icl-item{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 17px;box-shadow:var(--shadow)}
+.icl-ic{font-size:26px;line-height:1;flex-shrink:0}
+.icl-txt{display:flex;flex-direction:column;gap:3px;font-size:13.8px;color:var(--text2);line-height:1.55}
+.icl-txt strong{font-family:'Baloo 2',sans-serif;font-size:14.5px;color:var(--text)}
+.faq-card{display:flex;gap:15px;align-items:flex-start;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:19px 21px;margin-bottom:11px;box-shadow:var(--shadow)}
+.faq-ic{font-size:30px;line-height:1;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:50%}
+.faq-body h4{font-family:'Baloo 2',sans-serif;font-size:15.5px;font-weight:700;color:var(--text);margin-bottom:6px}
+.faq-body p{font-size:14px;color:var(--text2);line-height:1.65;margin:0}
+.divider{border:none;border-top:2px solid var(--border);margin:30px 0}
+.ctabtn{display:block;width:100%;padding:17px;background:var(--blue);color:#fff;border:none;border-radius:var(--rpill);font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:all .15s;margin-bottom:40px;margin-top:4px;box-shadow:0 4px 16px rgba(29,79,216,.28)}
+.ctabtn:hover{background:var(--pink-hover-d);transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,137,195,.4)}
+@media(max-width:640px){.cbody,.msec,.hero{padding-left:18px;padding-right:18px}}
+/* QUIZ */
+.qbody{padding:38px 40px;max-width:700px;margin:0 auto;width:100%;flex:1}
+.qpt{height:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--rpill);margin-bottom:38px;overflow:hidden}
+.qpf{height:100%;background:linear-gradient(90deg,var(--blue),var(--coral));border-radius:var(--rpill);transition:width .4s ease}
+.qctr{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--onbg-muted);margin-bottom:11px}
+.qtxt{font-family:'Baloo 2',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.3px;line-height:1.35;margin-bottom:28px;color:var(--onbg)}
+.qopts{display:flex;flex-direction:column;gap:11px}
+.qopt{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:15px 19px;cursor:pointer;font-size:14.5px;color:var(--text);font-family:'Inter',sans-serif;font-weight:500;transition:all .15s;text-align:left;line-height:1.5;box-shadow:var(--shadow)}
+.qopt:hover:not(.answered){background:var(--opt-h);border-color:var(--blue-l)}
+.qopt.correct{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t)}
+.qopt.wrong{background:var(--no-bg);border-color:var(--no-b);color:var(--no-t)}
+.qopt.answered{cursor:default}
+.qfb{display:none;margin-top:15px;border-radius:var(--rsm);padding:14px 17px;font-size:14.5px;line-height:1.6;border:2px solid}
+.qfb.show{display:block}
+.qfb.ok{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t)}
+.qfb.bad{background:var(--no-bg);border-color:var(--no-b);color:var(--no-t)}
+.qnxt{display:none;margin-top:19px;width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:var(--rpill);font-family:'Baloo 2',sans-serif;font-size:17px;font-weight:700;cursor:pointer;transition:all .15s}
+.qnxt.show{display:block}
+.qnxt:hover{background:var(--pink-hover-d)}
+/* RESULTS */
+.rbody{padding:64px 40px;max-width:540px;margin:0 auto;text-align:center;flex:1}
+.remi{font-size:66px;margin-bottom:15px}
+.rtitle{font-family:'Baloo 2',sans-serif;font-size:31px;font-weight:800;letter-spacing:-.4px;color:var(--onbg)}
+.rpct{font-family:'Baloo 2',sans-serif;font-size:64px;font-weight:800;line-height:1;margin:15px 0 7px}
+.rpct.pass{color:var(--blue)}
+.rpct.fail{color:var(--coral)}
+.rsub{color:var(--onbg2);font-size:15.5px;line-height:1.65;margin-bottom:32px}
+.bdark{display:block;width:100%;padding:15px 24px;margin-bottom:10px;background:var(--blue);color:#fff;border:none;border-radius:var(--rpill);font-family:'Baloo 2',sans-serif;font-size:17px;font-weight:700;cursor:pointer;transition:all .15s}
+.bdark:hover{background:var(--pink-hover-d)}
+.bline{display:block;width:100%;padding:14px 24px;margin-bottom:10px;background:transparent;color:var(--text2);border:2px solid var(--border);border-radius:var(--rpill);font-family:'Inter',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;transition:all .15s}
+.bline:hover{background:var(--surface2);color:var(--text);border-color:var(--blue-l)}
+/* CERT */
+.compbody{padding:64px 40px;max-width:620px;margin:0 auto;text-align:center;flex:1}
+.cert{background:var(--surface);border:3px solid var(--blue);border-radius:22px;padding:36px 30px;margin:30px 0;box-shadow:0 0 44px rgba(29,79,216,.14);position:relative;overflow:hidden}
+.cert::before{content:'';position:absolute;top:-60px;right:-60px;width:170px;height:170px;border-radius:50%;background:var(--blue);opacity:.08;pointer-events:none}
+.clbl2{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--coral);margin-bottom:13px}
+.cert h2{font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.3px;color:var(--text)}
+.cert p{color:var(--text2);margin-top:7px;font-size:14.5px}
+.cmods{display:flex;justify-content:center;gap:9px;margin-top:22px;flex-wrap:wrap}
+.cmod{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:#EAF2FF}
+[data-theme="dark"] .cmod{background:rgba(73,139,255,.18)}
+/* RPG SIMULATION */
+.rpgbody{padding:34px 40px 60px;max-width:760px;margin:0 auto;width:100%;flex:1}
+.rpg-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.rpg-tag{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.rpg-score{font-family:'Baloo 2',sans-serif;font-weight:800;color:var(--blue);font-size:14px;background:var(--surface);border:2px solid var(--border);border-radius:var(--rpill);padding:5px 14px}
+.rpg-stage{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:26px;box-shadow:var(--shadow);margin-bottom:18px}
+.rpg-scene-title{font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:800;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:9px}
+.rpg-console{background:#0f1b33;border-radius:14px;padding:22px;margin-bottom:18px;position:relative;overflow:hidden}
+.rpg-console-lbl{color:#8FB8FF;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
+.rpg-avatars{display:flex;gap:14px;flex-wrap:wrap}
+.rpg-av{flex:1 1 140px;background:#1c2b4d;border:2px solid #2f4577;border-radius:12px;padding:16px 12px;text-align:center;color:#dce6ff;cursor:default;position:relative;transition:transform .15s,box-shadow .15s}
+.rpg-av .rpg-av-ic{font-size:34px;margin-bottom:8px}
+.rpg-av .rpg-av-name{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:14px}
+.rpg-av .rpg-av-status{font-size:11px;color:#8FB8FF;margin-top:4px}
+.rpg-av.clickable{cursor:pointer;border-color:var(--green);box-shadow:0 0 0 3px rgba(211,255,95,.18)}
+.rpg-av.clickable:hover{transform:translateY(-3px);box-shadow:0 0 0 3px rgba(211,255,95,.32)}
+.rpg-av.waiting{opacity:.45}
+.rpg-arrow-hint{position:absolute;top:-30px;left:50%;transform:translateX(-50%);font-size:26px;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-8px)}}
+.rpg-hint-lbl{position:absolute;top:-58px;left:50%;transform:translateX(-50%);background:var(--green);color:#2b3a10;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:11.5px;padding:4px 12px;border-radius:var(--rpill);white-space:nowrap}
+.rpg-bubble{background:var(--hi-bg);border:2px solid var(--hi-b);border-radius:var(--r);padding:18px 20px;font-size:14.5px;line-height:1.7;color:var(--hi-t);margin-bottom:16px;position:relative}
+.rpg-bubble b{color:var(--hi-t)}
+.rpg-choice-list{display:flex;flex-direction:column;gap:11px;margin-bottom:6px}
+.rpg-input{width:100%;min-height:96px;border:2px solid var(--border);border-radius:var(--rsm);padding:14px 16px;font-family:'Inter',sans-serif;font-size:14.5px;color:var(--text);background:var(--surface2);resize:vertical;line-height:1.55}
+.rpg-input:focus{outline:none;border-color:var(--blue-l)}
+.rpg-charcount{text-align:right;font-size:11.5px;color:var(--text-muted);margin-top:4px}
+.rpg-submit{margin-top:14px;width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:var(--rpill);font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s}
+.rpg-submit:hover:not(:disabled){background:var(--pink-hover-d)}
+.rpg-submit:disabled{opacity:.45;cursor:not-allowed}
+.rpg-checklist{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.rpg-check-item{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.55}
+.rpg-check-item .cic{flex-shrink:0;font-size:15px}
+.rpg-verdict{border-radius:var(--rsm);padding:14px 17px;font-size:14px;line-height:1.6;border:2px solid;margin-top:14px}
+.rpg-verdict.ok{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t)}
+.rpg-verdict.bad{background:var(--no-bg);border-color:var(--no-b);color:var(--no-t)}
+.rpg-verdict.mid{background:var(--cute-bg);border-color:var(--cute-b);color:var(--cute-t)}
+.rpg-continue{margin-top:16px;width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:var(--rpill);font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;cursor:pointer}
+.rpg-continue:hover{background:var(--pink-hover-d)}
+.rpg-av.active{border-color:var(--coral);box-shadow:0 0 0 3px rgba(255,107,84,.22)}
+.rpg-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--onbg-muted);margin-bottom:10px}
+.rpg-two{display:grid;grid-template-columns:1fr;gap:14px;margin-top:4px}
+@media(min-width:640px){.rpg-two{grid-template-columns:1fr 1fr}}
+.rpg-field label{display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px}
+.rpg-example{background:var(--cute-bg);border:2px solid var(--cute-b);border-radius:var(--rsm);padding:14px 17px;font-size:14px;line-height:1.6;color:var(--cute-t);margin-top:14px;font-style:italic}
+.rpg-recap-item{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;font-size:14px;color:var(--text2)}
+.rpg-cover{text-align:center;padding:10px}
+.rpg-cover .rpg-cover-em{font-size:60px;margin-bottom:14px}
+.rpg-cover h2{font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;color:var(--text);margin-bottom:12px}
+.rpg-cover p{color:var(--text2);font-size:14.5px;line-height:1.7;margin-bottom:8px;max-width:520px;margin-left:auto;margin-right:auto}
+.rpg-frame{position:relative;width:100%;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-h);background:#0f1428;margin-bottom:16px}
+.rpg-frame img,.rpg-frame video{width:100%;display:block}
+.rpg-hotspot{position:absolute;width:11%;height:20%;min-width:60px;min-height:60px;transform:translate(-50%,-50%);border:3px solid var(--green);border-radius:50%;box-shadow:0 0 0 6px rgba(211,255,95,.28);cursor:pointer;animation:gm3pulse 1.3s infinite;background:rgba(211,255,95,.06)}
+.rpg-hotspot .rpg-hint-lbl{top:-14px}
+.rpg-hotspot .rpg-arrow-hint{top:-54px;animation:bounce 1s infinite}
+@keyframes gm3pulse{0%,100%{box-shadow:0 0 0 6px rgba(211,255,95,.28)}50%{box-shadow:0 0 0 15px rgba(211,255,95,.08)}}
+.rpg-frame-badge{position:absolute;top:12px;left:12px;background:var(--coral);color:#fff;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:12.5px;padding:5px 13px;border-radius:var(--rpill);box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.rpg-note{display:flex;gap:10px;align-items:flex-start;background:var(--cute-bg);border:2px solid var(--cute-b);color:var(--cute-t);border-radius:var(--r);padding:13px 17px;font-size:13.5px;line-height:1.55;margin-bottom:18px}
+.rpg-note .ic{font-size:18px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <nav class="nav">
+    <a class="logo" href="#" onclick="goHome();return false;">
+      <span class="logo-mark">kodland</span>
+      <span class="logo-div"></span>
+      <span class="logo-sub">Tutor Development Department</span>
+    </a>
+    <div class="nav-r"><button class="tbtn" onclick="toggleTheme()">🌓</button></div>
+  </nav>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">🧑‍🏫 Tutor Training Program</div>
+      <h1>Welcome to <span class="h-pill">Parallel Lessons</span></h1>
+      <p>Parallel Lessons is a new way of running your 1-on-1 courses — one tutor, several students, each on their own path, in the same time slot. This self-study guide will get you ready to practice on the platform.</p>
+      <div class="hero-reasons">
+        <div class="hr-item"><span class="hr-ic">🧭</span><span class="hr-txt">Understand what changes (and what doesn't) when you teach in this format.</span></div>
+        <div class="hr-item"><span class="hr-ic">🖥️</span><span class="hr-txt">Learn how to navigate the console and the technical setup behind a Parallel Group.</span></div>
+        <div class="hr-item"><span class="hr-ic">🎭</span><span class="hr-txt">Practice the mindset with a role-play simulation — real decisions, real feedback.</span></div>
+      </div>
+      <p>Work through 4 modules. Each one has a short check that unlocks the next — score 70%+ to move forward.</p>
+      <button class="start-btn" onclick="goDashboard()">🚀 Start Training</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="screen-path" class="screen">
+  <nav class="nav">
+    <a class="logo" href="#" onclick="goHome();return false;">
+      <span class="logo-mark">kodland</span>
+      <span class="logo-div"></span>
+      <span class="logo-sub">Tutor Development Department</span>
+    </a>
+    <div class="nav-r">
+      <span id="ntag" style="font-size:13px;color:var(--text-muted);font-weight:700;display:none"></span>
+      <button class="tbtn" onclick="toggleTheme()">🌓</button>
+    </div>
+  </nav>
+  <div class="msec">
+    <div class="slbl">Your learning path</div>
+    <div class="grid" id="mgrid"></div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div id="screen-content" class="screen">
+  <nav class="nav">
+    <a class="logo" href="#" onclick="goDashboard();return false;">
+      <span class="logo-mark">kodland</span><span class="logo-div"></span><span class="logo-sub">Tutor Development Department</span>
+    </a>
+    <div class="nav-r"><button class="tbtn" onclick="toggleTheme()">🌓</button></div>
+  </nav>
+  <div class="cbody" id="cbody"></div>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <nav class="nav">
+    <a class="logo" href="#" onclick="exitQuiz();return false;"><span class="logo-mark">kodland</span></a>
+    <div class="nav-r"><button class="tbtn" onclick="toggleTheme()">🌓</button></div>
+  </nav>
+  <div class="qbody">
+    <div class="qpt"><div class="qpf" id="qfill" style="width:0%"></div></div>
+    <div class="qctr" id="qcount"></div>
+    <div class="qtxt" id="qtext"></div>
+    <div class="qopts" id="qopts"></div>
+    <div class="qfb" id="qfb"></div>
+    <button class="qnxt" id="qnxt" onclick="nextQ()">Next →</button>
+  </div>
+</div>
+
+<!-- RPG SIMULATION -->
+<div id="screen-rpg" class="screen">
+  <nav class="nav">
+    <a class="logo" href="#" onclick="exitRPG();return false;"><span class="logo-mark">kodland</span></a>
+    <div class="nav-r"><button class="tbtn" onclick="toggleTheme()">🌓</button></div>
+  </nav>
+  <div class="rpgbody">
+    <div class="rpg-top">
+      <div class="rpg-tag">🎮 Module 3 · Simulation</div>
+      <div class="rpg-score" id="rpgScoreTag">0 pts</div>
+    </div>
+    <div id="rpgStage"></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="screen-results" class="screen">
+  <nav class="nav">
+    <a class="logo" href="#" onclick="goDashboard();return false;"><span class="logo-mark">kodland</span></a>
+    <div class="nav-r"><button class="tbtn" onclick="toggleTheme()">🌓</button></div>
+  </nav>
+  <div class="rbody" id="rbody"></div>
+</div>
+
+<!-- COMPLETE -->
+<div id="screen-complete" class="screen">
+  <nav class="nav">
+    <a class="logo" href="#" onclick="goDashboard();return false;"><span class="logo-mark">kodland</span></a>
+    <div class="nav-r"><button class="tbtn" onclick="toggleTheme()">🌓</button></div>
+  </nav>
+  <div class="compbody" id="compbody"></div>
+</div>
+
+<script>
+const PROG_KEY='kl-pl-progress';
+const TOTAL=4;
+let currentModule=null, quizData=[], qi=0, score=0;
+
+/* ───────────────────────── MODULE CONTENT ───────────────────────── */
+const MODULES=[
+{id:1,emoji:'🌟',title:"Discover a New Format: Parallel Lessons!",desc:"What a Parallel Lesson is, why it exists, and what changes vs. your regular 1-on-1 course.",
+ sections:[
+  {t:"What Is a Parallel Lesson?",cards:[
+    {type:'text',h:'The core idea',b:"One tutor supports 2–5 students at the same time, each on their own individual path, within the same time slot. Every student still gets a full, uninterrupted <strong>60 minutes</strong> — it's the tutor's total session time that stretches to fit everyone."},
+    {type:'img',src:'images/Image1.png',alt:'Console lobby showing two individual student panels side by side',cap:'The console lobby: each student has their own panel, even though they share one tutor.'},
+    {type:'hi',h:'A quick example',b:"With 5 students in the group, the tutor's session runs for <strong>100 minutes total</strong> — but each individual student still only ever experiences their own private 60 minutes."}
+  ]},
+  {t:"Why Does Parallel Lesson Exist?",cards:[
+    {type:'text',b:"Premium 1-on-1 courses often take a long time to start, because student availability and tutor schedules rarely line up. Parallel Lessons (PL) means students can start much faster, and tutors get more flexibility in their own schedule."}
+  ]},
+  {t:"What Changes, and What Doesn't",cards:[
+    {type:'twocol',left:{h:'✅ Changes',items:["How the lesson is delivered","How you rotate between students","How you communicate — individually, no WhatsApp groups"]},right:{h:"❌ Doesn't Change",plain:true,items:["Course content","Attendance tracking","Project submissions — all tracked per individual group, exactly as before"]}},
+    {type:'warnbox',h:'Important scope',b:"Parallel Lesson does <strong>not</strong> replace how Kodland teaches overall — it only replaces the <strong>premium 1-on-1 format</strong>, for selected courses."}
+  ]}
+ ]},
+{id:2,emoji:'🖥️',title:"Technical Aspects of Parallel Lessons",desc:"What a Parallel Group looks like in the Back Office, how to open the console, and the timing structure across a full slot.",
+ sections:[
+  {t:"What a Parallel Group Looks Like in BO",cards:[
+    {type:'text',b:"A container that groups several individual student-groups under one tutor. Each student still has their own individual group, just like in the premium format — the link to join as teacher is simply the same for all of them."},
+    {type:'img',src:'images/Image2.png',alt:'BO screenshot showing a Parallel Group card containing several individual groups, with the console icon highlighted',cap:'The Parallel Group card in BO — one card, several individual groups inside, one console link.'}
+  ]},
+  {t:"How Do I Open the Console?",cards:[
+    {type:'text',h:'Option 1 — Via Schedule',b:"Click the new group (name includes “PL”) → see the individual student-groups inside → click Open console. Available <strong>30 minutes before</strong> the lesson."},
+    {type:'img',src:'images/Image3.gif',alt:'Animated walkthrough of opening the console via Schedule'},
+    {type:'text',h:'Option 2 — Via Your Regular Groups List',b:"Click Open console on the right. Available <strong>60 minutes before</strong> the lesson, until it ends."},
+    {type:'video',src:'images/Image4.mp4',cap:'Opening the console from the regular Groups list.'}
+  ]},
+  {t:"Communication & Tracking Rules",cards:[
+    {type:'list',h:'Working within the format',items:[
+      "🚫 Do not create WhatsApp groups for the parallel group.",
+      "💬 Communicate with each student individually, same as a 1-on-1 lesson.",
+      "📊 Attendance, submitted projects, and other metrics are tracked <strong>per individual group</strong> — nothing changes there."
+    ]}
+  ]},
+  {t:"How Classes Are Taught in Classroom",cards:[
+    {type:'text',b:"One main room plus several individual sections, all in one place. As each student joins, a new section appears — you enter it directly to work with that student, while the others stay visible, working independently."},
+    {type:'img',src:'images/Image7.png',alt:'Classroom view showing the tutor with one student active in the main room while another student waits in the sidebar',cap:'Main room + individual sections: the student you\'re with is front and center, the rest stay visible on the side.'}
+  ]},
+  {t:"How the Timing Works — Example: 5 Students",cards:[
+    {type:'img',src:'images/Image6.png',alt:'Timeline diagram showing the tutor present for 100 minutes while 5 students each get a staggered 60-minute block',cap:'Every student gets 60 uninterrupted minutes — staggered across the tutor\'s 100-minute session.'},
+    {type:'table',head:['','Student','Tutor'],rows:[
+      ["Duration","Always 60 min","100 min total"],
+      ["First 50 min","Works mostly independently, gets a personal welcome, checks every ~10 min","Welcomes one new student every 10 min"],
+      ["Last 50 min","Keeps working until their exact hour is up","Rotates between active students, checking in — no new students join"],
+      ["Ends","Leaves 60 min after joining","Says goodbye to one student every 10 min, in the order they joined"]
+    ]}
+  ]}
+ ]},
+{id:3,emoji:'🎭',title:"The Parallel-Attention Mindset",desc:"The mindset that makes juggling several students work — then put it to the test in a live role-play simulation.",rpg:true,
+ sections:[
+  {t:"🧠 Reframe the Skill",cards:[
+    {type:'iconlist',items:[
+      {ic:'❌',h:'Not this',b:'Teaching one lesson, five times in a row.'},
+      {ic:'✅',h:'Actually this',b:'Running five different learning journeys at once — like an air-traffic controller, not a lecturer.'}
+    ]},
+    {type:'hi',h:'✈️ Parallel Attention Management',b:"Even if you repeat the same lesson, every student is different, and every learning experience is unique."}
+  ]},
+  {t:"🗒️ Working-Memory & Triage Tools",cards:[
+    {type:'iconlist',items:[
+      {ic:'📝',h:'One note per student',b:"Task / blocker / mood / next check-in — write it down at every check-in, don't hold it in your head."},
+      {ic:'👀',h:'Silence ≠ "fine"',b:'A raised hand or a visibly stuck student beats the 10-minute clock. Default to a scan-question like "show me what you\'ve got."'}
+    ]}
+  ]},
+  {t:"🎯 Lesson Structure: Carry It Over, Don't Let It Dissolve",cards:[
+    {type:'iconlist',items:[
+      {ic:'👋',h:'Opening',b:'Goal for today + how check-ins will work.'},
+      {ic:'🛠️',h:'Independent work',b:'The main stretch — student works, you rotate and check in.'},
+      {ic:'🎬',h:'Closing',b:'Review what was produced, name one specific win, say what\'s next.'}
+    ]},
+    {type:'tip',txt:"Never skip the closing just because the next student is waiting. If every student follows the same three beats, you always know which beat each one is in — without reconstructing it from scratch."}
+  ]},
+  {t:"🧩 Individual Approach",cards:[
+    {type:'iconlist',items:[
+      {ic:'🎛️',h:'Adjust the dials',b:'Explanation style, examples, and check-in cadence to the student in front of you — calmer for anxious students, more challenge for confident ones.'},
+      {ic:'💛',h:'Use what you know',b:"Interests, what tripped them up last time, what they're proud of. Five students, five relationships — not one lesson delivered five times."}
+    ]}
+  ]},
+  {t:"🌟 Praise, Motivation & Feeling Seen",cards:[
+    {type:'iconlist',items:[
+      {ic:'🏆',h:'Be specific',b:'"You figured out the bug in that loop yourself" beats "good job" — generic praise loses meaning fast across five students.'},
+      {ic:'🔁',h:'Reference continuity',b:'"Being seen" comes from continuity, not lesson length — bring up something from last time.'},
+      {ic:'⏱️',h:'Catch the dip',b:"Motivation dips happen mid-stretch, not on schedule — a genuine check-in exactly when it's needed beats a longer scheduled one later."}
+    ]}
+  ]},
+  {t:"⚖️ Balancing Help with Growing Independence",cards:[
+    {type:'iconlist',items:[
+      {ic:'🌱',h:'Early lessons',b:'More support is fine — walk through the first step together, think out loud.'},
+      {ic:'🌳',h:'As the course progresses',b:'Shift from giving answers to asking guiding questions: "what have you tried so far?"'}
+    ]},
+    {type:'warnbox',h:'🚩 Watch for over-helping',b:"With several students waiting, it's tempting to just solve the problem to move faster — but that undermines the exact independence PL depends on. The skill is judging how much to step back, student by student, lesson by lesson."}
+  ]},
+  {t:"🎮 Try It Yourself: A Console Simulation",cards:[
+    {type:'cute',h:'How this works',b:"Instead of a multiple-choice quiz, this module ends with a short interactive simulation set inside a real console. You'll juggle real Parallel Lesson situations and write — in your own words — what you'd do and what you'd say. You'll always get feedback tying your answer back to what you just learned above. Finishing the simulation unlocks Module 4."}
+  ]}
+ ]},
+{id:4,emoji:'📋',title:"Course-Specific Addendum",desc:"Payment, parent communication, content updates, and the FAQ you'll want to bookmark.",
+ sections:[
+  {t:"💰 Payments & Families",cards:[
+    {type:'faq',ic:'💰',q:"How does payment work for these lessons?",a:"Payment keeps your usual per-minute rate for your region's premium format — it's simply applied to the total length of the PL slot instead of a fixed 60 minutes. Since a slot's duration depends on how many students are enrolled, your payment scales up to match. Same rate per minute, multiplied by however many minutes the slot actually runs."},
+    {type:'faq',ic:'👨‍👩‍👧',q:"Are parents aware of this format when enrolling?",a:"Yes. Parents are informed about the PL format as part of the enrollment and communication process, for the selected courses."}
+  ]},
+  {t:"📚 Content & Structure",cards:[
+    {type:'faq',ic:'📚',q:"Does the course content change?",a:"Yes — courses are being adapted so students have everything they need to work independently, and so you can split your work with other tutors when needed. The new content structure is built to make lessons easy to deliver in this format — that's why content isn't part of this initial training, a short briefing will follow closer to launch."},
+    {type:'faq',ic:'🧭',q:"How will you know when to transition?",a:"No separate manuals — teacher notes live directly inside the tasks. The overall structure repeats across all lessons (see the 8 stages below). Some lessons also open with a short theory piece or a joint practice attempt."}
+  ]},
+  {t:"🪜 The 8 Stages of Every Lesson",cards:[
+    {type:'iconlist',items:[
+      {ic:'🔌',h:'1 · Connection check',b:'Make sure both of you are set up and can hear/see each other.'},
+      {ic:'😊',h:'2 · Mood check',b:'A quick read on how the student is doing today.'},
+      {ic:'📓',h:'3 · Homework check',b:'Review what they worked on since last time.'},
+      {ic:'🎯',h:'4 · Lesson goal',b:'Set what today\'s session is aiming for.'},
+      {ic:'🗣️',h:'5 · Demo & feedback',b:'Student shows their work, you give feedback.'},
+      {ic:'🎬',h:'6 · Wrapping up',b:'Close the loop on today\'s activity.'},
+      {ic:'🪞',h:'7 · Reflection',b:'A moment for the student to reflect on what they learned.'},
+      {ic:'📌',h:'8 · Homework announced',b:'Set up what comes next.'}
+    ]}
+  ]},
+  {t:"🧑‍🎓 Independent Work & Group Elements",cards:[
+    {type:'faq',ic:'🧑‍🎓',q:"Will students have guides for independent work in BO?",a:"Yes — all content is designed so every activity can be worked on independently, so student and tutor guides will be right there on the platform."},
+    {type:'faq',ic:'🧩',q:"What happens to group elements (breaks, group warm-ups, Miro boards)?",a:"🚫 There will be no group-activity elements at all in PL — these are removed rather than adapted."}
+  ]}
+ ]}
+];
+
+const QUIZ={
+1:[
+  {q:"PL replaces how Kodland teaches overall, across all courses and formats.",opts:["False — it only replaces the premium 1-on-1 format, for selected courses","True — it changes everything about how Kodland teaches"],c:0,fb:"PL is scoped to the premium 1-on-1 format on selected courses. Everything else about how Kodland teaches stays the same."},
+  {q:"Which of these changes with Parallel Lessons?",opts:["Course content and the classroom interface","Only the refund policy","How the lesson is delivered and how the tutor rotates between students"],c:2,fb:"Content, attendance tracking, and project submissions all stay exactly the same — only the delivery and rotation change."},
+  {q:"How many minutes does a single student always get in a Parallel Lesson, regardless of group size?",opts:["45 minutes","60 minutes","It varies by course"],c:1,fb:"Every student always gets their full, uninterrupted 60 minutes — it's the tutor's total time that stretches to fit the group."}
+],
+2:[
+  {q:"What is a \"Parallel Group\" in BO?",opts:["A single shared classroom link for all students when they know each other","A container that groups several individual student-groups under one tutor","A new course type with a different educational format"],c:1,fb:"It's simply a container — each student still keeps their own individual group underneath it."},
+  {q:"Via the Schedule method, how far in advance can you open the console?",opts:["30 minutes before","10 minutes before","60 minutes before"],c:0,fb:"Via Schedule it's 30 minutes before. Via your regular Groups list, it's 60 minutes before, until the lesson ends."},
+  {q:"Each student inside a Parallel Group still has their own individual group, just like in the premium format.",opts:["True","False"],c:0,fb:"Correct — attendance, projects, and metrics are all still tracked per individual group."}
+],
+4:[
+  {q:"How does payment work for PL lessons?",opts:["A fixed 60-minute rate no matter how many students are enrolled","Your usual per-minute rate, applied to the total length of the PL slot","A special bonus rate exclusive to PL lessons"],c:1,fb:"Same per-minute rate as your regular premium format — just multiplied by however many minutes the full slot runs."},
+  {q:"What happens to group warm-up activities or Miro boards in PL?",opts:["They're adapted so students can do them individually","They are removed entirely — no group elements in PL","They become optional homework"],c:1,fb:"Group-activity elements are removed rather than adapted — there's simply no group-activity component in PL."},
+  {q:"Where will you find guidance on lesson stages like the mood check or homework check?",opts:["In the wiki manuals","Built directly into the tasks, as teacher notes","There is no guidance, you just use the presentation"],c:1,fb:"There are no separate manuals anymore — the notes live inside the tasks themselves, at the relevant stages."}
+]
+};
+
+/* ───────────────────────── PROGRESS ───────────────────────── */
+function getProgress(){ try{ return JSON.parse(localStorage.getItem(PROG_KEY)||'{}'); }catch(e){ return {}; } }
+function saveProgress(p){ localStorage.setItem(PROG_KEY, JSON.stringify(p)); }
+function isPassed(id){ const p=getProgress(); return p[id]?.passed===true; }
+function getScore(id){ const p=getProgress(); return p[id]?.score||0; }
+function setResult(id,pct,passed){ const p=getProgress(); const prev=p[id]||{}; p[id]={passed:passed||prev.passed===true,score:Math.max(pct,prev.score||0)}; saveProgress(p); }
+
+/* ───────────────────────── DASHBOARD ───────────────────────── */
+function renderHome(){
+  const done=MODULES.filter(m=>isPassed(m.id)).length;
+  const tag=document.getElementById('ntag');
+  if(done>0){tag.style.display='inline';tag.textContent=done===TOTAL?'All modules complete 🎉':(done+' / '+TOTAL+' modules complete');}else tag.style.display='none';
+  const g=document.getElementById('mgrid'); g.innerHTML='';
+  MODULES.forEach((m,i)=>{
+    const prev = i===0 ? true : isPassed(MODULES[i-1].id);
+    const isDone=isPassed(m.id); const locked=!prev;
+    const el=document.createElement('div'); el.className='mc'+(locked?' locked':'');
+    const pct=getScore(m.id);
+    const badge=isDone?'<span class="badge bd">Completed</span>':locked?'<span class="badge bl">Locked</span>':'<span class="badge bs">Start</span>';
+    const stag=m.rpg?(isDone?'<span class="stag">Simulation complete</span>':locked?('<span class="stag">Complete Module '+(m.id-1)+' first</span>'):'<span class="stag">Console simulation inside</span>'):(isDone?('<span class="stag">Score <b>'+pct+'%</b></span>'):locked?('<span class="stag">Complete Module '+(m.id-1)+' first</span>'):'<span class="stag">Has a short check</span>');
+    el.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">Module '+m.id+'</div><div class="mc-em">'+m.emoji+'</div></div><div class="mc-title">'+m.title+'</div><div class="mc-desc">'+m.desc+'</div><div class="mc-foot">'+badge+stag+'</div></div>';
+    if(!locked) el.onclick=()=>openModule(m);
+    g.appendChild(el);
+  });
+  const allDone=MODULES.every(m=>isPassed(m.id));
+  const nextEl=document.createElement('div'); nextEl.className='mc'+(allDone?'':' locked');
+  nextEl.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">Final</div><div class="mc-em">🖥️</div></div><div class="mc-title">Next Step: The Webinar</div><div class="mc-desc">See what comes after self-study once all 4 modules are complete.</div><div class="mc-foot">'+(allDone?'<span class="badge bd">Unlocked</span>':'<span class="badge bl">Locked</span>')+'<span class="stag">Wrap-up</span></div></div>';
+  if(allDone) nextEl.onclick=()=>showComplete();
+  g.appendChild(nextEl);
+}
+
+/* ───────────────────────── MODULE CONTENT RENDER ───────────────────────── */
+function openModule(m){
+  currentModule=m.id;
+  let html='<div class="meyebrow">Module '+m.id+' of '+TOTAL+'</div><div class="mh1">'+m.emoji+' '+m.title+'</div><div class="mobj"><strong>In this module:</strong> '+m.desc+'</div>';
+  m.sections.forEach(s=>{ html+='<div class="sch">'+s.t+'</div>'; s.cards.forEach(c=>{ html+=rc(c); }); });
+  html+='<hr class="divider">';
+  if(m.rpg){
+    const lbl=isPassed(m.id)?'🔁 Play Again':'🎮 Start the Simulation';
+    html+='<button class="ctabtn" onclick="startRPG('+m.id+')">'+lbl+'</button>';
+  }else{
+    const lbl=isPassed(m.id)?'🔁 Retake the Check':'✅ Start the Check';
+    html+='<button class="ctabtn" onclick="startQuiz('+m.id+')">'+lbl+'</button>';
+  }
+  document.getElementById('cbody').innerHTML=html;
+  showScreen('screen-content'); window.scrollTo(0,0);
+}
+function rc(c){
+  if(c.type==='text')return '<div class="card">'+(c.h?'<h4>'+c.h+'</h4>':'')+'<p>'+c.b+'</p></div>';
+  if(c.type==='hi')return '<div class="card hi">'+(c.h?'<h4>'+c.h+'</h4>':'')+'<p>'+c.b+'</p></div>';
+  if(c.type==='warnbox')return '<div class="card danger">'+(c.h?'<h4>'+c.h+'</h4>':'')+'<p>'+c.b+'</p></div>';
+  if(c.type==='cute')return '<div class="card cute"><h4>⭐ '+(c.h||'Tip')+'</h4><p>'+c.b+'</p></div>';
+  if(c.type==='warn')return '<div class="callout cw"><span class="ci">⚠️</span><span>'+c.txt+'</span></div>';
+  if(c.type==='tip')return '<div class="callout ct"><span class="ci">💡</span><span>'+c.txt+'</span></div>';
+  if(c.type==='good')return '<div class="callout cg"><span class="ci">✅</span><span>'+c.txt+'</span></div>';
+  if(c.type==='table'){
+    const head=c.head.map(h=>'<th>'+h+'</th>').join('');
+    const rows=c.rows.map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+    return '<div class="card">'+(c.h?'<h4>'+c.h+'</h4>':'')+'<div class="tbl-wrap"><table><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  }
+  if(c.type==='list'){
+    const li=c.items.map(i=>'<li>'+i+'</li>').join('');
+    return '<div class="card">'+(c.h?'<h4>'+c.h+'</h4>':'')+(c.p?'<p style="margin-bottom:8px">'+c.p+'</p>':'')+'<ul>'+li+'</ul></div>';
+  }
+  if(c.type==='twocol'){
+    const li=items=>items.map(i=>'<li>'+i+'</li>').join('');
+    const rightCls=c.right.plain?'card':'card hi';
+    const rightTitle=c.right.plain?('<h4>'+c.right.h+'</h4>'):('<h4 style="color:var(--hi-t)">'+c.right.h+'</h4>');
+    return '<div class="two-col"><div class="card"><h4>'+c.left.h+'</h4><ul>'+li(c.left.items)+'</ul></div><div class="'+rightCls+'">'+rightTitle+'<ul>'+li(c.right.items)+'</ul></div></div>';
+  }
+  if(c.type==='img'){
+    return '<div class="media-card"><img src="'+c.src+'" alt="'+(c.alt||'')+'" loading="lazy">'+(c.cap?'<div class="media-cap">'+c.cap+'</div>':'')+'</div>';
+  }
+  if(c.type==='video'){
+    return '<div class="media-card"><video src="'+c.src+'" autoplay loop muted playsinline></video>'+(c.cap?'<div class="media-cap">'+c.cap+'</div>':'')+'</div>';
+  }
+  if(c.type==='iconlist'){
+    const items=c.items.map(it=>'<div class="icl-item"><div class="icl-ic">'+it.ic+'</div><div class="icl-txt"><strong>'+it.h+'</strong><span>'+it.b+'</span></div></div>').join('');
+    return '<div class="icl-grid">'+items+'</div>';
+  }
+  if(c.type==='faq'){
+    return '<div class="faq-card"><div class="faq-ic">'+c.ic+'</div><div class="faq-body"><h4>'+c.q+'</h4><p>'+c.a+'</p></div></div>';
+  }
+  return '';
+}
+
+/* ───────────────────────── QUIZ ENGINE ───────────────────────── */
+function shuf(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function startQuiz(id){
+  currentModule=id;
+  quizData=shuf([...QUIZ[id]]).map(q=>{ const order=shuf(q.opts.map((_,i)=>i)); return {q:q.q,opts:order.map(i=>q.opts[i]),c:order.indexOf(q.c),fb:q.fb}; });
+  qi=0; score=0; renderQ(); showScreen('screen-quiz'); window.scrollTo(0,0);
+}
+function renderQ(){
+  const q=quizData[qi];
+  document.getElementById('qfill').style.width=(qi/quizData.length*100)+'%';
+  document.getElementById('qcount').textContent='Question '+(qi+1)+' of '+quizData.length;
+  document.getElementById('qtext').innerHTML=q.q;
+  const el=document.getElementById('qopts'); el.innerHTML='';
+  q.opts.forEach((o,idx)=>{ const b=document.createElement('button'); b.className='qopt'; b.textContent=o; b.onclick=()=>answerQ(idx); el.appendChild(b); });
+  document.getElementById('qfb').className='qfb'; document.getElementById('qnxt').className='qnxt';
+}
+function answerQ(idx){
+  if(document.querySelector('.qopt.answered')) return;
+  const q=quizData[qi]; const ok=idx===q.c; if(ok)score++;
+  document.querySelectorAll('.qopt').forEach((b,i)=>{ b.classList.add('answered'); if(i===q.c)b.classList.add('correct'); else if(i===idx&&!ok)b.classList.add('wrong'); });
+  const fb=document.getElementById('qfb'); fb.className='qfb show '+(ok?'ok':'bad'); fb.innerHTML=(ok?'✅ Correct! ':'❌ Not quite. ')+q.fb;
+  const nx=document.getElementById('qnxt'); nx.className='qnxt show'; nx.textContent=qi===quizData.length-1?'See results →':'Next →';
+}
+function nextQ(){
+  qi++;
+  if(qi<quizData.length){ renderQ(); window.scrollTo(0,0); return; }
+  const pct=Math.round(score/quizData.length*100); const passed=pct>=70;
+  setResult(currentModule,pct,passed); showResults(pct,passed);
+}
+function exitQuiz(){ const m=MODULES.find(x=>x.id===currentModule); if(m) openModule(m); else goDashboard(); }
+
+/* ───────────────────────── CONSOLE SIMULATION (Module 3) ───────────────────────── */
+/* The tutor plays through real console situations and always gets feedback tied
+   back to the theory just covered, then continues to the next scene. */
+let rpgStep=0;
+const GM_IMG='Game_module3/';
+const GM_SCENE_LABELS={1:'Scene 1 — The Lobby',2:"Scene 2 — Student 1's Room",3:'Back to the Lobby',4:'Scene 3 — An Empty Room',5:'Scene 4 — Student 2 Arrives',6:'Scene 5 — Student C',7:'Scene 6 — Student D'};
+function kwHit(text,list){ const t=text.toLowerCase(); return list.some(w=>t.includes(w)); }
+function gmNote(){
+  return '<div class="rpg-note"><span class="ic">📝</span><span>Keep jotting a quick note as you go — task, mood, and next check-in time for each student. That habit from 2.2 is what keeps this whole console manageable.</span></div>';
+}
+function gmHotspot(left,top,label,onclick){
+  return '<div class="rpg-hotspot" style="left:'+left+'%;top:'+top+'%" onclick="'+onclick+'"><div class="rpg-arrow-hint">👇</div><div class="rpg-hint-lbl">'+label+'</div></div>';
+}
+
+function startRPG(id){
+  currentModule=id; rpgStep=0;
+  renderRPG(); showScreen('screen-rpg'); window.scrollTo(0,0);
+}
+function exitRPG(){ const m=MODULES.find(x=>x.id===currentModule); if(m) openModule(m); else goDashboard(); }
+function updateRPGProgressTag(){
+  document.getElementById('rpgScoreTag').textContent=GM_SCENE_LABELS[rpgStep]||'';
+}
+
+function renderRPG(){
+  updateRPGProgressTag();
+  const stage=document.getElementById('rpgStage');
+
+  if(rpgStep===0){
+    stage.innerHTML='<div class="rpg-stage rpg-cover"><div class="rpg-cover-em">🎮</div><h2>Two Students, One You — A Console Simulation</h2><p>You are about to face real console situations from a Parallel Lesson. Some moments are multiple choice. Others are free text: write exactly what you would do and say, in your own words.</p>'
+      +gmNote()
+      +'<button class="rpg-continue" onclick="rpgGo(1)">▶ Enter the Console</button></div>';
+    return;
+  }
+
+  if(rpgStep===1){
+    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Lobby.png" alt="Console lobby with Student 1 and Student 2 panels">'
+      +gmHotspot(25.3,53.6,'Click Student 1','rpgGo(2)')
+      +'</div>'
+      +gmNote()
+      +'<div class="rpg-bubble">You\'re in the lobby of the console and you have two students. Your <b>Student 1</b> has already joined. In 10 minutes your second student should join. Click on <b>Student 1</b> to enter the room so they can see you.</div>';
+    return;
+  }
+
+  if(rpgStep===2){
+    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student1.png" alt="Tutor in Student 1\'s room"></div>'
+      +'<div class="rpg-eyebrow">🔗 Ties to: 2.5 Praise &amp; Motivation + 2.6 Growing Independence</div>'
+      +'<div class="rpg-bubble">You\'ve already welcomed the student, explained the theory, and explained the activity to do. 10 minutes have passed. <b>What phrase do you use to step away and say goodbye to the student for a moment</b>, so you can go welcome your other student?</div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Type exactly what you would say:</label><textarea class="rpg-input" id="gmA1" placeholder="Type your farewell phrase to the student..." oninput="gmCheckReady(1)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit1" onclick="gmSubmit1()" disabled>Get Feedback</button>';
+    return;
+  }
+
+  if(rpgStep===3){
+    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Lobby.png" alt="Console lobby with Student 1 and Student 2 panels">'
+      +gmHotspot(74.6,53.6,'Click Student 2','rpgGo(4)')
+      +'</div>'
+      +'<div class="rpg-bubble">Nicely handled. Now it\'s time to check on your second student — click on <b>Student 2</b>.</div>';
+    return;
+  }
+
+  if(rpgStep===4){
+    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student1_1.png" alt="Student 2\'s room, empty"></div>'
+      +'<div class="rpg-eyebrow">🔗 Ties to: 2.2 Working-Memory &amp; Triage</div>'
+      +'<div class="rpg-bubble">Looks like your student hasn\'t arrived yet! <b>What would you do?</b></div>'
+      +'<div class="rpg-choice-list" id="gmChoices"></div>';
+    const opts=[
+      "Wait a little longer, inside Student 2's own time — you only just stepped away from Student 1 a couple of minutes ago.",
+      "Go back to Student 1's room right away, since they've already arrived.",
+      "Go back to Student 1's room, since waiting alone here is worse than checking in on someone active."
+    ];
+    const box=document.getElementById('gmChoices');
+    opts.forEach((o,idx)=>{ const b=document.createElement('button'); b.className='qopt'; b.textContent=o; b.onclick=()=>gmAnswerChoice(idx); box.appendChild(b); });
+    return;
+  }
+
+  if(rpgStep===5){
+    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student2.png" alt="Tutor in Student 2\'s room"></div>'
+      +'<div class="rpg-eyebrow">🔗 Ties to: 2.2 Triage + 2.6 Balancing Help</div>'
+      +'<div class="rpg-bubble">Student 2 has arrived! You gave the introduction and are almost done explaining the activity they need to do — but <b>Student 1 has raised their hand</b> back in their own room. <b>What do you do?</b></div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Describe what you do and what you say:</label><textarea class="rpg-input" id="gmA2" placeholder="Type what you would do and say..." oninput="gmCheckReady(2)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit2" onclick="gmSubmit2()" disabled>Get Feedback</button>';
+    return;
+  }
+
+  if(rpgStep===6){
+    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student1.png" alt="Tutor back with Student 1, later in the lesson"><div class="rpg-frame-badge">⏱️ Later — Student 1 Again</div></div>'
+      +'<div class="rpg-eyebrow">🔗 Ties to: 2.4 Individual Approach + 2.5 Motivation</div>'
+      +'<div class="rpg-bubble">A little later in the same lesson: <b>Student 1</b> — the same student from before — finished the main task early and is just waiting for you. <b>What do you do first, and what do you say?</b></div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Describe what you do and what you say:</label><textarea class="rpg-input" id="gmA3" placeholder="Type what you would do and say..." oninput="gmCheckReady(3)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit3" onclick="gmSubmit3()" disabled>Get Feedback</button>';
+    return;
+  }
+
+  if(rpgStep===7){
+    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student2.png" alt="Tutor back with Student 2, later in the lesson"><div class="rpg-frame-badge">⏱️ Later — Student 2 Again</div></div>'
+      +'<div class="rpg-eyebrow">🔗 Ties to: 2.6 Balancing Help &amp; Independence</div>'
+      +'<div class="rpg-bubble">Also later in the same lesson: it\'s week 6, and <b>Student 2</b> — who is usually confident working on their own — asks you to "just give me the answer." <b>What do you do first, and what do you say?</b></div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Describe what you do and what you say:</label><textarea class="rpg-input" id="gmA4" placeholder="Type what you would do and say..." oninput="gmCheckReady(4)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit4" onclick="gmSubmit4()" disabled>Get Feedback</button>';
+    return;
+  }
+
+  if(rpgStep===8){
+    setResult(currentModule,100,true);
+    const next=MODULES.find(x=>x.id===currentModule+1);
+    stage.innerHTML='<div class="rpg-stage rpg-cover"><div class="rpg-cover-em">🎉</div><h2>Simulation Complete</h2><p>You walked through the full console — two students, an empty room, a raised hand, an early finish, and a confident student asking for the answer. Module 3 is complete.</p>'
+      +(next?('<button class="bdark" style="margin-top:10px" onclick="openModule(MODULES.find(x=>x.id=='+next.id+'))">Continue to Module '+next.id+' →</button>'):'')
+      +'<button class="bline" onclick="goDashboard()">← Back to Dashboard</button></div>';
+    return;
+  }
+}
+
+function rpgGo(step){ rpgStep=step; renderRPG(); window.scrollTo(0,0); }
+
+function gmCheckReady(which){
+  const ids={1:['gmA1','gmSubmit1'],2:['gmA2','gmSubmit2'],3:['gmA3','gmSubmit3'],4:['gmA4','gmSubmit4']};
+  const pair=ids[which];
+  const ta=document.getElementById(pair[0]), btn=document.getElementById(pair[1]);
+  if(ta&&btn) btn.disabled=ta.value.trim().length<10;
+}
+
+const KW={
+  warm:["please","thanks","thank you","great job","good job","awesome","well done","nice work","proud","excellent","doing great","you're doing","see you","back soon"],
+  help:["raise your hand","hand up","need help","ask me","call me","shout if","if you need","wave","flag me","i'm here","here to help","here for you"],
+  goTo:["go check","go see","go to","head over","pop over","visit","stop by","swing by","go over","check on student 1","go to student 1"],
+  inform:["permission","excuse me","give me a few minutes","three minutes","3 minutes","just a moment","quick","one moment","couple of minutes","be right back","a few minutes"],
+  finish:["finish explaining","start working","work independently","on your own","get started","begin the activity","so you can start","ready to start"],
+  ackSpecific:["finished that","faster than","nice work on","you nailed","you got through","you finished","that fast","that quickly"],
+  extraChallenge:["want to try","extra challenge","add a feature","take it further","bonus","stretch goal","try adding","another challenge"],
+  noCompare:["compared to","others are","other students","faster than the rest","ahead of the others","slower than you"],
+  autonomyReminder:["raise your hand","hand up","whenever you're ready","feel free to","if you'd like","move ahead","keep going if","start the next","go ahead and try","when you're ready","let me know when","if you feel comfortable","on your own if"],
+  noAnswer:["what have you tried","let's start there","try once more","before i jump in","one more try","try it once more"],
+  bridgeTheory:["remember when we","think back to","what did we learn","remember the concept","let's review","what's the rule for","think about what we covered","recall","what do you remember about","we covered this","from the lesson"],
+  creative:["another way","different approach","think creatively","what if you tried","brainstorm","creative","different angle","other way","new idea"]
+};
+
+function gmSubmit1(){
+  const text=document.getElementById('gmA1').value;
+  const hitWarm=kwHit(text,KW.warm), hitHelp=kwHit(text,KW.help);
+  const checklist='<div class="rpg-checklist">'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitWarm?'✅':'❌')+'</span><span>Uses a warm, friendly tone</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitHelp?'✅':'❌')+'</span><span>Lets the student know they can raise their hand / ask for help</span></div>'
+    +'</div>';
+  const ok=hitWarm&&hitHelp;
+  const verdict=ok
+    ?"A warm goodbye that reminds the student help is always available keeps them confident and independent while you're away — that's the balance 2.5 and 2.6 are both pointing at."
+    :"A strong farewell needs both pieces: friendly AND a reminder that they can raise their hand if they need help. That reassurance matters as much as the content you just taught — it's what lets them keep working independently while you step away.";
+  const stage=document.getElementById('rpgStage');
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">💬 Example: "I\'m going to say hi to my other student for a few minutes — keep going, and raise your hand if you need me, I\'ll be right back!"</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(3)">Continue →</button>';
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+function gmAnswerChoice(idx){
+  if(document.querySelector('#gmChoices .qopt.answered')) return;
+  const correct=0;
+  const ok=idx===correct;
+  document.querySelectorAll('#gmChoices .qopt').forEach((b,i)=>{ b.classList.add('answered'); if(i===correct)b.classList.add('correct'); else if(i===idx&&!ok)b.classList.add('wrong'); });
+  const verdict=ok
+    ?"Exactly — remember, silence never automatically means a student is fine, that's still the 2.2 rule. But you only just left Student 1 a couple of minutes ago, and this is exactly the moment Student 2 is due. The right call is to wait a little longer — inside Student 2's own time, not by cutting into anyone else's."
+    :"Think back to 2.2: silence never automatically means a student is fine. But that's not the deciding factor here — you only just left Student 1 a couple of minutes ago, and this is exactly when Student 2 is due. Jumping into Student 1's room now interrupts their independent work far too soon; waiting a little longer, within Student 2's own time, is the right call.";
+  const stage=document.getElementById('rpgStage');
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4><div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(5)">Continue →</button>';
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+function gmSubmit2(){
+  const text=document.getElementById('gmA2').value;
+  const hitGo=kwHit(text,KW.goTo), hitInform=kwHit(text,KW.inform), hitFinish=kwHit(text,KW.finish);
+  const checklist='<div class="rpg-checklist">'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitGo?'✅':'❌')+'</span><span>Goes to check on Student 1 instead of ignoring the raised hand</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitInform?'✅':'❌')+'</span><span>Tells Student 2 they need a brief moment (e.g. "about 3 minutes") before stepping away</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitFinish?'✅':'❌')+'</span><span>Makes sure Student 2 has what they need to start working independently</span></div>'
+    +'</div>';
+  const pts=(hitGo?1:0)+(hitInform?1:0)+(hitFinish?1:0);
+  const ok=pts>=2;
+  const verdict=ok
+    ?"Strong judgment — Student 1 feels heard, and Student 2 isn't left mid-explanation without a way to start working. That balance between 2.2 triage and 2.6 independence is exactly the goal of this scene."
+    :"The goal here is for Student 1 to feel heard <em>and</em> for Student 2 to be able to start working independently, without either one feeling dropped: check on Student 1 (briefly asking Student 2's permission first), resolve it quickly or promise to come back, and make sure Student 2 has enough to get started before you switch focus.";
+  const stage=document.getElementById('rpgStage');
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(6)">Continue →</button>';
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+function gmSubmit3(){
+  const text=document.getElementById('gmA3').value;
+  const hitAck=kwHit(text,KW.ackSpecific), hitChallenge=kwHit(text,KW.extraChallenge), hitNoCompare=!kwHit(text,KW.noCompare), hitAutonomy=kwHit(text,KW.autonomyReminder);
+  const checklist='<div class="rpg-checklist">'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitAck?'✅':'❌')+'</span><span>Acknowledges the achievement specifically — not a generic "good job"</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitChallenge?'✅':'❌')+'</span><span>Offers an extra challenge instead of leaving them idle</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitNoCompare?'✅':'❌')+'</span><span>Doesn\'t compare them to the other students</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitAutonomy?'✅':'❌')+'</span><span>Reminds them they can raise their hand anytime instead of waiting, and gives them the choice to move ahead on their own if they feel ready</span></div>'
+    +'</div>';
+  const pts=(hitAck?1:0)+(hitChallenge?1:0)+(hitNoCompare?1:0)+(hitAutonomy?1:0);
+  const ok=pts>=3;
+  const verdict=ok
+    ?"This is exactly what 2.4 means by adjusting the challenge, not just the pace. Naming the win, offering more, and reminding them they're free to raise a hand or keep going on their own all tie back to the motivation moments from 2.5 — waiting shouldn't be their only option."
+    :"Finishing early is a motivation moment, not a pause: name specifically what they did well, then hand them something extra to chew on instead of just telling them to wait. Also remind them they don't have to sit still — they can raise their hand anytime to call you over sooner, or keep going on their own if they feel comfortable; either way, you're happy to help and review what they've done.";
+  const stage=document.getElementById('rpgStage');
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">💬 Example: "Nice, you finished that faster than expected — want to try adding [extra feature]? And remember, you can raise your hand anytime if you want me to check it sooner, or keep going on your own if you\'re comfortable."</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(7)">Continue →</button>';
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+function gmSubmit4(){
+  const text=document.getElementById('gmA4').value;
+  const hitNoAnswer=kwHit(text,KW.noAnswer), hitBridge=kwHit(text,KW.bridgeTheory), hitCreative=kwHit(text,KW.creative);
+  const checklist='<div class="rpg-checklist">'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitNoAnswer?'✅':'❌')+'</span><span>Doesn\'t hand over the answer, even under pressure</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitBridge?'✅':'❌')+'</span><span>Brings back a concept or piece of theory from the lesson to help the student reason it out — instead of just pointing at the guide</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitCreative?'✅':'❌')+'</span><span>Nudges the student toward a different or more creative approach, instead of just repeating "what have you tried?"</span></div>'
+    +'</div>';
+  const pts=(hitNoAnswer?1:0)+(hitBridge?1:0)+(hitCreative?1:0);
+  const ok=pts>=2;
+  const verdict=ok
+    ?"Good instincts — this is the most direct case of 2.6. Instead of just handing over the answer or pointing at the guide and walking away, you became the bridge: reconnecting the student to what they already know so they could reason their way to the answer themselves."
+    :'This is the most important case in the module: giving the answer "because they\'re usually independent, so it\'s fine" is exactly the mistake to avoid. But simply saying "the guide is right there" can land the same way — like you don\'t want to help. Instead, be the bridge yourself: bring back a concept from the lesson ("remember when we covered...?"), and nudge them toward a different way of thinking about it. The goal is for the student to practice being creative and thinking critically, with you guiding — not handing over — the discovery.';
+  const stage=document.getElementById('rpgStage');
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">💬 Example: "I know you\'ve got this most of the time — remember when we covered [concept]? Think back to that for a second. Given that, what\'s a different way you could try approaching this?"</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(8)">Finish the Simulation →</button>';
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+/* ───────────────────────── RESULTS (quiz modules only) ───────────────────────── */
+function showResults(pct,passed){
+  let acts='';
+  const m=MODULES.find(x=>x.id===currentModule);
+  if(passed&&m.id<TOTAL) acts+='<button class="bdark" onclick="openModule(MODULES.find(x=>x.id=='+(m.id+1)+'))">Next Module →</button>';
+  if(passed&&m.id===TOTAL) acts+='<button class="bdark" onclick="showComplete()">What\'s Next →</button>';
+  acts+='<button class="bline" onclick="openModule(MODULES.find(x=>x.id=='+m.id+'))">Review Module '+m.id+'</button>';
+  acts+='<button class="bline" onclick="startQuiz('+m.id+')">Retake the Check</button>';
+  const scoreLine='You answered '+score+' / '+quizData.length+' correctly.';
+  const sub=scoreLine+(passed?' Module unlocked — nice work! 🎉':' You need 70% to unlock the next module — give it another go.');
+  document.getElementById('rbody').innerHTML='<div class="remi">'+(passed?'🎉':'😅')+'</div><div class="rtitle">'+(passed?'You Passed!':'Keep Studying')+'</div><div class="rpct '+(passed?'pass':'fail')+'">'+pct+'%</div><div class="rsub">'+sub+'</div>'+acts;
+  showScreen('screen-results'); window.scrollTo(0,0); renderHome();
+}
+
+/* ───────────────────────── SELF-STUDY COMPLETE ───────────────────────── */
+function showComplete(){
+  document.getElementById('compbody').innerHTML='<div style="font-size:72px">🎉</div><h1 style="font-family:\'Baloo 2\',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.5px;margin-top:15px;color:var(--onbg)">Self-Study Complete!</h1><p style="color:var(--onbg2);margin-top:9px;font-size:15.5px;line-height:1.65">You\'ve worked through all '+TOTAL+' modules of the Parallel Lessons training.</p><div class="cert"><div class="clbl2">Next Step</div><h2>Join the Webinar</h2><p>Self-study gets you the theory and the mindset — now it\'s time to practice on a real console. The next step is attending the live webinar, where you\'ll reinforce everything you\'ve learned here with hands-on practice in an actual Parallel Group.</p></div><button class="bdark" onclick="goDashboard()">← Back to Dashboard</button>';
+  showScreen('screen-complete'); window.scrollTo(0,0);
+}
+
+/* ───────────────────────── NAV / THEME ───────────────────────── */
+function goHome(){ showScreen('screen-home'); window.scrollTo(0,0); }
+function goDashboard(){ renderHome(); showScreen('screen-path'); window.scrollTo(0,0); }
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('kl-pl-theme',next);
+}
+(function initTheme(){
+  const saved=localStorage.getItem('kl-pl-theme');
+  const prefersDark=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.setAttribute('data-theme', saved||(prefersDark?'dark':'light'));
+})();
+
+/* ───────────────────────── DEV MODE (Shift+D ×4) ───────────────────────── */
+let devKeyBuffer=[];
+document.addEventListener('keydown', function(e){
+  if(e.shiftKey && e.key.toLowerCase()==='d'){
+    devKeyBuffer.push(Date.now());
+    devKeyBuffer=devKeyBuffer.filter(t=>Date.now()-t<2000);
+    if(devKeyBuffer.length>=4){ toggleDevMode(); devKeyBuffer=[]; }
+  }
+});
+function toggleDevMode(){
+  const isDev=localStorage.getItem('kl-pl-devmode')==='1';
+  if(!isDev){
+    localStorage.setItem('kl-pl-devmode-backup', localStorage.getItem(PROG_KEY)||'{}');
+    const p={}; MODULES.forEach(m=>{ p[m.id]={passed:true,score:100}; }); saveProgress(p);
+    localStorage.setItem('kl-pl-devmode','1'); showDevBadge(true);
+  }else{
+    const backup=localStorage.getItem('kl-pl-devmode-backup'); if(backup) localStorage.setItem(PROG_KEY,backup);
+    localStorage.removeItem('kl-pl-devmode'); showDevBadge(false);
+  }
+  renderHome();
+}
+function showDevBadge(on){
+  let b=document.getElementById('devBadge');
+  if(on){ if(!b){ b=document.createElement('div'); b.id='devBadge'; b.style.cssText='position:fixed;bottom:16px;right:16px;background:#0B1F45;color:#7BC142;font-family:monospace;font-size:12px;font-weight:700;padding:9px 16px;border-radius:10px;z-index:999;box-shadow:0 6px 20px rgba(0,0,0,.3);letter-spacing:.3px'; b.textContent='🛠 DEV MODE — everything unlocked (Shift+D×4 to exit)'; document.body.appendChild(b); } }
+  else if(b){ b.remove(); }
+}
+if(localStorage.getItem('kl-pl-devmode')==='1') showDevBadge(true);
+</script>
+</body>
+</html>
