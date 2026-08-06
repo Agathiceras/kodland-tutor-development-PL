@@ -49,6 +49,14 @@ body{background:var(--bg-gradient);color:var(--text);font-family:'Inter',sans-se
 .nav-r{display:flex;align-items:center;gap:8px;position:relative}
 .tbtn{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--surface);border:2px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;transition:all .15s;flex-shrink:0}
 .tbtn:hover{border-color:var(--blue-l);background:var(--surface2)}
+.lang-wrap{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:var(--rpill);background:var(--surface);border:2px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.lang-btn:hover{border-color:var(--blue-l)}
+.lang-menu{display:none;position:absolute;top:48px;right:0;background:var(--surface);border:2px solid var(--border);border-radius:14px;box-shadow:var(--shadow-h);min-width:170px;overflow:hidden;z-index:50}
+.lang-menu.show{display:block}
+.lang-item{padding:11px 16px;font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer}
+.lang-item:hover{background:var(--surface2)}
+.lang-item.active{color:var(--blue);font-weight:800}
 /* HERO */
 .hero{padding:56px 40px 40px;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;bottom:58%;background:radial-gradient(ellipse 65% 100% at 50% 0%,#ffffff 0%,var(--blue-l) 25%,var(--pink-hover) 52%,var(--green-l) 75%,transparent 92%);opacity:.55;pointer-events:none}
@@ -258,20 +266,31 @@ body{background:var(--bg-gradient);color:var(--text);font-family:'Inter',sans-se
       <span class="logo-div"></span>
       <span class="logo-sub">Tutor Development Department</span>
     </a>
-    <div class="nav-r"><button class="tbtn" onclick="toggleTheme()">🌓</button></div>
+    <div class="nav-r">
+      <div class="lang-wrap">
+        <button class="lang-btn" id="langBtn" onclick="toggleLang(event)">🇬🇧 EN <span style="font-size:10px">▾</span></button>
+        <div class="lang-menu" id="langMenu">
+          <div class="lang-item active" data-lang="en" onclick="setLang('en')">🇬🇧 English</div>
+          <div class="lang-item" data-lang="pl" onclick="setLang('pl')">🇵🇱 Polski</div>
+          <div class="lang-item" data-lang="tr" onclick="setLang('tr')">🇹🇷 Türkçe</div>
+          <div class="lang-item" data-lang="it" onclick="setLang('it')">🇮🇹 Italiano</div>
+        </div>
+      </div>
+      <button class="tbtn" onclick="toggleTheme()">🌓</button>
+    </div>
   </nav>
   <div class="hero">
     <div class="hero-inner">
-      <div class="eyebrow">🧑‍🏫 Tutor Training Program</div>
-      <h1>Welcome to <span class="h-pill">Parallel Lessons</span></h1>
-      <p>Parallel Lessons is a new way of running your 1-on-1 courses — one tutor, several students, each on their own path, in the same time slot. This self-study guide will get you ready to practice on the platform.</p>
+      <div class="eyebrow" id="heroEyebrowTxt">🧑‍🏫 Tutor Training Program</div>
+      <h1 id="heroH1">Welcome to <span class="h-pill">Parallel Lessons</span></h1>
+      <p id="heroIntroP">Parallel Lessons is a new way of running your 1-on-1 courses — one tutor, several students, each on their own path, in the same time slot. This self-study guide will get you ready to practice on the platform.</p>
       <div class="hero-reasons">
-        <div class="hr-item"><span class="hr-ic">🧭</span><span class="hr-txt">Understand what changes (and what doesn't) when you teach in this format.</span></div>
-        <div class="hr-item"><span class="hr-ic">🖥️</span><span class="hr-txt">Learn how to navigate the console and the technical setup behind a Parallel Group.</span></div>
-        <div class="hr-item"><span class="hr-ic">🎭</span><span class="hr-txt">Practice the mindset with a role-play simulation — real decisions, real feedback.</span></div>
+        <div class="hr-item"><span class="hr-ic">🧭</span><span class="hr-txt" id="heroReason1Txt">Understand what changes (and what doesn't) when you teach in this format.</span></div>
+        <div class="hr-item"><span class="hr-ic">🖥️</span><span class="hr-txt" id="heroReason2Txt">Learn how to navigate the console and the technical setup behind a Parallel Group.</span></div>
+        <div class="hr-item"><span class="hr-ic">🎭</span><span class="hr-txt" id="heroReason3Txt">Practice the mindset with a role-play simulation — real decisions, real feedback.</span></div>
       </div>
-      <p>Work through 4 modules. Each one has a short check that unlocks the next — score 70%+ to move forward.</p>
-      <button class="start-btn" onclick="goDashboard()">🚀 Start Training</button>
+      <p id="heroWorkP">Work through 4 modules. Each one has a short check that unlocks the next — score 70%+ to move forward.</p>
+      <button class="start-btn" id="startBtnEl" onclick="goDashboard()">🚀 Start Training</button>
     </div>
   </div>
 </div>
@@ -357,11 +376,13 @@ body{background:var(--bg-gradient);color:var(--text);font-family:'Inter',sans-se
 
 <script>
 const PROG_KEY='kl-pl-progress';
+const LANG_KEY='kl-pl-lang';
 const TOTAL=4;
 let currentModule=null, quizData=[], qi=0, score=0;
+let LANG='en', MODULES, QUIZ, STR, G;
 
-/* ───────────────────────── MODULE CONTENT ───────────────────────── */
-const MODULES=[
+/* ───────────────────────── MODULE CONTENT (EN) ───────────────────────── */
+const MODULES_EN=[
 {id:1,emoji:'🌟',title:"Discover a New Format: Parallel Lessons!",desc:"What a Parallel Lesson is, why it exists, and what changes vs. your regular 1-on-1 course.",
  sections:[
   {t:"What Is a Parallel Lesson?",cards:[
@@ -387,7 +408,7 @@ const MODULES=[
     {type:'text',h:'Option 1 — Via Schedule',b:"Click the new group (name includes “PL”) → see the individual student-groups inside → click Open console. Available <strong>30 minutes before</strong> the lesson."},
     {type:'img',src:'images/Image3.gif',alt:'Animated walkthrough of opening the console via Schedule'},
     {type:'text',h:'Option 2 — Via Your Regular Groups List',b:"Click Open console on the right. Available <strong>60 minutes before</strong> the lesson, until it ends."},
-    {type:'video',src:'images/Image4.mp4',cap:'Opening the console from the regular Groups list.'}
+    {type:'img',src:'images/Image4.gif',alt:'Animated walkthrough of opening the console from the regular Groups list',cap:'Opening the console from the regular Groups list.'}
   ]},
   {t:"Communication & Tracking Rules",cards:[
     {type:'list',h:'Working within the format',items:[
@@ -486,7 +507,7 @@ const MODULES=[
  ]}
 ];
 
-const QUIZ={
+const QUIZ_EN={
 1:[
   {q:"PL replaces how Kodland teaches overall, across all courses and formats.",opts:["False — it only replaces the premium 1-on-1 format, for selected courses","True — it changes everything about how Kodland teaches"],c:0,fb:"PL is scoped to the premium 1-on-1 format on selected courses. Everything else about how Kodland teaches stays the same."},
   {q:"Which of these changes with Parallel Lessons?",opts:["Course content and the classroom interface","Only the refund policy","How the lesson is delivered and how the tutor rotates between students"],c:2,fb:"Content, attendance tracking, and project submissions all stay exactly the same — only the delivery and rotation change."},
@@ -504,6 +525,659 @@ const QUIZ={
 ]
 };
 
+/* ───────────────────────── STATIC UI STRINGS ───────────────────────── */
+const STR_EN={
+  logoSub:"Tutor Development Department",
+  heroEyebrow:"🧑‍🏫 Tutor Training Program",
+  heroTitlePre:"Welcome to",
+  heroIntro:"Parallel Lessons is a new way of running your 1-on-1 courses — one tutor, several students, each on their own path, in the same time slot. This self-study guide will get you ready to practice on the platform.",
+  heroReason1:"Understand what changes (and what doesn't) when you teach in this format.",
+  heroReason2:"Learn how to navigate the console and the technical setup behind a Parallel Group.",
+  heroReason3:"Practice the mindset with a role-play simulation — real decisions, real feedback.",
+  heroWork:"Work through 4 modules. Each one has a short check that unlocks the next — score 70%+ to move forward.",
+  startBtn:"🚀 Start Training",
+  learningPath:"Your learning path",
+  modulesAllDone:"All modules complete 🎉",
+  modulesComplete:"{done} / {total} modules complete",
+  moduleN:"Module {n}",
+  badgeCompleted:"Completed",
+  badgeLocked:"Locked",
+  badgeStart:"Start",
+  simulationComplete:"Simulation complete",
+  consoleSimInside:"Console simulation inside",
+  completeModuleNFirst:"Complete Module {n} first",
+  scoreLabel:"Score",
+  hasShortCheck:"Has a short check",
+  finalNum:"Final",
+  nextStepWebinarTitle:"Next Step: The Webinar",
+  nextStepWebinarDesc:"See what comes after self-study once all 4 modules are complete.",
+  unlocked:"Unlocked",
+  wrapUp:"Wrap-up",
+  moduleOfTotal:"Module {n} of {total}",
+  inThisModule:"In this module:",
+  playAgain:"🔁 Play Again",
+  startSimulation:"🎮 Start the Simulation",
+  retakeCheck:"🔁 Retake the Check",
+  startCheck:"✅ Start the Check",
+  questionOfTotal:"Question {n} of {total}",
+  correctPrefix:"✅ Correct! ",
+  wrongPrefix:"❌ Not quite. ",
+  seeResults:"See results →",
+  nextArrow:"Next →",
+  nextModule:"Next Module →",
+  whatsNext:"What's Next →",
+  reviewModule:"Review Module {n}",
+  answeredCorrectly:"You answered {score} / {total} correctly.",
+  moduleUnlocked:"Module unlocked — nice work! 🎉",
+  need70:"You need 70% to unlock the next module — give it another go.",
+  youPassed:"You Passed!",
+  keepStudying:"Keep Studying",
+  selfStudyComplete:"Self-Study Complete!",
+  workedThrough:"You've worked through all {total} modules of the Parallel Lessons training.",
+  nextStepLbl:"Next Step",
+  joinWebinar:"Join the Webinar",
+  webinarBody:"Self-study gets you the theory and the mindset — now it's time to practice on a real console. The next step is attending the live webinar, where you'll reinforce everything you've learned here with hands-on practice in an actual Parallel Group.",
+  backToDashboard:"← Back to Dashboard",
+  rpgTag:"🎮 Module 3 · Simulation"
+};
+
+const STR_PL={
+  logoSub:"Departament Rozwoju Trenerów",
+  heroEyebrow:"🧑‍🏫 Program szkoleniowy dla trenerów",
+  heroTitlePre:"Witamy w",
+  heroIntro:"Parallel Lessons to nowy sposób prowadzenia zajęć indywidualnych — jeden trener, kilku uczniów, każdy na swojej własnej ścieżce, w tym samym przedziale czasowym. Ten przewodnik do samodzielnej nauki przygotuje Cię do ćwiczeń na platformie.",
+  heroReason1:"Zrozum, co się zmienia (a co nie) podczas nauczania w tym formacie.",
+  heroReason2:"Naucz się poruszać po konsoli i konfiguracji technicznej Parallel Group.",
+  heroReason3:"Przećwicz to podejście w symulacji z odgrywaniem ról — realne decyzje, realny feedback.",
+  heroWork:"Przejdź przez 4 moduły. Każdy ma krótki test, który odblokowuje następny — zdobądź 70%+, aby przejść dalej.",
+  startBtn:"🚀 Zacznij szkolenie",
+  learningPath:"Twoja ścieżka nauki",
+  modulesAllDone:"Wszystkie moduły zakończone 🎉",
+  modulesComplete:"{done} / {total} modułów zakończonych",
+  moduleN:"Moduł {n}",
+  badgeCompleted:"Zakończono",
+  badgeLocked:"Zablokowane",
+  badgeStart:"Zacznij",
+  simulationComplete:"Symulacja zakończona",
+  consoleSimInside:"W środku symulacja konsoli",
+  completeModuleNFirst:"Najpierw zakończ moduł {n}",
+  scoreLabel:"Wynik",
+  hasShortCheck:"Zawiera krótki test",
+  finalNum:"Finał",
+  nextStepWebinarTitle:"Następny krok: webinar",
+  nextStepWebinarDesc:"Zobacz, co czeka Cię po samodzielnej nauce, gdy zakończysz wszystkie 4 moduły.",
+  unlocked:"Odblokowano",
+  wrapUp:"Podsumowanie",
+  moduleOfTotal:"Moduł {n} z {total}",
+  inThisModule:"W tym module:",
+  playAgain:"🔁 Zagraj ponownie",
+  startSimulation:"🎮 Zacznij symulację",
+  retakeCheck:"🔁 Powtórz test",
+  startCheck:"✅ Zacznij test",
+  questionOfTotal:"Pytanie {n} z {total}",
+  correctPrefix:"✅ Poprawnie! ",
+  wrongPrefix:"❌ Niezupełnie. ",
+  seeResults:"Zobacz wyniki →",
+  nextArrow:"Dalej →",
+  nextModule:"Następny moduł →",
+  whatsNext:"Co dalej →",
+  reviewModule:"Przejrzyj moduł {n}",
+  answeredCorrectly:"Odpowiedziałeś/aś poprawnie na {score} / {total}.",
+  moduleUnlocked:"Moduł odblokowany — świetna robota! 🎉",
+  need70:"Potrzebujesz 70%, aby odblokować następny moduł — spróbuj jeszcze raz.",
+  youPassed:"Zaliczone!",
+  keepStudying:"Ucz się dalej",
+  selfStudyComplete:"Samodzielna nauka zakończona!",
+  workedThrough:"Przeszedłeś/przeszłaś przez wszystkie {total} moduły szkolenia Parallel Lessons.",
+  nextStepLbl:"Następny krok",
+  joinWebinar:"Weź udział w webinarze",
+  webinarBody:"Samodzielna nauka dała Ci teorię i sposób myślenia — teraz czas przećwiczyć to na prawdziwej konsoli. Następny krok to udział w webinarze na żywo, na którym utrwalisz wszystko, czego się tu nauczyłeś/aś, w praktyce w prawdziwej Parallel Group.",
+  backToDashboard:"← Wróć do panelu",
+  rpgTag:"🎮 Moduł 3 · Symulacja"
+};
+
+const STR_TR={
+  logoSub:"Eğitmen Gelişim Departmanı",
+  heroEyebrow:"🧑‍🏫 Eğitmen Eğitim Programı",
+  heroTitlePre:"Hoş geldiniz:",
+  heroIntro:"Parallel Lessons, birebir derslerinizi yürütmenin yeni bir yolu — bir eğitmen, birkaç öğrenci, her biri kendi yolunda, aynı zaman diliminde. Bu bireysel çalışma kılavuzu sizi platformda pratik yapmaya hazırlayacak.",
+  heroReason1:"Bu formatta ders verirken neyin değişip neyin değişmediğini anlayın.",
+  heroReason2:"Konsolda gezinmeyi ve bir Parallel Group'un teknik kurulumunu öğrenin.",
+  heroReason3:"Rol yapma simülasyonuyla zihniyeti pratik yapın — gerçek kararlar, gerçek geri bildirim.",
+  heroWork:"4 modülü tamamlayın. Her birinde bir sonrakini açan kısa bir kontrol var — ilerlemek için %70+ puan alın.",
+  startBtn:"🚀 Eğitime Başla",
+  learningPath:"Öğrenme yolunuz",
+  modulesAllDone:"Tüm modüller tamamlandı 🎉",
+  modulesComplete:"{done} / {total} modül tamamlandı",
+  moduleN:"Modül {n}",
+  badgeCompleted:"Tamamlandı",
+  badgeLocked:"Kilitli",
+  badgeStart:"Başla",
+  simulationComplete:"Simülasyon tamamlandı",
+  consoleSimInside:"İçinde konsol simülasyonu var",
+  completeModuleNFirst:"Önce Modül {n}'i tamamlayın",
+  scoreLabel:"Puan",
+  hasShortCheck:"Kısa bir kontrol içerir",
+  finalNum:"Son",
+  nextStepWebinarTitle:"Sonraki Adım: Webinar",
+  nextStepWebinarDesc:"4 modülün tamamı bittiğinde bireysel çalışmadan sonra ne geldiğini görün.",
+  unlocked:"Kilidi açıldı",
+  wrapUp:"Özet",
+  moduleOfTotal:"Modül {n} / {total}",
+  inThisModule:"Bu modülde:",
+  playAgain:"🔁 Tekrar Oyna",
+  startSimulation:"🎮 Simülasyonu Başlat",
+  retakeCheck:"🔁 Kontrolü Tekrar Yap",
+  startCheck:"✅ Kontrolü Başlat",
+  questionOfTotal:"Soru {n} / {total}",
+  correctPrefix:"✅ Doğru! ",
+  wrongPrefix:"❌ Tam olarak değil. ",
+  seeResults:"Sonuçları gör →",
+  nextArrow:"İleri →",
+  nextModule:"Sonraki Modül →",
+  whatsNext:"Sırada Ne Var →",
+  reviewModule:"Modül {n}'i Gözden Geçir",
+  answeredCorrectly:"{score} / {total} soruyu doğru cevapladınız.",
+  moduleUnlocked:"Modülün kilidi açıldı — harika iş! 🎉",
+  need70:"Bir sonraki modülün kilidini açmak için %70 gerekiyor — tekrar deneyin.",
+  youPassed:"Başardınız!",
+  keepStudying:"Çalışmaya Devam Edin",
+  selfStudyComplete:"Bireysel Çalışma Tamamlandı!",
+  workedThrough:"Parallel Lessons eğitiminin tüm {total} modülünü tamamladınız.",
+  nextStepLbl:"Sonraki Adım",
+  joinWebinar:"Webinara Katılın",
+  webinarBody:"Bireysel çalışma size teoriyi ve zihniyeti verdi — şimdi gerçek bir konsolda pratik yapma zamanı. Sonraki adım, gerçek bir Parallel Group'ta uygulamalı pratikle burada öğrendiklerinizi güçlendireceğiniz canlı webinara katılmaktır.",
+  backToDashboard:"← Panele Dön",
+  rpgTag:"🎮 Modül 3 · Simülasyon"
+};
+
+const STR_IT={
+  logoSub:"Dipartimento di Sviluppo Tutor",
+  heroEyebrow:"🧑‍🏫 Programma di formazione per tutor",
+  heroTitlePre:"Benvenuto/a in",
+  heroIntro:"Parallel Lessons è un nuovo modo di gestire le tue lezioni individuali — un tutor, più studenti, ognuno sul proprio percorso, nella stessa fascia oraria. Questa guida di autoapprendimento ti preparerà a esercitarti sulla piattaforma.",
+  heroReason1:"Capisci cosa cambia (e cosa non cambia) quando insegni in questo formato.",
+  heroReason2:"Impara a navigare la console e la configurazione tecnica di un Parallel Group.",
+  heroReason3:"Metti in pratica la mentalità con una simulazione di ruolo — decisioni reali, feedback reale.",
+  heroWork:"Completa 4 moduli. Ognuno ha una breve verifica che sblocca il successivo — ottieni almeno il 70% per andare avanti.",
+  startBtn:"🚀 Inizia la formazione",
+  learningPath:"Il tuo percorso di apprendimento",
+  modulesAllDone:"Tutti i moduli completati 🎉",
+  modulesComplete:"{done} / {total} moduli completati",
+  moduleN:"Modulo {n}",
+  badgeCompleted:"Completato",
+  badgeLocked:"Bloccato",
+  badgeStart:"Inizia",
+  simulationComplete:"Simulazione completata",
+  consoleSimInside:"Contiene la simulazione della console",
+  completeModuleNFirst:"Completa prima il Modulo {n}",
+  scoreLabel:"Punteggio",
+  hasShortCheck:"Contiene una breve verifica",
+  finalNum:"Finale",
+  nextStepWebinarTitle:"Prossimo passo: il webinar",
+  nextStepWebinarDesc:"Scopri cosa viene dopo l'autoapprendimento, una volta completati tutti i 4 moduli.",
+  unlocked:"Sbloccato",
+  wrapUp:"Riepilogo",
+  moduleOfTotal:"Modulo {n} di {total}",
+  inThisModule:"In questo modulo:",
+  playAgain:"🔁 Gioca di nuovo",
+  startSimulation:"🎮 Avvia la simulazione",
+  retakeCheck:"🔁 Ripeti la verifica",
+  startCheck:"✅ Inizia la verifica",
+  questionOfTotal:"Domanda {n} di {total}",
+  correctPrefix:"✅ Corretto! ",
+  wrongPrefix:"❌ Non proprio. ",
+  seeResults:"Vedi i risultati →",
+  nextArrow:"Avanti →",
+  nextModule:"Modulo successivo →",
+  whatsNext:"Prossimi passi →",
+  reviewModule:"Rivedi il Modulo {n}",
+  answeredCorrectly:"Hai risposto correttamente a {score} / {total}.",
+  moduleUnlocked:"Modulo sbloccato — ottimo lavoro! 🎉",
+  need70:"Ti serve almeno il 70% per sbloccare il modulo successivo — riprova.",
+  youPassed:"Superato!",
+  keepStudying:"Continua a studiare",
+  selfStudyComplete:"Autoapprendimento completato!",
+  workedThrough:"Hai completato tutti i {total} moduli della formazione Parallel Lessons.",
+  nextStepLbl:"Prossimo passo",
+  joinWebinar:"Partecipa al webinar",
+  webinarBody:"L'autoapprendimento ti ha dato la teoria e la mentalità giusta — ora è il momento di esercitarti su una console reale. Il prossimo passo è partecipare al webinar dal vivo, dove consoliderai tutto ciò che hai imparato qui con pratica concreta in un vero Parallel Group.",
+  backToDashboard:"← Torna alla dashboard",
+  rpgTag:"🎮 Modulo 3 · Simulazione"
+};
+
+/* ───────────────────────── MODULE CONTENT (PL) ───────────────────────── */
+const MODULES_PL=[
+{id:1,emoji:"🌟",title:"Odkryj nowy format: Parallel Lessons!",desc:"Co to jest Parallel Lesson, dlaczego istnieje i co się zmienia w porównaniu do zwykłych zajęć indywidualnych.",
+ sections:[
+  {t:"Co to jest Parallel Lesson?",cards:[
+    {type:"text",h:"Główna idea",b:"Jeden trener prowadzi jednocześnie 2–5 uczniów, każdy na swojej indywidualnej ścieżce, w tym samym przedziale czasowym. Każdy uczeń wciąż otrzymuje pełne, nieprzerwane <strong>60 minut</strong> — to całkowity czas sesji trenera się wydłuża, aby zmieścić wszystkich."},
+    {type:"img",src:"images/Image1_PL.png",alt:"Lobby konsoli pokazujące dwa panele uczniów obok siebie",cap:"Lobby konsoli: każdy uczeń ma swój własny panel, mimo że dzielą jednego trenera."},
+    {type:"hi",h:"Szybki przykład",b:"Przy 5 uczniach w grupie sesja trenera trwa <strong>łącznie 100 minut</strong> — ale każdy uczeń indywidualnie zawsze doświadcza tylko swoich prywatnych 60 minut."}
+  ]},
+  {t:"Dlaczego istnieje Parallel Lesson?",cards:[
+    {type:"text",b:"Kursy premium 1-na-1 często długo czekają na start, ponieważ dostępność uczniów i harmonogramy trenerów rzadko się zgadzają. Parallel Lessons (PL) oznacza, że uczniowie mogą zacząć znacznie szybciej, a trenerzy mają więcej elastyczności w swoim grafiku."}
+  ]},
+  {t:"Co się zmienia, a co nie",cards:[
+    {type:"twocol",left:{h:"✅ Zmienia się",items:["Sposób prowadzenia lekcji","Sposób rotacji między uczniami","Sposób komunikacji — indywidualnie, bez grup na WhatsApp"]},right:{h:"❌ Nie zmienia się",plain:true,items:["Treść kursu","Śledzenie obecności","Zgłaszanie projektów — wszystko śledzone per indywidualna grupa, tak jak wcześniej"]}},
+    {type:"warnbox",h:"Ważny zakres",b:"Parallel Lesson <strong>nie</strong> zastępuje ogólnego sposobu nauczania w Kodland — zastępuje jedynie <strong>format premium 1-na-1</strong>, dla wybranych kursów."}
+  ]}
+ ]},
+{id:2,emoji:"🖥️",title:"Aspekty techniczne Parallel Lessons",desc:"Jak wygląda Parallel Group w Back Office, jak otworzyć konsolę i jak wygląda struktura czasowa całego slotu.",
+ sections:[
+  {t:"Jak wygląda Parallel Group w BO",cards:[
+    {type:"text",b:"Kontener, który grupuje kilka indywidualnych grup uczniów pod jednym trenerem. Każdy uczeń wciąż ma swoją własną indywidualną grupę, tak jak w formacie premium — link do dołączenia jako nauczyciel jest po prostu ten sam dla wszystkich."},
+    {type:"img",src:"images/Image2_PL.png",alt:"Zrzut ekranu BO pokazujący kartę Parallel Group zawierającą kilka indywidualnych grup, z podświetloną ikoną konsoli",cap:"Karta Parallel Group w BO — jedna karta, kilka indywidualnych grup wewnątrz, jeden link do konsoli."}
+  ]},
+  {t:"Jak otworzyć konsolę?",cards:[
+    {type:"text",h:"Opcja 1 — przez Harmonogram",b:"Kliknij nową grupę (nazwa zawiera „PL”) → zobacz indywidualne grupy uczniów wewnątrz → kliknij Otwórz konsolę. Dostępne <strong>30 minut wcześniej</strong> przed lekcją."},
+    {type:"img",src:"images/Image3.gif",alt:"Animowany przewodnik otwierania konsoli przez Harmonogram"},
+    {type:"text",h:"Opcja 2 — przez zwykłą listę grup",b:"Kliknij Otwórz konsolę po prawej stronie. Dostępne <strong>60 minut wcześniej</strong> przed lekcją, aż do jej zakończenia."},
+    {type:"img",src:"images/Image4.gif",alt:"Animowana instrukcja otwierania konsoli ze zwykłej listy grup",cap:"Otwieranie konsoli ze zwykłej listy grup."}
+  ]},
+  {t:"Zasady komunikacji i śledzenia",cards:[
+    {type:"list",h:"Praca w tym formacie",items:[
+      "🚫 Nie twórz grup na WhatsApp dla parallel group.",
+      "💬 Komunikuj się z każdym uczniem indywidualnie, tak jak na lekcji 1-na-1.",
+      "📊 Obecność, zgłoszone projekty i inne metryki są śledzone <strong>per indywidualna grupa</strong> — nic się w tym nie zmienia."
+    ]}
+  ]},
+  {t:"Jak prowadzone są zajęcia w Classroom",cards:[
+    {type:"text",b:"Jedna główna sala plus kilka indywidualnych sekcji, wszystko w jednym miejscu. Gdy każdy uczeń dołącza, pojawia się nowa sekcja — wchodzisz do niej bezpośrednio, aby pracować z tym uczniem, podczas gdy inni pozostają widoczni, pracując samodzielnie."},
+    {type:"img",src:"images/Image7_PL.png",alt:"Widok Classroom pokazujący trenera z jednym aktywnym uczniem w głównej sali, podczas gdy drugi uczeń czeka na pasku bocznym",cap:"Główna sala + indywidualne sekcje: uczeń, z którym pracujesz, jest na pierwszym planie, resztę wciąż widzisz z boku."}
+  ]},
+  {t:"Jak działa harmonogram czasowy — przykład: 5 uczniów",cards:[
+    {type:"img",src:"images/Image6_PL.png",alt:"Diagram osi czasu pokazujący trenera obecnego przez 100 minut, podczas gdy 5 uczniów otrzymuje przesunięte 60-minutowe bloki",cap:"Każdy uczeń otrzymuje 60 nieprzerwanych minut — rozłożonych w ramach 100-minutowej sesji trenera."},
+    {type:"table",head:["","Uczeń","Trener"],rows:[
+      ["Czas trwania","Zawsze 60 min","Łącznie 100 min"],
+      ["Pierwsze 50 min","Pracuje głównie samodzielnie, otrzymuje osobiste przywitanie, kontrole co ~10 min","Wita nowego ucznia co 10 min"],
+      ["Ostatnie 50 min","Pracuje aż do końca swojej godziny","Rotuje między aktywnymi uczniami, sprawdzając ich — bez nowych uczniów"],
+      ["Koniec","Odchodzi 60 min po dołączeniu","Żegna się z jednym uczniem co 10 min, w kolejności dołączania"]
+    ]}
+  ]}
+ ]},
+{id:3,emoji:"🎭",title:"Nastawienie do uwagi równoległej",desc:"Nastawienie, które sprawia, że żonglowanie kilkoma uczniami działa — a potem wypróbuj je w symulacji z odgrywaniem ról na żywo.",rpg:true,
+ sections:[
+  {t:"🧠 Przeformułuj tę umiejętność",cards:[
+    {type:"iconlist",items:[
+      {ic:"❌",h:"Nie tak",b:"Uczenie jednej lekcji, pięć razy pod rząd."},
+      {ic:"✅",h:"A właśnie tak",b:"Prowadzenie pięciu różnych ścieżek nauki jednocześnie — jak kontroler ruchu lotniczego, nie wykładowca."}
+    ]},
+    {type:"hi",h:"✈️ Zarządzanie uwagą równoległą",b:"Nawet jeśli powtarzasz tę samą lekcję, każdy uczeń jest inny i każde doświadczenie nauki jest unikalne."}
+  ]},
+  {t:"🗒️ Narzędzia pamięci roboczej i triage",cards:[
+    {type:"iconlist",items:[
+      {ic:"📝",h:"Jedna notatka na ucznia",b:"Zadanie / blokada / nastrój / czas następnego sprawdzenia — zapisuj to przy każdym sprawdzeniu, nie trzymaj tego w głowie."},
+      {ic:"👀",h:"Cisza ≠ „w porządku”",b:"Podniesiona ręka lub widocznie zablokowany uczeń jest ważniejszy niż zegar 10-minutowy. Domyślnie zadawaj pytanie skanujące, np. „pokaż, co masz do tej pory”."}
+    ]}
+  ]},
+  {t:"🎯 Struktura lekcji: kontynuuj, nie pozwól jej się rozpłynąć",cards:[
+    {type:"iconlist",items:[
+      {ic:"👋",h:"Otwarcie",b:"Cel na dziś + jak będą przebiegać sprawdzenia."},
+      {ic:"🛠️",h:"Samodzielna praca",b:"Główny odcinek — uczeń pracuje, ty rotujesz i sprawdzasz."},
+      {ic:"🎬",h:"Zamknięcie",b:"Przegląd tego, co powstało, wskazanie jednego konkretnego sukcesu, powiedzenie co dalej."}
+    ]},
+    {type:"tip",txt:"Nigdy nie pomijaj zamknięcia tylko dlatego, że czeka następny uczeń. Jeśli każdy uczeń przechodzi te same trzy takty, zawsze wiesz, w którym takcie jest każdy z nich — bez odbudowywania tego od zera."}
+  ]},
+  {t:"🧩 Indywidualne podejście",cards:[
+    {type:"iconlist",items:[
+      {ic:"🎛️",h:"Dostosuj ustawienia",b:"Styl wyjaśniania, przykłady i tempo sprawdzeń do ucznia, który jest przed tobą — spokojniej dla niespokojnych uczniów, więcej wyzwań dla pewnych siebie."},
+      {ic:"💛",h:"Wykorzystaj to, co wiesz",b:"Zainteresowania, na czym się ostatnio zaciął, z czego jest zadowolony. Pięciu uczniów to pięć relacji — nie jedna lekcja powtórzona pięć razy."}
+    ]}
+  ]},
+  {t:"🌟 Docenienie, motywacja i bycie zauważonym",cards:[
+    {type:"iconlist",items:[
+      {ic:"🏆",h:"Bądź konkretny",b:"„Sam znalazłeś błąd w tej pętli” jest lepsze niż „dobra robota” — ogólna pochwała szybko traci znaczenie przy pięciu uczniach."},
+      {ic:"🔁",h:"Odwołaj się do ciągłości",b:"„Bycie zauważonym” pochodzi z ciągłości, nie z długości lekcji — wróć do czegoś z poprzedniego razu."},
+      {ic:"⏱️",h:"Wyłap spadek motywacji",b:"Spadki motywacji zdarzają się w środku odcinka, nie zgodnie z planem — prawdziwe sprawdzenie właśnie wtedy, gdy jest potrzebne, jest lepsze niż dłuższe, zaplanowane później."}
+    ]}
+  ]},
+  {t:"⚖️ Balans między pomocą a rosnącą samodzielnością",cards:[
+    {type:"iconlist",items:[
+      {ic:"🌱",h:"Pierwsze lekcje",b:"Więcej wsparcia jest w porządku — przejdźcie razem przez pierwszy krok, myśl na głos."},
+      {ic:"🌳",h:"W miarę trwania kursu",b:"Przejdź od podawania odpowiedzi do zadawania pytań naprowadzających: „co już próbowałeś?”"}
+    ]},
+    {type:"warnbox",h:"🚩 Uważaj na nadmierną pomoc",b:"Kiedy czeka kilku uczniów, łatwo po prostu rozwiązać problem, aby przyspieszyć — ale to podkopuje właśnie tę samodzielność, na której opiera się PL. Umiejętność polega na ocenie, jak bardzo się wycofać, ucznia po uczniu, lekcji po lekcji."}
+  ]},
+  {t:"🎮 Wypróbuj sam: symulacja konsoli",cards:[
+    {type:"cute",h:"Jak to działa",b:"Zamiast quizu wielokrotnego wyboru, ten moduł kończy się krótką interaktywną symulacją osadzoną w prawdziwej konsoli. Będziesz żonglować prawdziwymi sytuacjami z Parallel Lesson i pisać — własnymi słowami — co byś zrobił/a i co byś powiedział/a. Zawsze otrzymasz feedback łączący twoją odpowiedź z tym, czego się właśnie nauczyłeś/aś powyżej. Zakończenie symulacji odblokowuje Moduł 4."}
+  ]}
+ ]},
+{id:4,emoji:"📋",title:"Dodatek specyficzny dla kursu",desc:"Płatności, komunikacja z rodzicami, aktualizacje treści i FAQ, które warto zapisać.",
+ sections:[
+  {t:"💰 Płatności i rodziny",cards:[
+    {type:"faq",ic:"💰",q:"Jak wygląda płatność za te lekcje?",a:"Płatność zachowuje twoją zwykłą stawkę za minutę dla formatu premium w twoim regionie — jest po prostu naliczana za całkowitą długość slotu PL, a nie za stałe 60 minut. Ponieważ długość slotu zależy od liczby zapisanych uczniów, twoja płatność skaluje się odpowiednio. Ta sama stawka za minutę, pomnożona przez faktyczną liczbę minut trwania slotu."},
+    {type:"faq",ic:"👨‍👩‍👧",q:"Czy rodzice są świadomi tego formatu podczas zapisów?",a:"Tak. Rodzice są informowani o formacie PL w ramach procesu zapisów i komunikacji, dla wybranych kursów."}
+  ]},
+  {t:"📚 Treść i struktura",cards:[
+    {type:"faq",ic:"📚",q:"Czy treść kursu się zmienia?",a:"Tak — kursy są dostosowywane, aby uczniowie mieli wszystko, czego potrzebują do samodzielnej pracy, a ty mógł/mogła podzielić swoją pracę z innymi trenerami, gdy jest to potrzebne. Nowa struktura treści została zbudowana tak, aby lekcje było łatwo prowadzić w tym formacie — dlatego treść nie jest częścią tego wstępnego szkolenia, krótki briefing będzie bliżej startu."},
+    {type:"faq",ic:"🧭",q:"Jak dowiesz się, kiedy przejść dalej?",a:"Brak osobnych podręczników — notatki dla trenera są wbudowane bezpośrednio w zadania. Ogólna struktura powtarza się we wszystkich lekcjach (zobacz 8 etapów poniżej). Niektóre lekcje zaczynają się też krótkim fragmentem teorii lub wspólną próbą praktyczną."}
+  ]},
+  {t:"🪜 8 etapów każdej lekcji",cards:[
+    {type:"iconlist",items:[
+      {ic:"🔌",h:"1 · Sprawdzenie połączenia",b:"Upewnijcie się, że oboje jesteście gotowi i możecie się słyszeć/widzieć."},
+      {ic:"😊",h:"2 · Sprawdzenie nastroju",b:"Szybkie rozeznanie, jak dziś czuje się uczeń."},
+      {ic:"📓",h:"3 · Sprawdzenie zadania domowego",b:"Przegląd tego, nad czym pracował od ostatniego razu."},
+      {ic:"🎯",h:"4 · Cel lekcji",b:"Ustalenie, do czego dzisiejsza sesja ma prowadzić."},
+      {ic:"🗣️",h:"5 · Demonstracja i feedback",b:"Uczeń pokazuje swoją pracę, ty dajesz feedback."},
+      {ic:"🎬",h:"6 · Zakończenie",b:"Zamknięcie dzisiejszej aktywności."},
+      {ic:"🪞",h:"7 · Refleksja",b:"Chwila na refleksję ucznia nad tym, czego się nauczył."},
+      {ic:"📌",h:"8 · Ogłoszenie zadania domowego",b:"Ustalenie tego, co dalej."}
+    ]}
+  ]},
+  {t:"🧑‍🎓 Praca samodzielna i elementy grupowe",cards:[
+    {type:"faq",ic:"🧑‍🎓",q:"Czy uczniowie będą mieli przewodniki do samodzielnej pracy w BO?",a:"Tak — cała treść jest zaprojektowana tak, aby każdą aktywność można było wykonać samodzielnie, więc przewodniki dla uczniów i trenerów będą prosto dostępne na platformie."},
+    {type:"faq",ic:"🧩",q:"Co się dzieje z elementami grupowymi (przerwy, grupowe rozgrzewki, tablice Miro)?",a:"🚫 W PL nie będzie żadnych elementów aktywności grupowej — są usuwane, a nie adaptowane."}
+  ]}
+ ]}
+];
+
+const QUIZ_PL={
+1:[
+  {q:"PL zastępuje ogólny sposób nauczania w Kodland, we wszystkich kursach i formatach.",opts:["Fałsz — zastępuje tylko format premium 1-na-1, dla wybranych kursów","Prawda — zmienia wszystko w sposobie nauczania Kodland"],c:0,fb:"PL jest ograniczone do formatu premium 1-na-1 w wybranych kursach. Wszystko inne w sposobie nauczania Kodland pozostaje takie samo."},
+  {q:"Co zmienia się w Parallel Lessons?",opts:["Treść kursu i interfejs klasy","Tylko polityka zwrotów","Sposób prowadzenia lekcji i sposób rotacji trenera między uczniami"],c:2,fb:"Treść, śledzenie obecności i zgłaszanie projektów pozostają dokładnie takie same — zmienia się tylko sposób prowadzenia i rotacji."},
+  {q:"Ile minut zawsze otrzymuje jeden uczeń w Parallel Lesson, niezależnie od wielkości grupy?",opts:["45 minut","60 minut","To zależy od kursu"],c:1,fb:"Każdy uczeń zawsze otrzymuje pełne, nieprzerwane 60 minut — to całkowity czas trenera się wydłuża, aby zmieścić grupę."}
+],
+2:[
+  {q:"Co to jest „Parallel Group” w BO?",opts:["Jeden wspólny link do klasy dla wszystkich uczniów, gdy się znają","Kontener, który grupuje kilka indywidualnych grup uczniów pod jednym trenerem","Nowy typ kursu z innym formatem edukacyjnym"],c:1,fb:"To po prostu kontener — każdy uczeń wciąż ma pod nim swoją własną indywidualną grupę."},
+  {q:"Przez metodę Harmonogramu, z jakim wyprzedzeniem można otworzyć konsolę?",opts:["30 minut wcześniej","10 minut wcześniej","60 minut wcześniej"],c:0,fb:"Przez Harmonogram to 30 minut wcześniej. Przez zwykłą listę grup — 60 minut wcześniej, aż do zakończenia lekcji."},
+  {q:"Każdy uczeń w Parallel Group wciąż ma swoją własną indywidualną grupę, tak jak w formacie premium.",opts:["Prawda","Fałsz"],c:0,fb:"Zgadza się — obecność, projekty i metryki są wciąż śledzone per indywidualna grupa."}
+],
+4:[
+  {q:"Jak działa płatność za lekcje PL?",opts:["Stała stawka 60-minutowa niezależnie od liczby zapisanych uczniów","Twoja zwykła stawka za minutę, naliczana za całkowitą długość slotu PL","Specjalna stawka bonusowa wyłącznie dla PL"],c:1,fb:"Ta sama stawka za minutę jak w twoim zwykłym formacie premium — pomnożona przez liczbę minut, jaką faktycznie trwa cały slot."},
+  {q:"Co się dzieje z grupowymi aktywnościami rozgrzewkowymi lub tablicami Miro w PL?",opts:["Są dostosowane, aby uczniowie mogli je robić indywidualnie","Są całkowicie usuwane — brak elementów grupowych w PL","Stają się opcjonalnym zadaniem domowym"],c:1,fb:"Elementy aktywności grupowej są usuwane, a nie adaptowane — w PL po prostu nie ma komponentu grupowego."},
+  {q:"Gdzie znajdziesz wskazówki dotyczące etapów lekcji, takich jak sprawdzenie nastroju czy zadania domowego?",opts:["W podręcznikach na wiki","Wbudowane bezpośrednio w zadania, jako notatki dla trenera","Nie ma żadnych wskazówek, używasz tylko prezentacji"],c:1,fb:"Nie ma już osobnych podręczników — notatki znajdują się wewnątrz samych zadań, w odpowiednich etapach."}
+]
+};
+
+/* ───────────────────────── MODULE CONTENT (TR) ───────────────────────── */
+const MODULES_TR=[
+{id:1,emoji:"🌟",title:"Yeni Bir Formatı Keşfedin: Parallel Lessons!",desc:"Parallel Lesson'ın ne olduğu, neden var olduğu ve normal birebir dersinize kıyasla ne değiştiği.",
+ sections:[
+  {t:"Parallel Lesson Nedir?",cards:[
+    {type:"text",h:"Temel fikir",b:"Bir eğitmen aynı zaman diliminde 2-5 öğrenciye, her biri kendi bireysel yolunda olacak şekilde destek verir. Her öğrenci hâlâ tam, kesintisiz <strong>60 dakika</strong> alır — uzayan şey eğitmenin toplam oturum süresidir, herkese sığacak şekilde."},
+    {type:"img",src:"images/Image1_TR.png",alt:"İki öğrenci panelini yan yana gösteren konsol lobisi",cap:"Konsol lobisi: bir eğitmeni paylaşsalar da her öğrencinin kendi paneli vardır."},
+    {type:"hi",h:"Hızlı bir örnek",b:"Grupta 5 öğrenci olduğunda, eğitmenin oturumu <strong>toplam 100 dakika</strong> sürer — ama her öğrenci yine de sadece kendi özel 60 dakikasını yaşar."}
+  ]},
+  {t:"Parallel Lesson Neden Var?",cards:[
+    {type:"text",b:"Premium birebir kurslar genellikle başlamak için uzun zaman alır, çünkü öğrenci uygunluğu ve eğitmen programları nadiren örtüşür. Parallel Lessons (PL), öğrencilerin çok daha hızlı başlayabilmesi ve eğitmenlerin kendi programlarında daha fazla esneklik kazanması anlamına gelir."}
+  ]},
+  {t:"Ne Değişir, Ne Değişmez",cards:[
+    {type:"twocol",left:{h:"✅ Değişenler",items:["Dersin nasıl verildiği","Öğrenciler arasında nasıl geçiş yaptığınız","Nasıl iletişim kurduğunuz — bireysel olarak, WhatsApp grupları olmadan"]},right:{h:"❌ Değişmeyenler",plain:true,items:["Kurs içeriği","Devam takibi","Proje teslimleri — her şey öncekiyle aynı şekilde, bireysel grup başına takip edilir"]}},
+    {type:"warnbox",h:"Önemli kapsam",b:"Parallel Lesson, Kodland'ın genel öğretim şeklini <strong>değiştirmez</strong> — yalnızca seçili kurslar için <strong>premium birebir formatı</strong> değiştirir."}
+  ]}
+ ]},
+{id:2,emoji:"🖥️",title:"Parallel Lessons'ın Teknik Yönleri",desc:"Back Office'te bir Parallel Group'un nasıl göründüğü, konsolun nasıl açıldığı ve tam bir slot boyunca zamanlama yapısı.",
+ sections:[
+  {t:"BO'da Parallel Group Nasıl Görünür",cards:[
+    {type:"text",b:"Bir eğitmen altında birkaç bireysel öğrenci grubunu bir araya getiren bir kapsayıcı. Her öğrencinin, premium formatta olduğu gibi kendi bireysel grubu vardır — öğretmen olarak katılma linki basitçe hepsi için aynıdır."},
+    {type:"img",src:"images/Image2_TR.png",alt:"Konsol simgesi vurgulanmış, birkaç bireysel grubu içeren bir Parallel Group kartını gösteren BO ekran görüntüsü",cap:"BO'daki Parallel Group kartı — bir kart, içinde birkaç bireysel grup, bir konsol bağlantısı."}
+  ]},
+  {t:"Konsolu Nasıl Açarım?",cards:[
+    {type:"text",h:"Seçenek 1 — Takvim üzerinden",b:"Yeni grubu tıklayın (adında “PL” geçer) → içindeki bireysel öğrenci gruplarını görün → Konsolu Aç'a tıklayın. Dersten <strong>30 dakika önce</strong> kullanılabilir."},
+    {type:"img",src:"images/Image3.gif",alt:"Takvim üzerinden konsolu açmanın animasyonlu anlatımı"},
+    {type:"text",h:"Seçenek 2 — Normal Gruplar listesi üzerinden",b:"Sağdaki Konsolu Aç'a tıklayın. Dersten <strong>60 dakika önce</strong>, ders bitene kadar kullanılabilir."},
+    {type:"img",src:"images/Image4.gif",alt:"Konsolu normal Gruplar listesinden açmanın animasyonlu anlatımı",cap:"Konsolu normal Gruplar listesinden açma."}
+  ]},
+  {t:"İletişim ve Takip Kuralları",cards:[
+    {type:"list",h:"Bu formatta çalışırken",items:[
+      "🚫 Parallel group için WhatsApp grubu oluşturmayın.",
+      "💬 Her öğrenciyle birebir derste olduğu gibi bireysel olarak iletişim kurun.",
+      "📊 Katılım, gönderilen projeler ve diğer metrikler <strong>bireysel grup başına</strong> takip edilir — bu konuda hiçbir şey değişmez."
+    ]}
+  ]},
+  {t:"Sınıfta Dersler Nasıl İşlenir",cards:[
+    {type:"text",b:"Bir ana oda ve birkaç bireysel bölüm, hepsi bir arada. Her öğrenci katıldığında yeni bir bölüm belirir — o öğrenciyle çalışmak için doğrudan içine girersiniz, diğerleri ise görünür kalarak bağımsız çalışmaya devam eder."},
+    {type:"img",src:"images/Image7_TR.png",alt:"Bir öğrencinin ana odada aktif olduğu, diğer öğrencinin kenar çubuğunda beklediği Classroom görünümü",cap:"Ana oda + bireysel bölümler: birlikte olduğunuz öğrenci ön plandadır, diğerleri kenarda görünür kalır."}
+  ]},
+  {t:"Zamanlama Nasıl Çalışır — Örnek: 5 Öğrenci",cards:[
+    {type:"img",src:"images/Image6_TR.png",alt:"Eğitmenin 100 dakika boyunca bulunduğu, 5 öğrencinin her birinin kaydırmalı 60 dakikalık blok aldığı zaman çizelgesi diyagramı",cap:"Her öğrenci 60 kesintisiz dakika alır — eğitmenin 100 dakikalık oturumu boyunca kaydırmalı olarak."},
+    {type:"table",head:["","Öğrenci","Eğitmen"],rows:[
+      ["Süre","Her zaman 60 dk","Toplam 100 dk"],
+      ["İlk 50 dk","Çoğunlukla bağımsız çalışır, kişisel bir karşılama alır, ~10 dk'da bir kontrol edilir","Her 10 dakikada bir yeni öğrenciyi karşılar"],
+      ["Son 50 dk","Kendi saati tam bitene kadar çalışmaya devam eder","Aktif öğrenciler arasında dönerek kontrol eder — yeni öğrenci katılmaz"],
+      ["Biter","Katıldıktan 60 dk sonra ayrılır","Katılma sırasına göre her 10 dakikada bir öğrenciye vedalaşır"]
+    ]}
+  ]}
+ ]},
+{id:3,emoji:"🎭",title:"Paralel Dikkat Zihniyeti",desc:"Birden fazla öğrenciyle jonglörlük yapmayı işe yarayan zihniyet — sonra bunu canlı bir rol yapma simülasyonunda test edin.",rpg:true,
+ sections:[
+  {t:"🧠 Beceriyi Yeniden Çerçeveleyin",cards:[
+    {type:"iconlist",items:[
+      {ic:"❌",h:"Bu değil",b:"Aynı dersi arka arkaya beş kez öğretmek."},
+      {ic:"✅",h:"Aslında bu",b:"Bir ders anlatıcısı değil, bir hava trafik kontrolörü gibi, aynı anda beş farklı öğrenme yolculuğu yürütmek."}
+    ]},
+    {type:"hi",h:"✈️ Paralel Dikkat Yönetimi",b:"Aynı dersi tekrar etseniz bile, her öğrenci farklıdır ve her öğrenme deneyimi kendine özgüdür."}
+  ]},
+  {t:"🗒️ Çalışma Belleği ve Triyaj Araçları",cards:[
+    {type:"iconlist",items:[
+      {ic:"📝",h:"Öğrenci başına bir not",b:"Görev / engel / ruh hali / sonraki kontrol zamanı — her kontrolde not alın, kafanızda tutmayın."},
+      {ic:"👀",h:"Sessizlik \"iyi\" demek değildir",b:"Kaldırılan bir el veya belli belirgin sıkışmış bir öğrenci, 10 dakikalık saatten önemlidir. Varsayılan olarak \"elindekini göster\" gibi bir tarama sorusu sorun."}
+    ]}
+  ]},
+  {t:"🎯 Ders Yapısı: Sürdürün, Dağılmasına İzin Vermeyin",cards:[
+    {type:"iconlist",items:[
+      {ic:"👋",h:"Açılış",b:"Bugünün hedefi + kontrollerin nasıl işleyeceği."},
+      {ic:"🛠️",h:"Bağımsız çalışma",b:"Ana bölüm — öğrenci çalışır, siz dönüp kontrol edersiniz."},
+      {ic:"🎬",h:"Kapanış",b:"Üretileni gözden geçirin, belirli bir başarıyı adlandırın, sıradakini söyleyin."}
+    ]},
+    {type:"tip",txt:"Sıradaki öğrenci beklediği için kapanışı asla atlamayın. Her öğrenci aynı üç adımı takip ederse, her birinin hangi adımda olduğunu sıfırdan yeniden kurmadan her zaman bilirsiniz."}
+  ]},
+  {t:"🧩 Bireysel Yaklaşım",cards:[
+    {type:"iconlist",items:[
+      {ic:"🎛️",h:"Ayarları uyarlayın",b:"Karşınızdaki öğrenciye göre açıklama tarzını, örnekleri ve kontrol sıklığını ayarlayın — kaygılı öğrenciler için daha sakin, kendine güvenen öğrenciler için daha fazla zorluk."},
+      {ic:"💛",h:"Bildiklerinizi kullanın",b:"İlgi alanları, son kez neyde zorlandığı, neyle gurur duyduğu. Beş öğrenci beş ilişki demektir — beş kez verilen bir ders değil."}
+    ]}
+  ]},
+  {t:"🌟 Övgü, Motivasyon ve Görülmüş Hissetmek",cards:[
+    {type:"iconlist",items:[
+      {ic:"🏆",h:"Spesifik olun",b:"\"O döngüdeki hatayı kendin buldun\" demek, \"aferin\"den daha iyidir — genel övgü beş öğrenci arasında hızla anlamını yitirir."},
+      {ic:"🔁",h:"Sürekliliğe atıfta bulunun",b:"\"Görülmüş hissetmek\" ders süresinden değil, süreklilikten gelir — son seferden bir şeyi hatırlatın."},
+      {ic:"⏱️",h:"Düşüşü yakalayın",b:"Motivasyon düşüşleri programa göre değil, bölümün ortasında gerçekleşir — gerçekten ihtiyaç duyulduğu anda yapılan bir kontrol, daha sonraki planlı ve uzun bir ziyaretten daha değerlidir."}
+    ]}
+  ]},
+  {t:"⚖️ Yardım ile Artan Bağımsızlık Arasında Denge",cards:[
+    {type:"iconlist",items:[
+      {ic:"🌱",h:"İlk dersler",b:"Daha fazla destek vermek sorun değil — ilk adımı birlikte atın, sesli düşünün."},
+      {ic:"🌳",h:"Kurs ilerledikçe",b:"Cevap vermekten, yönlendirici sorular sormaya geçin: \"şimdiye kadar ne denedin?\""}
+    ]},
+    {type:"warnbox",h:"🚩 Fazla Yardım Etmeye Dikkat Edin",b:"Birkaç öğrenci beklerken, hızlanmak için sorunu kendiniz çözmek cazip gelir — ama bu, PL'nin dayandığı bağımsızlığı baltalar. Beceri, öğrenciden öğrenciye, dersten derse ne kadar geri çekileceğinizi değerlendirmektir."}
+  ]},
+  {t:"🎮 Kendiniz Deneyin: Bir Konsol Simülasyonu",cards:[
+    {type:"cute",h:"Bu Nasıl Çalışır",b:"Çoktan seçmeli bir sınav yerine, bu modül gerçek bir konsol içinde kurulmuş kısa, etkileşimli bir simülasyonla bitiyor. Gerçek Parallel Lesson durumlarıyla jonglörlük yapacak ve kendi kelimelerinizle ne yapacağınızı ve ne söyleyeceğinizi yazacaksınız. Cevabınızı yukarıda az önce öğrendiklerinizle bağlantılandıran geri bildirimi her zaman alacaksınız. Simülasyonu bitirmek Modül 4'ün kilidini açar."}
+  ]}
+ ]},
+{id:4,emoji:"📋",title:"Kursa Özel Ek",desc:"Ödeme, ebeveyn iletişimi, içerik güncellemeleri ve yer imlerine eklemek isteyeceğiniz SSS.",
+ sections:[
+  {t:"💰 Ödemeler ve Aileler",cards:[
+    {type:"faq",ic:"💰",q:"Bu dersler için ödeme nasıl işliyor?",a:"Ödeme, bölgenizin premium formatı için normal dakika ücretinizi korur — sadece sabit 60 dakika yerine PL slotunun toplam süresine uygulanır. Bir slotun toplam süresi kaç öğrencinin kayıtlı olduğuna bağlı olduğundan, ödemeniz bunu yansıtacak şekilde ölçeklenir. Aynı dakika ücreti, slotun gerçekte çalıştığı dakika sayısıyla çarpılır."},
+    {type:"faq",ic:"👨‍👩‍👧",q:"Ebeveynler kayıt olurken bu formattan haberdar mı?",a:"Evet. Seçili kurslar için, kayıt ve iletişim sürecinin bir parçası olarak ebeveynler PL formatı hakkında bilgilendirilir."}
+  ]},
+  {t:"📚 İçerik ve Yapı",cards:[
+    {type:"faq",ic:"📚",q:"Kurs içeriği değişiyor mu?",a:"Evet — kurslar, öğrencilerin bağımsız çalışmak için ihtiyaç duydukları her şeye sahip olmaları ve gerektiğinde işinizi diğer eğitmenlerle bölüştürebilmeniz için uyarlanıyor. Yeni içerik yapısı, dersleri bu formatta vermeyi kolaylaştıracak şekilde tasarlandı — bu yüzden içerik bu ilk eğitimin bir parçası değil, lansmana yaklaşırken kısa bir bilgilendirme yapılacak."},
+    {type:"faq",ic:"🧭",q:"Ne zaman geçiş yapacağınızı nasıl bileceksiniz?",a:"Ayrı kılavuzlar yok — öğretmen notları doğrudan görevlerin içinde yer alır. Genel yapı tüm derslerde tekrarlanır (aşağıdaki 8 aşamaya bakın). Bazı dersler kısa bir teori bölümü veya ortak bir pratik denemesiyle de başlar."}
+  ]},
+  {t:"🪜 Her Dersin 8 Aşaması",cards:[
+    {type:"iconlist",items:[
+      {ic:"🔌",h:"1 · Bağlantı kontrolü",b:"İkinizin de hazır olduğundan ve birbirinizi duyup görebildiğinizden emin olun."},
+      {ic:"😊",h:"2 · Ruh hali kontrolü",b:"Öğrencinin bugün nasıl olduğuna dair hızlı bir değerlendirme."},
+      {ic:"📓",h:"3 · Ödev kontrolü",b:"Son seferden beri üzerinde çalıştıklarını gözden geçirin."},
+      {ic:"🎯",h:"4 · Ders hedefi",b:"Bugünkü oturumun neyi hedeflediğini belirleyin."},
+      {ic:"🗣️",h:"5 · Gösterim ve geri bildirim",b:"Öğrenci çalışmasını gösterir, siz geri bildirim verirsiniz."},
+      {ic:"🎬",h:"6 · Kapanış",b:"Bugünkü etkinliği tamamlayın."},
+      {ic:"🪞",h:"7 · Yansıtma",b:"Öğrencinin öğrendiklerini yansıtması için bir an."},
+      {ic:"📌",h:"8 · Ödev duyurusu",b:"Sıradakini ayarlayın."}
+    ]}
+  ]},
+  {t:"🧑‍🎓 Bağımsız Çalışma ve Grup Unsurları",cards:[
+    {type:"faq",ic:"🧑‍🎓",q:"Öğrencilerin BO'da bağımsız çalışma için kılavuzları olacak mı?",a:"Evet — tüm içerik her etkinliğin bağımsız olarak yapılabilmesi için tasarlandı, dolayısıyla öğrenci ve eğitmen kılavuzları platformda hazır bulunacak."},
+    {type:"faq",ic:"🧩",q:"Grup unsurlarına (aralar, grup ısınmaları, Miro panoları) ne olacak?",a:"🚫 PL'de hiçbir grup etkinliği unsuru olmayacak — bunlar uyarlanmak yerine tamamen kaldırılıyor."}
+  ]}
+ ]}
+];
+
+const QUIZ_TR={
+1:[
+  {q:"PL, tüm kurslar ve formatlarda Kodland'ın genel öğretim şeklini değiştirir.",opts:["Yanlış — yalnızca seçili kurslar için premium birebir formatı değiştirir","Doğru — Kodland'ın öğretim şeklindeki her şeyi değiştirir"],c:0,fb:"PL, seçili kurslardaki premium birebir formatla sınırlıdır. Kodland'ın öğretim şekli hakkındaki diğer her şey aynı kalır."},
+  {q:"Parallel Lessons ile bunlardan hangisi değişir?",opts:["Kurs içeriği ve sınıf arayüzü","Sadece iade politikası","Dersin nasıl verildiği ve eğitmenin öğrenciler arasında nasıl döndüğü"],c:2,fb:"İçerik, devam takibi ve proje teslimleri tamamen aynı kalır — yalnızca sunum ve dönüş şekli değişir."},
+  {q:"Grup büyüklüğü ne olursa olsun, bir Parallel Lesson'da tek bir öğrenci her zaman kaç dakika alır?",opts:["45 dakika","60 dakika","Kursa göre değişir"],c:1,fb:"Her öğrenci her zaman tam, kesintisiz 60 dakika alır — uzayan şey grup büyüklüğüne sığması için eğitmenin toplam süresidir."}
+],
+2:[
+  {q:"BO'da bir \"Parallel Group\" nedir?",opts:["Öğrenciler birbirini tanıdığında tüm öğrenciler için paylaşılan tek bir sınıf linki","Bir eğitmen altında birkaç bireysel öğrenci grubunu gruplayan bir kapsayıcı","Farklı bir eğitim formatına sahip yeni bir kurs türü"],c:1,fb:"Basitçe bir kapsayıcıdır — her öğrencinin altında hâlâ kendi bireysel grubu vardır."},
+  {q:"Takvim yöntemiyle, konsolu ne kadar önceden açabilirsiniz?",opts:["30 dakika önce","10 dakika önce","60 dakika önce"],c:0,fb:"Takvim üzerinden 30 dakika öncedir. Normal Gruplar listesi üzerinden ise ders bitene kadar 60 dakika öncedir."},
+  {q:"Bir Parallel Group içindeki her öğrenci, premium formattaki gibi hâlâ kendi bireysel grubuna sahiptir.",opts:["Doğru","Yanlış"],c:0,fb:"Doğru — katılım, projeler ve metrikler hâlâ bireysel grup başına takip edilir."}
+],
+4:[
+  {q:"PL dersleri için ödeme nasıl işler?",opts:["Kaç öğrenci kayıtlı olursa olsun sabit 60 dakikalık bir ücret","Tam PL slotunun süresine uygulanan normal dakika ücretiniz","Sadece PL'ye özel özel bir bonus ücret"],c:1,fb:"Normal premium formatınızdaki gibi aynı dakika ücreti — sadece tam slotun çalıştığı dakika sayısıyla çarpılır."},
+  {q:"PL'de grup ısınma etkinliklerine veya Miro panolarına ne olur?",opts:["Öğrencilerin bireysel olarak yapabilmesi için uyarlanır","Tamamen kaldırılır — PL'de grup unsuru yoktur","İsteğe bağlı ödev haline gelir"],c:1,fb:"Grup etkinliği unsurları uyarlanmak yerine kaldırılır — PL'de basitçe bir grup etkinliği bileşeni yoktur."},
+  {q:"Ruh hali kontrolü veya ödev kontrolü gibi ders aşamalarıyla ilgili rehberliği nerede bulacaksınız?",opts:["Wiki kılavuzlarında","Öğretmen notları olarak doğrudan görevlerin içine yerleştirilmiş","Rehberlik yoktur, sadece sunumu kullanırsınız"],c:1,fb:"Artık ayrı kılavuzlar yok — notlar, ilgili aşamalarda görevlerin kendi içinde yer alır."}
+]
+};
+
+/* ───────────────────────── MODULE CONTENT (IT) ───────────────────────── */
+const MODULES_IT=[
+{id:1,emoji:"🌟",title:"Scopri un nuovo formato: Parallel Lessons!",desc:"Cos'è una Parallel Lesson, perché esiste e cosa cambia rispetto al tuo normale corso individuale.",
+ sections:[
+  {t:"Cos'è una Parallel Lesson?",cards:[
+    {type:"text",h:"L'idea di base",b:"Un tutor supporta 2–5 studenti contemporaneamente, ognuno sul proprio percorso individuale, nella stessa fascia orario. Ogni studente riceve comunque un'ora piena e ininterrotta di <strong>60 minuti</strong> — è il tempo totale della sessione del tutor che si allunga per includere tutti."},
+    {type:"img",src:"images/Image1_IT.png",alt:"Lobby della console che mostra due pannelli studente affiancati",cap:"La lobby della console: ogni studente ha il proprio pannello, anche se condividono un solo tutor."},
+    {type:"hi",h:"Un esempio rapido",b:"Con 5 studenti nel gruppo, la sessione del tutor dura <strong>100 minuti in totale</strong> — ma ogni singolo studente vive comunque solo i propri 60 minuti privati."}
+  ]},
+  {t:"Perché Esiste la Parallel Lesson?",cards:[
+    {type:"text",b:"I corsi individuali premium spesso richiedono molto tempo per iniziare, perché la disponibilità degli studenti e gli orari dei tutor raramente coincidono. Le Parallel Lessons (PL) permettono agli studenti di iniziare molto più velocemente, e ai tutor di avere più flessibilità nei propri orari."}
+  ]},
+  {t:"Cosa Cambia e Cosa Non Cambia",cards:[
+    {type:"twocol",left:{h:"✅ Cambia",items:["Come viene erogata la lezione","Come ruoti tra gli studenti","Come comunichi — individualmente, senza gruppi WhatsApp"]},right:{h:"❌ Non Cambia",plain:true,items:["Il contenuto del corso","Il monitoraggio delle presenze","L'invio dei progetti — tutto tracciato per singolo gruppo, esattamente come prima"]}},
+    {type:"warnbox",h:"Ambito importante",b:"La Parallel Lesson <strong>non</strong> sostituisce il modo generale in cui Kodland insegna — sostituisce solo il <strong>formato individuale premium</strong>, per i corsi selezionati."}
+  ]}
+ ]},
+{id:2,emoji:"🖥️",title:"Aspetti Tecnici delle Parallel Lessons",desc:"Come si presenta un Parallel Group nel Back Office, come apri la console e la struttura degli orari in un intero slot.",
+ sections:[
+  {t:"Come si Presenta un Parallel Group nel BO",cards:[
+    {type:"text",b:"Un contenitore che raggruppa diversi gruppi individuali di studenti sotto un unico tutor. Ogni studente ha comunque il proprio gruppo individuale, esattamente come nel formato premium — il link per accedere come insegnante è semplicemente lo stesso per tutti."},
+    {type:"img",src:"images/Image2_IT.png",alt:"Screenshot del BO che mostra una card Parallel Group contenente diversi gruppi individuali, con l'icona della console evidenziata",cap:"La card Parallel Group nel BO — una card, diversi gruppi individuali all'interno, un solo link alla console."}
+  ]},
+  {t:"Come Apro la Console?",cards:[
+    {type:"text",h:"Opzione 1 — Tramite Schedule",b:"Clicca sul nuovo gruppo (il nome contiene “PL”) → vedi i gruppi individuali degli studenti al suo interno → clicca su Apri console. Disponibile <strong>30 minuti prima</strong> della lezione."},
+    {type:"img",src:"images/Image3.gif",alt:"Percorso animato per aprire la console tramite Schedule"},
+    {type:"text",h:"Opzione 2 — Tramite la Tua Lista Gruppi Abituale",b:"Clicca su Apri console a destra. Disponibile <strong>60 minuti prima</strong> della lezione, fino alla sua fine."},
+    {type:"img",src:"images/Image4.gif",alt:"Percorso animato per aprire la console dalla normale lista dei gruppi",cap:"Aprire la console dalla normale lista dei gruppi."}
+  ]},
+  {t:"Regole di Comunicazione e Monitoraggio",cards:[
+    {type:"list",h:"Lavorare all'interno del formato",items:[
+      "🚫 Non creare gruppi WhatsApp per il parallel group.",
+      "💬 Comunica con ogni studente individualmente, come in una lezione individuale.",
+      "📊 Presenze, progetti inviati e altre metriche sono monitorate <strong>per singolo gruppo</strong> — su questo non cambia nulla."
+    ]}
+  ]},
+  {t:"Come Vengono Svolte le Lezioni in Classroom",cards:[
+    {type:"text",b:"Un'aula principale più diverse sezioni individuali, tutto in un unico posto. Man mano che ogni studente entra, appare una nuova sezione — ci entri direttamente per lavorare con quello studente, mentre gli altri restano visibili, lavorando in autonomia."},
+    {type:"img",src:"images/Image7_IT.png",alt:"Vista di Classroom che mostra il tutor con uno studente attivo nell'aula principale mentre un altro studente attende nella barra laterale",cap:"Aula principale + sezioni individuali: lo studente con cui sei è in primo piano, gli altri restano visibili di lato."}
+  ]},
+  {t:"Come Funziona la Tempistica — Esempio: 5 Studenti",cards:[
+    {type:"img",src:"images/Image6_IT.png",alt:"Diagramma della timeline che mostra il tutor presente per 100 minuti mentre 5 studenti ricevono ciascuno un blocco scaglionato di 60 minuti",cap:"Ogni studente riceve 60 minuti ininterrotti — scaglionati nell'arco della sessione di 100 minuti del tutor."},
+    {type:"table",head:["","Studente","Tutor"],rows:[
+      ["Durata","Sempre 60 min","100 min totali"],
+      ["Primi 50 min","Lavora perlopiù in autonomia, riceve un'accoglienza personale, controlli ogni ~10 min","Accoglie un nuovo studente ogni 10 min"],
+      ["Ultimi 50 min","Continua a lavorare finché non finisce esattamente la sua ora","Ruota tra gli studenti attivi, facendo il punto — nessun nuovo studente entra"],
+      ["Fine","Esce 60 min dopo essere entrato","Si congeda da uno studente ogni 10 min, nell'ordine in cui sono entrati"]
+    ]}
+  ]}
+ ]},
+{id:3,emoji:"🎭",title:"La Mentalità dell'Attenzione Parallela",desc:"La mentalità che rende possibile gestire più studenti contemporaneamente — poi mettila alla prova in una simulazione di ruolo dal vivo.",rpg:true,
+ sections:[
+  {t:"🧠 Riformula l'Abilità",cards:[
+    {type:"iconlist",items:[
+      {ic:"❌",h:"Non questo",b:"Insegnare la stessa lezione cinque volte di fila."},
+      {ic:"✅",h:"Piuttosto questo",b:"Gestire cinque percorsi di apprendimento diversi contemporaneamente — come un controllore di volo, non un docente."}
+    ]},
+    {type:"hi",h:"✈️ Gestione dell'Attenzione Parallela",b:"Anche ripetendo la stessa lezione, ogni studente è diverso, e ogni esperienza di apprendimento è unica."}
+  ]},
+  {t:"🗒️ Strumenti di Memoria di Lavoro e Triage",cards:[
+    {type:"iconlist",items:[
+      {ic:"📝",h:"Una nota per studente",b:"Compito / blocco / stato d'animo / prossimo check-in — scrivilo a ogni check-in, non tenerlo a mente."},
+      {ic:"👀",h:"Il silenzio non equivale a \"va tutto bene\"",b:"Una mano alzata o uno studente visibilmente bloccato conta più dell'orologio dei 10 minuti. Usa di default una domanda di verifica come \"fammi vedere cosa hai fatto finora\"."}
+    ]}
+  ]},
+  {t:"🎯 Struttura della Lezione: Mantienila, Non Lasciarla Dissolvere",cards:[
+    {type:"iconlist",items:[
+      {ic:"👋",h:"Apertura",b:"Obiettivo di oggi + come funzioneranno i check-in."},
+      {ic:"🛠️",h:"Lavoro autonomo",b:"Il tratto principale — lo studente lavora, tu ruoti e verifichi."},
+      {ic:"🎬",h:"Chiusura",b:"Rivedi cosa è stato prodotto, nomina un successo specifico, di' cosa viene dopo."}
+    ]},
+    {type:"tip",txt:"Non saltare mai la chiusura solo perché il prossimo studente sta aspettando. Se ogni studente segue le stesse tre fasi, sai sempre in quale fase si trova ciascuno — senza doverlo ricostruire da zero."}
+  ]},
+  {t:"🧩 Approccio Individuale",cards:[
+    {type:"iconlist",items:[
+      {ic:"🎛️",h:"Regola le manopole",b:"Stile di spiegazione, esempi e ritmo dei check-in in base allo studente che hai davanti — più calmo per gli studenti ansiosi, più sfida per quelli sicuri di sé."},
+      {ic:"💛",h:"Usa quello che sai",b:"Interessi, cosa lo ha bloccato l'ultima volta, di cosa è orgoglioso. Cinque studenti sono cinque relazioni — non una lezione erogata cinque volte."}
+    ]}
+  ]},
+  {t:"🌟 Elogi, Motivazione e Sentirsi Visti",cards:[
+    {type:"iconlist",items:[
+      {ic:"🏆",h:"Sii specifico",b:"\"Hai trovato tu il bug in quel loop\" batte \"bravo\" — un elogio generico perde significato in fretta con cinque studenti."},
+      {ic:"🔁",h:"Richiama la continuità",b:"\"Sentirsi visti\" nasce dalla continuità, non dalla durata della lezione — richiama qualcosa dell'ultima volta."},
+      {ic:"⏱️",h:"Cogli il calo",b:"I cali di motivazione avvengono a metà del percorso, non secondo programma — un check-in genuino esattamente quando serve batte una visita più lunga programmata più tardi."}
+    ]}
+  ]},
+  {t:"⚖️ Bilanciare l'Aiuto con l'Autonomia Crescente",cards:[
+    {type:"iconlist",items:[
+      {ic:"🌱",h:"Prime lezioni",b:"Più supporto va bene — affronta il primo passo insieme, pensa ad alta voce."},
+      {ic:"🌳",h:"Con il progredire del corso",b:"Passa dal dare risposte a fare domande guida: \"cosa hai già provato?\""}
+    ]},
+    {type:"warnbox",h:"🚩 Attenzione a Non Aiutare Troppo",b:"Con diversi studenti in attesa, è tentante risolvere subito il problema per andare più veloce — ma questo mina proprio l'autonomia su cui si basa la PL. L'abilità sta nel valutare quanto tirarsi indietro, studente per studente, lezione per lezione."}
+  ]},
+  {t:"🎮 Provaci Tu: Una Simulazione della Console",cards:[
+    {type:"cute",h:"Come Funziona",b:"Invece di un quiz a scelta multipla, questo modulo si conclude con una breve simulazione interattiva ambientata in una console reale. Dovrai gestire situazioni reali da Parallel Lesson e scrivere — con le tue parole — cosa faresti e cosa diresti. Riceverai sempre un feedback che collega la tua risposta a quanto appena imparato sopra. Completare la simulazione sblocca il Modulo 4."}
+  ]}
+ ]},
+{id:4,emoji:"📋",title:"Addendum Specifico del Corso",desc:"Pagamenti, comunicazione con i genitori, aggiornamenti dei contenuti e le FAQ da salvare tra i preferiti.",
+ sections:[
+  {t:"💰 Pagamenti e Famiglie",cards:[
+    {type:"faq",ic:"💰",q:"Come funziona il pagamento per queste lezioni?",a:"Il pagamento mantiene la tua tariffa al minuto abituale per il formato premium della tua regione — viene semplicemente applicata alla durata totale dello slot PL invece che a un'ora fissa di 60 minuti. Poiché la durata di uno slot dipende da quanti studenti sono iscritti, il tuo pagamento si adegua di conseguenza. Stessa tariffa al minuto, moltiplicata per i minuti effettivi in cui lo slot è attivo."},
+    {type:"faq",ic:"👨‍👩‍👧",q:"I genitori sono informati di questo formato al momento dell'iscrizione?",a:"Sì. I genitori vengono informati sul formato PL come parte del processo di iscrizione e comunicazione, per i corsi selezionati."}
+  ]},
+  {t:"📚 Contenuto e Struttura",cards:[
+    {type:"faq",ic:"📚",q:"Il contenuto del corso cambia?",a:"Sì — i corsi vengono adattati affinché gli studenti abbiano tutto il necessario per lavorare in autonomia, e affinché tu possa dividere il lavoro con altri tutor quando serve. La nuova struttura dei contenuti è pensata per rendere le lezioni facili da erogare in questo formato — ecco perché il contenuto non fa parte di questa formazione iniziale, seguirà un breve briefing più avanti, in prossimità del lancio."},
+    {type:"faq",ic:"🧭",q:"Come saprai quando fare la transizione?",a:"Nessun manuale separato — le note per il tutor vivono direttamente dentro i task. La struttura generale si ripete in tutte le lezioni (vedi le 8 fasi sotto). Alcune lezioni si aprono anche con un breve momento di teoria o un tentativo pratico condiviso."}
+  ]},
+  {t:"🪜 Le 8 Fasi di Ogni Lezione",cards:[
+    {type:"iconlist",items:[
+      {ic:"🔌",h:"1 · Controllo connessione",b:"Assicuratevi che entrambi siate connessi e possiate vedervi/sentirvi."},
+      {ic:"😊",h:"2 · Controllo dell'umore",b:"Una rapida valutazione di come sta andando lo studente oggi."},
+      {ic:"📓",h:"3 · Controllo dei compiti",b:"Rivedi cosa ha fatto dall'ultima volta."},
+      {ic:"🎯",h:"4 · Obiettivo della lezione",b:"Stabilisci a cosa punta la sessione di oggi."},
+      {ic:"🗣️",h:"5 · Dimostrazione e feedback",b:"Lo studente mostra il suo lavoro, tu dai un feedback."},
+      {ic:"🎬",h:"6 · Chiusura",b:"Chiudi il cerchio sull'attività di oggi."},
+      {ic:"🪞",h:"7 · Riflessione",b:"Un momento per far riflettere lo studente su cosa ha imparato."},
+      {ic:"📌",h:"8 · Compiti assegnati",b:"Prepara cosa viene dopo."}
+    ]}
+  ]},
+  {t:"🧑‍🎓 Lavoro Autonomo ed Elementi di Gruppo",cards:[
+    {type:"faq",ic:"🧑‍🎓",q:"Gli studenti avranno guide per il lavoro autonomo nel BO?",a:"Sì — tutto il contenuto è progettato affinché ogni attività possa essere svolta in autonomia, quindi le guide per studenti e tutor saranno disponibili direttamente sulla piattaforma."},
+    {type:"faq",ic:"🧩",q:"Cosa succede agli elementi di gruppo (pause, warm-up di gruppo, lavagne Miro)?",a:"🚫 Nella PL non ci sarà alcun elemento di attività di gruppo — vengono rimossi, non adattati."}
+  ]}
+ ]}
+];
+
+const QUIZ_IT={
+1:[
+  {q:"La PL sostituisce il modo generale in cui Kodland insegna, in tutti i corsi e formati.",opts:["Falso — sostituisce solo il formato individuale premium, per i corsi selezionati","Vero — cambia tutto il modo in cui insegna Kodland"],c:0,fb:"La PL è limitata al formato individuale premium nei corsi selezionati. Tutto il resto del modo in cui insegna Kodland resta uguale."},
+  {q:"Quale di questi cambia con le Parallel Lessons?",opts:["Il contenuto del corso e l'interfaccia dell'aula","Solo la politica di rimborso","Come viene erogata la lezione e come il tutor ruota tra gli studenti"],c:2,fb:"Contenuto, monitoraggio delle presenze e invio dei progetti restano esattamente gli stessi — cambia solo l'erogazione e la rotazione."},
+  {q:"Quanti minuti riceve sempre un singolo studente in una Parallel Lesson, indipendentemente dalla dimensione del gruppo?",opts:["45 minuti","60 minuti","Varia in base al corso"],c:1,fb:"Ogni studente riceve sempre i suoi 60 minuti pieni e ininterrotti — è il tempo totale del tutor che si allunga per adattarsi al gruppo."}
+],
+2:[
+  {q:"Cos'è un \"Parallel Group\" nel BO?",opts:["Un unico link d'aula condiviso per tutti gli studenti quando si conoscono","Un contenitore che raggruppa diversi gruppi individuali di studenti sotto un unico tutor","Un nuovo tipo di corso con un formato educativo diverso"],c:1,fb:"È semplicemente un contenitore — ogni studente mantiene comunque il proprio gruppo individuale al suo interno."},
+  {q:"Con il metodo Schedule, con quanto anticipo puoi aprire la console?",opts:["30 minuti prima","10 minuti prima","60 minuti prima"],c:0,fb:"Tramite Schedule sono 30 minuti prima. Tramite la normale lista Gruppi, sono 60 minuti prima, fino alla fine della lezione."},
+  {q:"Ogni studente all'interno di un Parallel Group ha comunque il proprio gruppo individuale, come nel formato premium.",opts:["Vero","Falso"],c:0,fb:"Corretto — presenze, progetti e metriche sono ancora monitorati per singolo gruppo."}
+],
+4:[
+  {q:"Come funziona il pagamento per le lezioni PL?",opts:["Una tariffa fissa di 60 minuti indipendentemente da quanti studenti sono iscritti","La tua normale tariffa al minuto, applicata alla durata totale dello slot PL","Una tariffa bonus speciale esclusiva per la PL"],c:1,fb:"Stessa tariffa al minuto del tuo formato premium abituale — semplicemente moltiplicata per i minuti in cui l'intero slot è effettivamente attivo."},
+  {q:"Cosa succede alle attività di warm-up di gruppo o alle lavagne Miro nella PL?",opts:["Vengono adattate affinché gli studenti possano farle individualmente","Vengono rimosse del tutto — nessun elemento di gruppo nella PL","Diventano compiti opzionali"],c:1,fb:"Gli elementi di attività di gruppo vengono rimossi, non adattati — nella PL semplicemente non c'è una componente di gruppo."},
+  {q:"Dove troverai indicazioni sulle fasi della lezione come il controllo dell'umore o dei compiti?",opts:["Nei manuali wiki","Integrate direttamente nei task, come note per il tutor","Non c'è alcuna indicazione, usi solo la presentazione"],c:1,fb:"Non ci sono più manuali separati — le note vivono dentro i task stessi, nelle fasi pertinenti."}
+]
+};
+
 /* ───────────────────────── PROGRESS ───────────────────────── */
 function getProgress(){ try{ return JSON.parse(localStorage.getItem(PROG_KEY)||'{}'); }catch(e){ return {}; } }
 function saveProgress(p){ localStorage.setItem(PROG_KEY, JSON.stringify(p)); }
@@ -515,22 +1189,22 @@ function setResult(id,pct,passed){ const p=getProgress(); const prev=p[id]||{}; 
 function renderHome(){
   const done=MODULES.filter(m=>isPassed(m.id)).length;
   const tag=document.getElementById('ntag');
-  if(done>0){tag.style.display='inline';tag.textContent=done===TOTAL?'All modules complete 🎉':(done+' / '+TOTAL+' modules complete');}else tag.style.display='none';
+  if(done>0){tag.style.display='inline';tag.textContent=done===TOTAL?T('modulesAllDone'):T('modulesComplete',{done:done,total:TOTAL});}else tag.style.display='none';
   const g=document.getElementById('mgrid'); g.innerHTML='';
   MODULES.forEach((m,i)=>{
     const prev = i===0 ? true : isPassed(MODULES[i-1].id);
     const isDone=isPassed(m.id); const locked=!prev;
     const el=document.createElement('div'); el.className='mc'+(locked?' locked':'');
     const pct=getScore(m.id);
-    const badge=isDone?'<span class="badge bd">Completed</span>':locked?'<span class="badge bl">Locked</span>':'<span class="badge bs">Start</span>';
-    const stag=m.rpg?(isDone?'<span class="stag">Simulation complete</span>':locked?('<span class="stag">Complete Module '+(m.id-1)+' first</span>'):'<span class="stag">Console simulation inside</span>'):(isDone?('<span class="stag">Score <b>'+pct+'%</b></span>'):locked?('<span class="stag">Complete Module '+(m.id-1)+' first</span>'):'<span class="stag">Has a short check</span>');
-    el.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">Module '+m.id+'</div><div class="mc-em">'+m.emoji+'</div></div><div class="mc-title">'+m.title+'</div><div class="mc-desc">'+m.desc+'</div><div class="mc-foot">'+badge+stag+'</div></div>';
+    const badge=isDone?'<span class="badge bd">'+T('badgeCompleted')+'</span>':locked?'<span class="badge bl">'+T('badgeLocked')+'</span>':'<span class="badge bs">'+T('badgeStart')+'</span>';
+    const stag=m.rpg?(isDone?'<span class="stag">'+T('simulationComplete')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('consoleSimInside')+'</span>'):(isDone?('<span class="stag">'+T('scoreLabel')+' <b>'+pct+'%</b></span>'):locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('hasShortCheck')+'</span>');
+    el.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">'+T('moduleN',{n:m.id})+'</div><div class="mc-em">'+m.emoji+'</div></div><div class="mc-title">'+m.title+'</div><div class="mc-desc">'+m.desc+'</div><div class="mc-foot">'+badge+stag+'</div></div>';
     if(!locked) el.onclick=()=>openModule(m);
     g.appendChild(el);
   });
   const allDone=MODULES.every(m=>isPassed(m.id));
   const nextEl=document.createElement('div'); nextEl.className='mc'+(allDone?'':' locked');
-  nextEl.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">Final</div><div class="mc-em">🖥️</div></div><div class="mc-title">Next Step: The Webinar</div><div class="mc-desc">See what comes after self-study once all 4 modules are complete.</div><div class="mc-foot">'+(allDone?'<span class="badge bd">Unlocked</span>':'<span class="badge bl">Locked</span>')+'<span class="stag">Wrap-up</span></div></div>';
+  nextEl.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">'+T('finalNum')+'</div><div class="mc-em">🖥️</div></div><div class="mc-title">'+T('nextStepWebinarTitle')+'</div><div class="mc-desc">'+T('nextStepWebinarDesc')+'</div><div class="mc-foot">'+(allDone?'<span class="badge bd">'+T('unlocked')+'</span>':'<span class="badge bl">'+T('badgeLocked')+'</span>')+'<span class="stag">'+T('wrapUp')+'</span></div></div>';
   if(allDone) nextEl.onclick=()=>showComplete();
   g.appendChild(nextEl);
 }
@@ -538,14 +1212,14 @@ function renderHome(){
 /* ───────────────────────── MODULE CONTENT RENDER ───────────────────────── */
 function openModule(m){
   currentModule=m.id;
-  let html='<div class="meyebrow">Module '+m.id+' of '+TOTAL+'</div><div class="mh1">'+m.emoji+' '+m.title+'</div><div class="mobj"><strong>In this module:</strong> '+m.desc+'</div>';
+  let html='<div class="meyebrow">'+T('moduleOfTotal',{n:m.id,total:TOTAL})+'</div><div class="mh1">'+m.emoji+' '+m.title+'</div><div class="mobj"><strong>'+T('inThisModule')+'</strong> '+m.desc+'</div>';
   m.sections.forEach(s=>{ html+='<div class="sch">'+s.t+'</div>'; s.cards.forEach(c=>{ html+=rc(c); }); });
   html+='<hr class="divider">';
   if(m.rpg){
-    const lbl=isPassed(m.id)?'🔁 Play Again':'🎮 Start the Simulation';
+    const lbl=isPassed(m.id)?T('playAgain'):T('startSimulation');
     html+='<button class="ctabtn" onclick="startRPG('+m.id+')">'+lbl+'</button>';
   }else{
-    const lbl=isPassed(m.id)?'🔁 Retake the Check':'✅ Start the Check';
+    const lbl=isPassed(m.id)?T('retakeCheck'):T('startCheck');
     html+='<button class="ctabtn" onclick="startQuiz('+m.id+')">'+lbl+'</button>';
   }
   document.getElementById('cbody').innerHTML=html;
@@ -600,7 +1274,7 @@ function startQuiz(id){
 function renderQ(){
   const q=quizData[qi];
   document.getElementById('qfill').style.width=(qi/quizData.length*100)+'%';
-  document.getElementById('qcount').textContent='Question '+(qi+1)+' of '+quizData.length;
+  document.getElementById('qcount').textContent=T('questionOfTotal',{n:qi+1,total:quizData.length});
   document.getElementById('qtext').innerHTML=q.q;
   const el=document.getElementById('qopts'); el.innerHTML='';
   q.opts.forEach((o,idx)=>{ const b=document.createElement('button'); b.className='qopt'; b.textContent=o; b.onclick=()=>answerQ(idx); el.appendChild(b); });
@@ -610,8 +1284,8 @@ function answerQ(idx){
   if(document.querySelector('.qopt.answered')) return;
   const q=quizData[qi]; const ok=idx===q.c; if(ok)score++;
   document.querySelectorAll('.qopt').forEach((b,i)=>{ b.classList.add('answered'); if(i===q.c)b.classList.add('correct'); else if(i===idx&&!ok)b.classList.add('wrong'); });
-  const fb=document.getElementById('qfb'); fb.className='qfb show '+(ok?'ok':'bad'); fb.innerHTML=(ok?'✅ Correct! ':'❌ Not quite. ')+q.fb;
-  const nx=document.getElementById('qnxt'); nx.className='qnxt show'; nx.textContent=qi===quizData.length-1?'See results →':'Next →';
+  const fb=document.getElementById('qfb'); fb.className='qfb show '+(ok?'ok':'bad'); fb.innerHTML=(ok?T('correctPrefix'):T('wrongPrefix'))+q.fb;
+  const nx=document.getElementById('qnxt'); nx.className='qnxt show'; nx.textContent=qi===quizData.length-1?T('seeResults'):T('nextArrow');
 }
 function nextQ(){
   qi++;
@@ -621,18 +1295,363 @@ function nextQ(){
 }
 function exitQuiz(){ const m=MODULES.find(x=>x.id===currentModule); if(m) openModule(m); else goDashboard(); }
 
+/* ───────────────────────── CONSOLE SIMULATION DATA (Module 3, per language) ───────────────────────── */
+const GAME_EN={
+  sceneLabels:{1:"Scene 1 — The Lobby",2:"Scene 2 — Student 1's Room",3:"Back to the Lobby",4:"Scene 3 — An Empty Room",5:"Scene 4 — Student 2 Arrives",6:"Scene 5 — Student 1 Again",7:"Scene 6 — Student 2 Again"},
+  note:"Keep jotting a quick note as you go — task, mood, and next check-in time for each student. That habit from 2.2 is what keeps this whole console manageable.",
+  coverTitle:"Two Students, One You — A Console Simulation",
+  coverBody:"You are about to face real console situations from a Parallel Lesson. Some moments are multiple choice. Others are free text: write exactly what you would do and say, in your own words.",
+  enterBtn:"▶ Enter the Console",
+  scene1Bubble:"You're in the lobby of the console and you have two students. Your <b>Student 1</b> has already joined. In 10 minutes your second student should join. Click on <b>Student 1</b> to enter the room so they can see you.",
+  hotspot1Label:"Click Student 1",
+  scene2TieTo:"🔗 Ties to: 2.5 Praise &amp; Motivation + 2.6 Growing Independence",
+  scene2Bubble:"You've already welcomed the student, explained the theory, and explained the activity to do. 10 minutes have passed. <b>What phrase do you use to step away and say goodbye to the student for a moment</b>, so you can go welcome your other student?",
+  sayLabel:"Type exactly what you would say:",
+  placeholder1:"Type your farewell phrase to the student...",
+  submitBtn:"Get Feedback",
+  scene3Bubble:"Nicely handled. Now it's time to check on your second student — click on <b>Student 2</b>.",
+  hotspot2Label:"Click Student 2",
+  scene4TieTo:"🔗 Ties to: 2.2 Working-Memory &amp; Triage",
+  scene4Bubble:"Looks like your student hasn't arrived yet! <b>What would you do?</b>",
+  choices:[
+    "Wait a little longer, inside Student 2's own time — you only just stepped away from Student 1 a couple of minutes ago.",
+    "Go back to Student 1's room right away, since they've already arrived.",
+    "Go back to Student 1's room, since waiting alone here is worse than checking in on someone active."
+  ],
+  scene5TieTo:"🔗 Ties to: 2.2 Triage + 2.6 Balancing Help",
+  scene5Bubble:"Student 2 has arrived! You gave the introduction and are almost done explaining the activity they need to do — but <b>Student 1 has raised their hand</b> back in their own room. <b>What do you do?</b>",
+  doSayLabel:"Describe what you do and what you say:",
+  placeholder2:"Type what you would do and say...",
+  scene6Badge:"⏱️ Later — Student 1 Again",
+  scene6TieTo:"🔗 Ties to: 2.4 Individual Approach + 2.5 Motivation",
+  scene6Bubble:"A little later in the same lesson: <b>Student 1</b> — the same student from before — finished the main task early and is just waiting for you. <b>What do you do first, and what do you say?</b>",
+  placeholder3:"Type what you would do and say...",
+  scene7Badge:"⏱️ Later — Student 2 Again",
+  scene7TieTo:"🔗 Ties to: 2.6 Balancing Help &amp; Independence",
+  scene7Bubble:"Also later in the same lesson: it's week 6, and <b>Student 2</b> — who is usually confident working on their own — asks you to \"just give me the answer.\" <b>What do you do first, and what do you say?</b>",
+  placeholder4:"Type what you would do and say...",
+  completeTitle:"Simulation Complete",
+  completeBody:"You walked through the full console — two students, an empty room, a raised hand, an early finish, and a confident student asking for the answer. Module 3 is complete.",
+  continueToModuleLbl:"Continue to Module {n} →",
+  backToDashboard:"← Back to Dashboard",
+  feedbackHeading:"Feedback",
+  continueLabel:"Continue →",
+  finishLabel:"Finish the Simulation →",
+  fb1:{c1:"Uses a warm, friendly tone",c2:"Lets the student know they can raise their hand / ask for help",
+    verdictOk:"A warm goodbye that reminds the student help is always available keeps them confident and independent while you're away — that's the balance 2.5 and 2.6 are both pointing at.",
+    verdictBad:"A strong farewell needs both pieces: friendly AND a reminder that they can raise their hand if they need help. That reassurance matters as much as the content you just taught — it's what lets them keep working independently while you step away.",
+    example:"💬 Example: \"I'm going to say hi to my other student for a few minutes — keep going, and raise your hand if you need me, I'll be right back!\""},
+  fbChoice:{
+    verdictOk:"Exactly — remember, silence never automatically means a student is fine, that's still the 2.2 rule. But you only just left Student 1 a couple of minutes ago, and this is exactly the moment Student 2 is due. The right call is to wait a little longer — inside Student 2's own time, not by cutting into anyone else's.",
+    verdictBad:"Think back to 2.2: silence never automatically means a student is fine. But that's not the deciding factor here — you only just left Student 1 a couple of minutes ago, and this is exactly when Student 2 is due. Jumping into Student 1's room now interrupts their independent work far too soon; waiting a little longer, within Student 2's own time, is the right call."},
+  fb2:{c1:"Goes to check on Student 1 instead of ignoring the raised hand",c2:"Tells Student 2 they need a brief moment (e.g. \"about 3 minutes\") before stepping away",c3:"Makes sure Student 2 has what they need to start working independently",
+    verdictOk:"Strong judgment — Student 1 feels heard, and Student 2 isn't left mid-explanation without a way to start working. That balance between 2.2 triage and 2.6 independence is exactly the goal of this scene.",
+    verdictBad:"The goal here is for Student 1 to feel heard <em>and</em> for Student 2 to be able to start working independently, without either one feeling dropped: check on Student 1 (briefly asking Student 2's permission first), resolve it quickly or promise to come back, and make sure Student 2 has enough to get started before you switch focus."},
+  fb3:{c1:"Acknowledges the achievement specifically — not a generic \"good job\"",c2:"Offers an extra challenge instead of leaving them idle",c3:"Doesn't compare them to the other students",c4:"Reminds them they can raise their hand anytime instead of waiting, and gives them the choice to move ahead on their own if they feel ready",
+    verdictOk:"This is exactly what 2.4 means by adjusting the challenge, not just the pace. Naming the win, offering more, and reminding them they're free to raise a hand or keep going on their own all tie back to the motivation moments from 2.5 — waiting shouldn't be their only option.",
+    verdictBad:"Finishing early is a motivation moment, not a pause: name specifically what they did well, then hand them something extra to chew on instead of just telling them to wait. Also remind them they don't have to sit still — they can raise their hand anytime to call you over sooner, or keep going on their own if they feel comfortable; either way, you're happy to help and review what they've done.",
+    example:"💬 Example: \"Nice, you finished that faster than expected — want to try adding [extra feature]? And remember, you can raise your hand anytime if you want me to check it sooner, or keep going on your own if you're comfortable.\""},
+  fb4:{c1:"Doesn't hand over the answer, even under pressure",c2:"Brings back a concept or piece of theory from the lesson to help the student reason it out — instead of just pointing at the guide",c3:"Nudges the student toward a different or more creative approach, instead of just repeating \"what have you tried?\"",
+    verdictOk:"Good instincts — this is the most direct case of 2.6. Instead of just handing over the answer or pointing at the guide and walking away, you became the bridge: reconnecting the student to what they already know so they could reason their way to the answer themselves.",
+    verdictBad:"This is the most important case in the module: giving the answer \"because they're usually independent, so it's fine\" is exactly the mistake to avoid. But simply saying \"the guide is right there\" can land the same way — like you don't want to help. Instead, be the bridge yourself: bring back a concept from the lesson (\"remember when we covered...?\"), and nudge them toward a different way of thinking about it. The goal is for the student to practice being creative and thinking critically, with you guiding — not handing over — the discovery.",
+    example:"💬 Example: \"I know you've got this most of the time — remember when we covered [concept]? Think back to that for a second. Given that, what's a different way you could try approaching this?\""},
+  kw:{
+    warm:["please","thanks","thank you","great job","good job","awesome","well done","nice work","proud","excellent","doing great","you're doing","see you","back soon"],
+    help:["raise your hand","hand up","need help","ask me","call me","shout if","if you need","wave","flag me","i'm here","here to help","here for you"],
+    goTo:["go check","go see","go to","head over","pop over","visit","stop by","swing by","go over","check on student 1","go to student 1"],
+    inform:["permission","excuse me","give me a few minutes","three minutes","3 minutes","just a moment","quick","one moment","couple of minutes","be right back","a few minutes"],
+    finish:["finish explaining","start working","work independently","on your own","get started","begin the activity","so you can start","ready to start"],
+    ackSpecific:["finished that","faster than","nice work on","you nailed","you got through","you finished","that fast","that quickly"],
+    extraChallenge:["want to try","extra challenge","add a feature","take it further","bonus","stretch goal","try adding","another challenge"],
+    noCompare:["compared to","others are","other students","faster than the rest","ahead of the others","slower than you"],
+    autonomyReminder:["raise your hand","hand up","whenever you're ready","feel free to","if you'd like","move ahead","keep going if","start the next","go ahead and try","when you're ready","let me know when","if you feel comfortable","on your own if"],
+    noAnswer:["what have you tried","let's start there","try once more","before i jump in","one more try","try it once more"],
+    bridgeTheory:["remember when we","think back to","what did we learn","remember the concept","let's review","what's the rule for","think about what we covered","recall","what do you remember about","we covered this","from the lesson"],
+    creative:["another way","different approach","think creatively","what if you tried","brainstorm","creative","different angle","other way","new idea"]
+  }
+};
+
+const GAME_PL={
+  sceneLabels:{1:"Scena 1 — Lobby",2:"Scena 2 — Pokój Ucznia 1",3:"Powrót do lobby",4:"Scena 3 — Pusty pokój",5:"Scena 4 — Uczeń 2 przychodzi",6:"Scena 5 — Znowu Uczeń 1",7:"Scena 6 — Znowu Uczeń 2"},
+  note:"Zapisuj krótką notatkę na bieżąco — zadanie, nastrój i czas następnego sprawdzenia dla każdego ucznia. Ten nawyk z 2.2 sprawia, że cała ta konsola jest do opanowania.",
+  coverTitle:"Dwóch uczniów, jeden ty — symulacja konsoli",
+  coverBody:"Za chwilę staniesz przed prawdziwymi sytuacjami z konsoli w Parallel Lesson. Niektóre momenty są testem wielokrotnego wyboru. Inne to wolny tekst: napisz dokładnie, co byś zrobił/a i powiedział/a, własnymi słowami.",
+  enterBtn:"▶ Wejdź do konsoli",
+  scene1Bubble:"Jesteś w lobby konsoli i masz dwóch uczniów. Twój <b>Uczeń 1</b> już dołączył. Za 10 minut powinien dołączyć twój drugi uczeń. Kliknij na <b>Uczeń 1</b>, aby wejść do pokoju, żeby cię zobaczył.",
+  hotspot1Label:"Kliknij Uczeń 1",
+  scene2TieTo:"🔗 Powiązane z: 2.5 Docenienie i motywacja + 2.6 Rosnąca samodzielność",
+  scene2Bubble:"Już przywitałeś/aś ucznia, wyjaśniłeś/aś teorię i wyjaśniłeś/aś aktywność do wykonania. Minęło 10 minut. <b>Jaką frazą wychodzisz i żegnasz się z uczniem na chwilę</b>, aby pójść przywitać drugiego ucznia?",
+  sayLabel:"Napisz dokładnie, co byś powiedział/a:",
+  placeholder1:"Wpisz swoją frazę pożegnania do ucznia...",
+  submitBtn:"Otrzymaj feedback",
+  scene3Bubble:"Dobrze to obsłużyłeś/aś. Teraz czas sprawdzić drugiego ucznia — kliknij na <b>Uczeń 2</b>.",
+  hotspot2Label:"Kliknij Uczeń 2",
+  scene4TieTo:"🔗 Powiązane z: 2.2 Pamięć robocza i triage",
+  scene4Bubble:"Wygląda na to, że twój uczeń jeszcze nie dołączył! <b>Co byś zrobił/a?</b>",
+  choices:[
+    "Poczekaj jeszcze chwilę, w ramach czasu Ucznia 2 — od Ucznia 1 odeszłeś/aś dosłownie kilka minut temu.",
+    "Wróć od razu do pokoju Ucznia 1, bo już dołączył.",
+    "Wróć do pokoju Ucznia 1, bo czekanie samemu tutaj jest gorsze niż sprawdzenie kogoś aktywnego."
+  ],
+  scene5TieTo:"🔗 Powiązane z: 2.2 Triage + 2.6 Balans pomocy",
+  scene5Bubble:"Uczeń 2 dołączył! Dałeś/aś wprowadzenie i już prawie skończyłeś/aś wyjaśniać aktywność, którą musi wykonać — ale <b>Uczeń 1 podniósł rękę</b> w swoim pokoju. <b>Co robisz?</b>",
+  doSayLabel:"Opisz, co robisz i co mówisz:",
+  placeholder2:"Wpisz, co byś zrobił/a i powiedział/a...",
+  scene6Badge:"⏱️ Później — znowu Uczeń 1",
+  scene6TieTo:"🔗 Powiązane z: 2.4 Indywidualne podejście + 2.5 Motywacja",
+  scene6Bubble:"Chwilę później, na tej samej lekcji: <b>Uczeń 1</b> — ten sam uczeń co wcześniej — skończył główne zadanie wcześniej i po prostu na ciebie czeka. <b>Co robisz najpierw i co mówisz?</b>",
+  placeholder3:"Wpisz, co byś zrobił/a i powiedział/a...",
+  scene7Badge:"⏱️ Później — znowu Uczeń 2",
+  scene7TieTo:"🔗 Powiązane z: 2.6 Balans pomocy i samodzielności",
+  scene7Bubble:"Również później, na tej samej lekcji: jest 6. tydzień, a <b>Uczeń 2</b> — który zwykle pracuje samodzielnie i z pewnością siebie — prosi cię, żebyś „po prostu podał/a odpowiedź”. <b>Co robisz najpierw i co mówisz?</b>",
+  placeholder4:"Wpisz, co byś zrobił/a i powiedział/a...",
+  completeTitle:"Symulacja zakończona",
+  completeBody:"Przeszedłeś/przeszłaś przez całą konsolę — dwóch uczniów, pusty pokój, podniesiona ręka, wcześniejsze zakończenie i pewny siebie uczeń proszący o odpowiedź. Moduł 3 jest zakończony.",
+  continueToModuleLbl:"Przejdź do Modułu {n} →",
+  backToDashboard:"← Wróć do panelu",
+  feedbackHeading:"Feedback",
+  continueLabel:"Dalej →",
+  finishLabel:"Zakończ symulację →",
+  fb1:{c1:"Używa ciepłego, przyjaznego tonu",c2:"Informuje ucznia, że może podnieść rękę / poprosić o pomoc",
+    verdictOk:"Ciepłe pożegnanie, które przypomina uczniowi, że pomoc jest zawsze dostępna, sprawia, że czuje się pewnie i samodzielnie podczas twojej nieobecności — to właśnie balans, o którym mówią 2.5 i 2.6.",
+    verdictBad:"Silne pożegnanie potrzebuje obu elementów: bycia przyjaznym ORAZ przypomnienia, że uczeń może podnieść rękę, jeśli potrzebuje pomocy. To zapewnienie jest tak ważne jak treść, której właśnie nauczyłeś/aś — dzięki niemu uczeń może dalej pracować samodzielnie, gdy odchodzisz.",
+    example:"💬 Przykład: „Idę na chwilę przywitać się z moim drugim uczniem — pracuj dalej, a jeśli mnie potrzebujesz, podnieś rękę, już wracam!”"},
+  fbChoice:{
+    verdictOk:"Zgadza się — pamiętaj, cisza nigdy automatycznie nie znaczy, że uczeń jest w porządku, to wciąż zasada 2.2. Ale od Ucznia 1 odeszłeś/aś dosłownie kilka minut temu, i to jest właśnie moment, w którym powinien dołączyć Uczeń 2. Właściwa decyzja to poczekać jeszcze chwilę — w ramach czasu Ucznia 2, a nie kosztem czasu kogoś innego.",
+    verdictBad:"Wróć myślami do 2.2: cisza nigdy automatycznie nie znaczy, że uczeń jest w porządku. Ale to nie jest tu czynnik decydujący — od Ucznia 1 odeszłeś/aś dosłownie kilka minut temu, i to jest właśnie moment, w którym powinien dołączyć Uczeń 2. Wpadanie teraz do pokoju Ucznia 1 przerywa jego samodzielną pracę o wiele za wcześnie; poczekanie jeszcze chwilę, w ramach czasu Ucznia 2, jest właściwą decyzją."},
+  fb2:{c1:"Idzie sprawdzić Ucznia 1, zamiast ignorować podniesioną rękę",c2:"Mówi Uczniowi 2, że potrzebuje krótkiej chwili (np. „około 3 minut”), zanim odejdzie",c3:"Upewnia się, że Uczeń 2 ma to, czego potrzebuje, aby zacząć pracować samodzielnie",
+    verdictOk:"Dobra ocena sytuacji — Uczeń 1 czuje się wysłuchany, a Uczeń 2 nie zostaje w połowie wyjaśnienia bez możliwości zaczęcia pracy. Ten balans między triage z 2.2 a samodzielnością z 2.6 to właśnie cel tej scenki.",
+    verdictBad:"Celem jest, aby Uczeń 1 czuł się wysłuchany <em>i</em> aby Uczeń 2 mógł zacząć pracować samodzielnie, bez poczucia, że został zostawiony: sprawdź Ucznia 1 (najpierw krótko pytając o zgodę Ucznia 2), rozwiąż to szybko lub obiecaj wrócić, i upewnij się, że Uczeń 2 ma wystarczająco, aby zacząć, zanim przełączysz uwagę."},
+  fb3:{c1:"Docenia osiągnięcie konkretnie — nie ogólnym „dobra robota”",c2:"Proponuje dodatkowe wyzwanie, zamiast pozostawiać ucznia bez zajęcia",c3:"Nie porównuje go do innych uczniów",c4:"Przypomina, że może podnieść rękę w każdej chwili, zamiast czekać, i daje mu wybór, aby samodzielnie ruszyć dalej, jeśli czuje się na siłach",
+    verdictOk:"To jest dokładnie to, co 2.4 rozumie przez dostosowanie wyzwania, a nie tylko tempa. Nazwanie sukcesu, zaproponowanie więcej i przypomnienie, że może podnieść rękę lub kontynuować samodzielnie, wszystko to wiąże się z momentami motywacji z 2.5 — czekanie nie powinno być jedyną opcją.",
+    verdictBad:"Wcześniejsze zakończenie to moment motywacji, nie przerwa: nazwij konkretnie, co uczeń zrobił dobrze, a potem daj mu coś dodatkowego do przemyślenia, zamiast po prostu mówić mu, żeby czekał. Przypomnij mu też, że nie musi siedzieć bez ruchu — może w każdej chwili podnieść rękę, żeby cię wcześniej wezwać, albo kontynuować samodzielnie, jeśli czuje się na siłach; w każdym razie z radością mu pomożesz i sprawdzisz, co zrobił.",
+    example:"💬 Przykład: „Super, skończyłeś to szybciej niż oczekiwano — chcesz spróbować dodać [dodatkową funkcję]? I pamiętaj, możesz w każdej chwili podnieść rękę, jeśli chcesz, żebym sprawdził to wcześniej, albo kontynuować samodzielnie, jeśli czujesz się na siłach.”"},
+  fb4:{c1:"Nie podaje odpowiedzi, nawet pod presją czasu",c2:"Przywołuje koncept lub fragment teorii z lekcji, aby pomóc uczniowi wywnioskować odpowiedź — zamiast po prostu wskazywać na przewodnik",c3:"Zachęca ucznia do innego lub bardziej kreatywnego podejścia, zamiast po prostu powtarzać „co już próbowałeś?”",
+    verdictOk:"Dobre instynkty — to najbardziej bezpośredni przypadek z 2.6. Zamiast po prostu podać odpowiedź lub wskazać przewodnik i odejść, stałeś/aś się mostem: ponownie połączyłeś/aś ucznia z tym, co już wie, aby mógł samodzielnie wywnioskować odpowiedź.",
+    verdictBad:"To najważniejszy przypadek w tym module: podanie odpowiedzi „bo zwykle jest samodzielny, więc nic się nie stanie” to właśnie błąd, którego należy unikać. Ale samo powiedzenie „przewodnik jest tam” może zabrzmieć podobnie — jakbyś nie chciał/a pomóc. Zamiast tego, sam/a stań się mostem: przywołaj koncept z lekcji („pamiętasz, jak omawialiśmy...?”) i zachęć ucznia do innego sposobu myślenia o tym. Celem jest, aby uczeń ćwiczył kreatywność i krytyczne myślenie, z tobą jako przewodnikiem — a nie osobą podającą odpowiedź na tacy.",
+    example:"💬 Przykład: „Wiem, że zwykle sobie z tym radzisz — pamiętasz, jak omawialiśmy [koncept]? Wróć do tego na chwilę myślami. Mając to na uwadze, jak inaczej mógłbyś/mogłabyś podejść do tego?”"},
+  kw:{
+    warm:["proszę","dzięki","dziękuję","dobra robota","super","świetnie","brawo","jestem z ciebie zadowolony","do zobaczenia","wracam"],
+    help:["podnieś rękę","potrzebujesz pomocy","zapytaj mnie","zawołaj","jeśli potrzebujesz","jestem tu","tu żeby pomóc","tu dla ciebie"],
+    goTo:["idę sprawdzić","sprawdzę","pójdę do","sprawdzić ucznia 1","idę do ucznia 1"],
+    inform:["przepraszam","daj mi chwilę","trzy minuty","3 minuty","chwilkę","szybko","moment","kilka minut","zaraz wracam"],
+    finish:["zacznij pracować","pracować samodzielnie","sam","zacznij","rozpocznij aktywność","możesz zacząć","gotowy do rozpoczęcia"],
+    ackSpecific:["skończyłeś to","szybciej niż","dobra robota z","poradziłeś sobie","skończyłeś","tak szybko","tak prędko"],
+    extraChallenge:["chcesz spróbować","dodatkowe wyzwanie","dodać funkcję","pójść dalej","bonus","dodatkowe zadanie","spróbuj dodać"],
+    noCompare:["w porównaniu do","inni są","inni uczniowie","szybciej niż resztą","przed innymi","wolniej niż ty"],
+    autonomyReminder:["podnieś rękę","kiedy będziesz gotowy","śmiało","jeśli chcesz","ruszaj dalej","kontynuuj jeśli","zacznij następne","spróbuj sam","kiedy jesteś gotowy","daj mi znać kiedy","jeśli czujesz się na siłach","sam jeśli"],
+    noAnswer:["co już próbowałeś","zacznijmy od tego","spróbuj jeszcze raz","zanim wejdę","jeszcze jedna próba"],
+    bridgeTheory:["pamiętasz kiedy","wróć myślami do","czego się nauczyliśmy","pamiętasz koncept","przypomnijmy","jaka jest zasada","pomyśl o tym co omawialiśmy","przypomnij sobie","z lekcji","omawialiśmy to"],
+    creative:["inny sposób","inne podejście","pomyśl kreatywnie","co gdybyś spróbował","burza mózgów","kreatywnie","inny kąt","nowy sposób","nowa idea"]
+  }
+};
+
+const GAME_TR={
+  sceneLabels:{1:"Sahne 1 — Lobi",2:"Sahne 2 — Öğrenci 1'in Odası",3:"Lobiye Dönüş",4:"Sahne 3 — Boş Bir Oda",5:"Sahne 4 — Öğrenci 2 Geliyor",6:"Sahne 5 — Yine Öğrenci 1",7:"Sahne 6 — Yine Öğrenci 2"},
+  note:"İlerlerken kısa bir not almaya devam edin — her öğrenci için görev, ruh hali ve sonraki kontrol zamanı. 2.2'deki bu alışkanlık, tüm bu konsolu yönetilebilir kılan şeydir.",
+  coverTitle:"İki Öğrenci, Bir Siz — Konsol Simülasyonu",
+  coverBody:"Bir Parallel Lesson'dan gerçek konsol durumlarıyla yüzleşmek üzeresiniz. Bazı anlar çoktan seçmelidir. Diğerleri serbest metin: ne yapacağınızı ve ne söyleyeceğinizi kendi kelimelerinizle tam olarak yazın.",
+  enterBtn:"▶ Konsola Gir",
+  scene1Bubble:"Konsolun lobisindesiniz ve iki öğrenciniz var. <b>Öğrenci 1</b> zaten katıldı. 10 dakika içinde ikinci öğrenciniz katılmalı. Sizi görebilmesi için odasına girmek üzere <b>Öğrenci 1</b>'e tıklayın.",
+  hotspot1Label:"Öğrenci 1'e Tıklayın",
+  scene2TieTo:"🔗 Bağlantılı olduğu yer: 2.5 Övgü ve Motivasyon + 2.6 Artan Bağımsızlık",
+  scene2Bubble:"Öğrenciyi zaten karşıladınız, teoriyi açıkladınız ve yapılacak etkinliği açıkladınız. 10 dakika geçti. Diğer öğrencinizi karşılamaya gidebilmek için <b>öğrenciden bir anlığına ayrılıp vedalaşmak için hangi cümleyi kullanırsınız</b>?",
+  sayLabel:"Tam olarak ne söyleyeceğinizi yazın:",
+  placeholder1:"Öğrenciye vedalaşma cümlenizi yazın...",
+  submitBtn:"Geri Bildirim Al",
+  scene3Bubble:"Güzel bir şekilde hallettiniz. Şimdi ikinci öğrencinizi kontrol etme zamanı — <b>Öğrenci 2</b>'ye tıklayın.",
+  hotspot2Label:"Öğrenci 2'ye Tıklayın",
+  scene4TieTo:"🔗 Bağlantılı olduğu yer: 2.2 Çalışma Belleği ve Triyaj",
+  scene4Bubble:"Görünüşe göre öğrenciniz henüz gelmedi! <b>Ne yaparsınız?</b>",
+  choices:[
+    "Biraz daha bekleyin, Öğrenci 2'nin kendi zamanı içinde — Öğrenci 1'den yalnızca bir iki dakika önce ayrıldınız.",
+    "Hemen Öğrenci 1'in odasına geri dönün, çünkü zaten geldi.",
+    "Öğrenci 1'in odasına geri dönün, çünkü burada tek başına beklemek, aktif birini kontrol etmekten daha kötü."
+  ],
+  scene5TieTo:"🔗 Bağlantılı olduğu yer: 2.2 Triyaj + 2.6 Yardımı Dengelemek",
+  scene5Bubble:"Öğrenci 2 geldi! Girişi yaptınız ve yapması gereken etkinliği açıklamayı bitirmek üzeresiniz — ama <b>Öğrenci 1 kendi odasında elini kaldırdı</b>. <b>Ne yaparsınız?</b>",
+  doSayLabel:"Ne yapacağınızı ve ne söyleyeceğinizi açıklayın:",
+  placeholder2:"Ne yapıp ne söyleyeceğinizi yazın...",
+  scene6Badge:"⏱️ Daha Sonra — Yine Öğrenci 1",
+  scene6TieTo:"🔗 Bağlantılı olduğu yer: 2.4 Bireysel Yaklaşım + 2.5 Motivasyon",
+  scene6Bubble:"Aynı dersin biraz sonrasında: <b>Öğrenci 1</b> — öncekiyle aynı öğrenci — ana görevi erken bitirdi ve sadece sizi bekliyor. <b>Önce ne yaparsınız ve ne söylersiniz?</b>",
+  placeholder3:"Ne yapıp ne söyleyeceğinizi yazın...",
+  scene7Badge:"⏱️ Daha Sonra — Yine Öğrenci 2",
+  scene7TieTo:"🔗 Bağlantılı olduğu yer: 2.6 Yardım ve Bağımsızlığı Dengelemek",
+  scene7Bubble:"Yine aynı dersin sonrasında: 6. hafta ve genellikle kendi başına güvenle çalışan <b>Öğrenci 2</b>, sizden \"sadece cevabı ver\" diyor. <b>Önce ne yaparsınız ve ne söylersiniz?</b>",
+  placeholder4:"Ne yapıp ne söyleyeceğinizi yazın...",
+  completeTitle:"Simülasyon Tamamlandı",
+  completeBody:"Konsolun tamamından geçtiniz — iki öğrenci, boş bir oda, kaldırılan bir el, erken bir bitiş ve cevap isteyen kendine güvenen bir öğrenci. Modül 3 tamamlandı.",
+  continueToModuleLbl:"Modül {n}'e Devam Et →",
+  backToDashboard:"← Panele Dön",
+  feedbackHeading:"Geri Bildirim",
+  continueLabel:"İleri →",
+  finishLabel:"Simülasyonu Bitir →",
+  fb1:{c1:"Sıcak, samimi bir ton kullanır",c2:"Öğrenciye elini kaldırıp yardım isteyebileceğini bildirir",
+    verdictOk:"Öğrenciye yardımın her zaman ulaşılabilir olduğunu hatırlatan sıcak bir vedalaşma, siz yokken onun kendine güvenli ve bağımsız hissetmesini sağlar — bu tam olarak 2.5 ve 2.6'nın işaret ettiği dengedir.",
+    verdictBad:"Güçlü bir vedalaşma her iki parçaya da ihtiyaç duyar: samimi olması VE yardıma ihtiyacı olursa elini kaldırabileceğinin hatırlatılması. Bu güvence, az önce öğrettiğiniz içerik kadar önemlidir — siz uzaktayken bağımsız çalışmaya devam etmesini sağlayan şey budur.",
+    example:"💬 Örnek: \"Diğer öğrencime birkaç dakikalığına merhaba demeye gidiyorum — sen devam et, bana ihtiyacın olursa elini kaldır, hemen dönerim!\""},
+  fbChoice:{
+    verdictOk:"Kesinlikle — unutmayın, sessizlik hiçbir zaman otomatik olarak bir öğrencinin iyi olduğu anlamına gelmez, bu hâlâ 2.2 kuralıdır. Ama Öğrenci 1'den yalnızca bir iki dakika önce ayrıldınız ve bu tam olarak Öğrenci 2'nin gelmesi gereken an. Doğru karar, biraz daha beklemektir — başka birinin zamanından çalmadan, Öğrenci 2'nin kendi zamanı içinde.",
+    verdictBad:"2.2'yi hatırlayın: sessizlik hiçbir zaman otomatik olarak bir öğrencinin iyi olduğu anlamına gelmez. Ama burada belirleyici faktör bu değil — Öğrenci 1'den yalnızca bir iki dakika önce ayrıldınız ve bu tam olarak Öğrenci 2'nin gelmesi gereken an. Şimdi Öğrenci 1'in odasına dalmak, onun bağımsız çalışmasını çok erken kesintiye uğratır; biraz daha beklemek, Öğrenci 2'nin kendi zamanı içinde, doğru karardır."},
+  fb2:{c1:"Kaldırılan eli görmezden gelmek yerine Öğrenci 1'i kontrol etmeye gider",c2:"Ayrılmadan önce Öğrenci 2'ye kısa bir an (örneğin \"yaklaşık 3 dakika\") gerektiğini söyler",c3:"Öğrenci 2'nin bağımsız çalışmaya başlaması için gerekenlere sahip olduğundan emin olur",
+    verdictOk:"Güçlü bir muhakeme — Öğrenci 1 duyulduğunu hisseder ve Öğrenci 2, çalışmaya başlamanın bir yolu olmadan açıklamanın ortasında kalmaz. 2.2 triyajı ile 2.6 bağımsızlığı arasındaki bu denge tam olarak bu sahnenin hedefidir.",
+    verdictBad:"Buradaki hedef, Öğrenci 1'in duyulduğunu hissetmesi <em>ve</em> Öğrenci 2'nin, hiçbiri bırakılmış hissetmeden bağımsız çalışmaya başlayabilmesidir: Öğrenci 1'i kontrol edin (önce kısaca Öğrenci 2'den izin isteyerek), sorunu hızlıca çözün veya geri döneceğinize söz verin, ve odağınızı değiştirmeden önce Öğrenci 2'nin başlaması için yeterli bilgiye sahip olduğundan emin olun."},
+  fb3:{c1:"Başarıyı özel olarak takdir eder — genel bir \"aferin\" değil",c2:"Onları boş bırakmak yerine ek bir zorluk sunar",c3:"Onu diğer öğrencilerle karşılaştırmaz",c4:"Beklemek yerine her zaman elini kaldırabileceğini hatırlatır ve hazır hissediyorsa kendi başına ilerleme seçeneği verir",
+    verdictOk:"Bu, 2.4'ün sadece hızı değil, zorluğu da ayarlamaktan kastettiği şeyin tam olarak kendisi. Başarıyı adlandırmak, daha fazlasını sunmak ve elini kaldırmakta veya kendi başına ilerlemekte özgür olduğunu hatırlatmak, hepsi 2.5'teki motivasyon anlarına bağlanır — beklemek onun tek seçeneği olmamalı.",
+    verdictBad:"Erken bitirmek bir motivasyon anıdır, bir duraklama değil: neyi iyi yaptığını özellikle adlandırın, sonra ona sadece beklemesini söylemek yerine üzerinde düşüneceği ekstra bir şey verin. Ayrıca kıpırdamadan oturmak zorunda olmadığını hatırlatın — sizi daha erken çağırmak için her zaman elini kaldırabilir veya kendini hazır hissediyorsa kendi başına devam edebilir; her iki durumda da yardım etmekten ve yaptıklarını incelemekten mutluluk duyarsınız.",
+    example:"💬 Örnek: \"Güzel, bunu beklenenden daha hızlı bitirdin — [ekstra özellik] eklemeyi denemek ister misin? Ve unutma, daha erken kontrol etmemi istersen her zaman elini kaldırabilirsin, veya kendini hazır hissediyorsan kendi başına devam edebilirsin.\""},
+  fb4:{c1:"Baskı altında bile cevabı vermez",c2:"Öğrencinin akıl yürütmesine yardımcı olmak için dersten bir kavram veya teori parçasını geri getirir — sadece kılavuza işaret etmek yerine",c3:"Sadece \"ne denedin?\" diye tekrar etmek yerine öğrenciyi farklı veya daha yaratıcı bir yaklaşıma iter",
+    verdictOk:"İyi içgüdüler — bu 2.6'nın en doğrudan durumu. Sadece cevabı vermek veya kılavuza işaret edip gitmek yerine köprü oldunuz: öğrenciyi zaten bildiği şeylerle yeniden bağladınız, böylece cevaba kendi başına akıl yürütebildi.",
+    verdictBad:"Bu modüldeki en önemli durum: \"genellikle bağımsız olduğu için sorun olmaz\" diyerek cevabı vermek tam olarak kaçınılması gereken hatadır. Ama sadece \"kılavuz orada\" demek de aynı şekilde algılanabilir — yardım etmek istemiyormuşsunuz gibi. Bunun yerine, siz kendiniz köprü olun: dersten bir kavramı geri getirin (\"...konusunu işlediğimizi hatırlıyor musun?\") ve onu bu konuda farklı bir şekilde düşünmeye itin. Hedef, öğrencinin yaratıcı olmayı ve kritik düşünmeyi pratik yapması, keşfi ona vermek değil, ona yol göstermenizdir.",
+    example:"💬 Örnek: \"Genellikle bunu hallettiğini biliyorum — [kavram] konusunu işlediğimizi hatırlıyor musun? Bir an için onu düşün. Bunu göz önünde bulundurarak, buna farklı bir şekilde yaklaşmayı deneyebilir misin?\""},
+  kw:{
+    warm:["lütfen","teşekkürler","teşekkür ederim","harika iş","aferin","tebrikler","çok iyi","gurur duyuyorum","görüşürüz","hemen dönerim"],
+    help:["elini kaldır","yardıma ihtiyacın","bana sor","seslen","ihtiyacın olursa","buradayım","yardım etmek için","senin için buradayım"],
+    goTo:["kontrol etmeye gidiyorum","kontrol edeceğim","gideceğim","öğrenci 1'i kontrol et","öğrenci 1'e git"],
+    inform:["izin","özür","bana biraz zaman ver","üç dakika","3 dakika","bir an","hızlı","bir dakika","birkaç dakika","hemen dönerim"],
+    finish:["çalışmaya başla","bağımsız çalış","kendin","başla","etkinliğe başla","başlayabilirsin","başlamaya hazır"],
+    ackSpecific:["bunu bitirdin","beklenenden daha hızlı","güzel iş","başardın","bitirdin","bu kadar hızlı","bu kadar çabuk"],
+    extraChallenge:["denemek ister misin","ek zorluk","özellik ekle","daha ileri götür","bonus","ek görev","eklemeyi dene"],
+    noCompare:["ile karşılaştırıldığında","diğerleri","diğer öğrenciler","diğerlerinden daha hızlı","diğerlerinin önünde","senden daha yavaş"],
+    autonomyReminder:["elini kaldır","hazır olduğunda","çekinme","istersen","ilerle","devam et eğer","sıradakine başla","kendin dene","hazır olduğunda","bana haber ver","kendini hazır hissediyorsan","kendin eğer"],
+    noAnswer:["ne denedin","buradan başlayalım","bir kez daha dene","atlamadan önce","bir deneme daha"],
+    bridgeTheory:["hatırlıyor musun","şunu hatırla","ne öğrendik","kavramı hatırla","gözden geçirelim","kural nedir","işlediğimizi düşün","hatırla","dersten","bunu işledik"],
+    creative:["başka bir yol","farklı bir yaklaşım","yaratıcı düşün","ne olurdu eğer denesen","beyin fırtınası","yaratıcı","farklı bir açı","yeni bir yol","yeni bir fikir"]
+  }
+};
+
+const GAME_IT={
+  sceneLabels:{1:"Scena 1 — La Lobby",2:"Scena 2 — La Stanza dello Studente 1",3:"Ritorno alla Lobby",4:"Scena 3 — Una Stanza Vuota",5:"Scena 4 — Arriva lo Studente 2",6:"Scena 5 — Di Nuovo lo Studente 1",7:"Scena 6 — Di Nuovo lo Studente 2"},
+  note:"Continua a prendere appunti man mano che procedi — compito, stato d'animo e prossimo check-in per ogni studente. Questa abitudine del 2.2 è ciò che rende gestibile tutta questa console.",
+  coverTitle:"Due Studenti, un Solo Tu — Simulazione della Console",
+  coverBody:"Stai per affrontare situazioni reali di console da una Parallel Lesson. Alcuni momenti sono a scelta multipla. Altri sono testo libero: scrivi esattamente cosa faresti e diresti, con le tue parole.",
+  enterBtn:"▶ Entra nella Console",
+  scene1Bubble:"Sei nella lobby della console e hai due studenti. Il tuo <b>Studente 1</b> è già entrato. Tra 10 minuti dovrebbe entrare il tuo secondo studente. Clicca su <b>Studente 1</b> per entrare nella stanza così può vederti.",
+  hotspot1Label:"Clicca su Studente 1",
+  scene2TieTo:"🔗 Collegato a: 2.5 Elogio e Motivazione + 2.6 Autonomia Crescente",
+  scene2Bubble:"Hai già accolto lo studente, spiegato la teoria e spiegato l'attività da fare. Sono passati 10 minuti. <b>Quale frase usi per allontanarti e salutare lo studente per un momento</b>, così puoi andare ad accogliere l'altro studente?",
+  sayLabel:"Scrivi esattamente cosa diresti:",
+  placeholder1:"Scrivi la tua frase di saluto allo studente...",
+  submitBtn:"Ottieni Feedback",
+  scene3Bubble:"Gestito bene. Ora è il momento di controllare il tuo secondo studente — clicca su <b>Studente 2</b>.",
+  hotspot2Label:"Clicca su Studente 2",
+  scene4TieTo:"🔗 Collegato a: 2.2 Memoria di Lavoro e Triage",
+  scene4Bubble:"Sembra che il tuo studente non sia ancora arrivato! <b>Cosa faresti?</b>",
+  choices:[
+    "Aspetta ancora un po', dentro il tempo dello Studente 2 — ti sei allontanato dallo Studente 1 solo un paio di minuti fa.",
+    "Torna subito nella stanza dello Studente 1, visto che è già arrivato.",
+    "Torna nella stanza dello Studente 1, perché aspettare da solo qui è peggio che controllare qualcuno attivo."
+  ],
+  scene5TieTo:"🔗 Collegato a: 2.2 Triage + 2.6 Bilanciare l'Aiuto",
+  scene5Bubble:"Lo Studente 2 è arrivato! Hai fatto l'introduzione e stai quasi per finire di spiegare l'attività che deve svolgere — ma <b>lo Studente 1 ha alzato la mano</b> nella propria stanza. <b>Cosa fai?</b>",
+  doSayLabel:"Descrivi cosa fai e cosa dici:",
+  placeholder2:"Scrivi cosa faresti e diresti...",
+  scene6Badge:"⏱️ Più Tardi — Di Nuovo lo Studente 1",
+  scene6TieTo:"🔗 Collegato a: 2.4 Approccio Individuale + 2.5 Motivazione",
+  scene6Bubble:"Un po' più tardi nella stessa lezione: <b>lo Studente 1</b> — lo stesso studente di prima — ha finito in anticipo il compito principale e sta semplicemente aspettando te. <b>Cosa fai prima, e cosa dici?</b>",
+  placeholder3:"Scrivi cosa faresti e diresti...",
+  scene7Badge:"⏱️ Più Tardi — Di Nuovo lo Studente 2",
+  scene7TieTo:"🔗 Collegato a: 2.6 Bilanciare Aiuto e Autonomia",
+  scene7Bubble:"Anche più tardi nella stessa lezione: è la settimana 6, e <b>lo Studente 2</b> — di solito sicuro di sé lavorando da solo — ti chiede di \"dargli semplicemente la risposta\". <b>Cosa fai prima, e cosa dici?</b>",
+  placeholder4:"Scrivi cosa faresti e diresti...",
+  completeTitle:"Simulazione Completata",
+  completeBody:"Hai attraversato l'intera console — due studenti, una stanza vuota, una mano alzata, un finale anticipato e uno studente sicuro di sé che chiede la risposta. Il Modulo 3 è completo.",
+  continueToModuleLbl:"Continua al Modulo {n} →",
+  backToDashboard:"← Torna alla Dashboard",
+  feedbackHeading:"Feedback",
+  continueLabel:"Avanti →",
+  finishLabel:"Termina la Simulazione →",
+  fb1:{c1:"Usa un tono caloroso e amichevole",c2:"Fa sapere allo studente che può alzare la mano / chiedere aiuto",
+    verdictOk:"Un saluto caloroso che ricorda allo studente che l'aiuto è sempre disponibile lo mantiene sicuro di sé e autonomo mentre sei via — è esattamente l'equilibrio a cui puntano sia il 2.5 che il 2.6.",
+    verdictBad:"Un saluto efficace ha bisogno di entrambi gli elementi: essere amichevole E ricordare che può alzare la mano se ha bisogno di aiuto. Questa rassicurazione conta tanto quanto il contenuto che hai appena insegnato — è ciò che gli permette di continuare a lavorare in autonomia mentre ti allontani.",
+    example:"💬 Esempio: \"Vado a salutare il mio altro studente per qualche minuto — continua così, e alza la mano se hai bisogno di me, torno subito!\""},
+  fbChoice:{
+    verdictOk:"Esatto — ricorda, il silenzio non significa mai automaticamente che uno studente va bene, questa è ancora la regola del 2.2. Ma ti sei allontanato dallo Studente 1 solo un paio di minuti fa, e questo è esattamente il momento in cui dovrebbe arrivare lo Studente 2. La scelta giusta è aspettare ancora un po' — dentro il tempo dello Studente 2, non rubandolo a qualcun altro.",
+    verdictBad:"Ripensa al 2.2: il silenzio non significa mai automaticamente che uno studente va bene. Ma qui non è questo il fattore decisivo — ti sei allontanato dallo Studente 1 solo un paio di minuti fa, e questo è esattamente il momento in cui dovrebbe arrivare lo Studente 2. Piombare ora nella stanza dello Studente 1 interrompe il suo lavoro autonomo troppo presto; aspettare ancora un po', dentro il tempo dello Studente 2, è la scelta giusta."},
+  fb2:{c1:"Va a controllare lo Studente 1 invece di ignorare la mano alzata",c2:"Dice allo Studente 2 che ha bisogno di un breve momento (es. \"circa 3 minuti\") prima di allontanarsi",c3:"Si assicura che lo Studente 2 abbia ciò che serve per iniziare a lavorare in autonomia",
+    verdictOk:"Ottimo giudizio — lo Studente 1 si sente ascoltato, e lo Studente 2 non resta a metà spiegazione senza un modo per iniziare a lavorare. Questo equilibrio tra il triage del 2.2 e l'autonomia del 2.6 è esattamente l'obiettivo di questa scena.",
+    verdictBad:"L'obiettivo qui è che lo Studente 1 si senta ascoltato <em>e</em> che lo Studente 2 possa iniziare a lavorare in autonomia, senza che nessuno dei due si senta abbandonato: controlla lo Studente 1 (chiedendo prima brevemente il permesso allo Studente 2), risolvi rapidamente o promette di tornare, e assicurati che lo Studente 2 abbia abbastanza per iniziare prima di spostare la tua attenzione."},
+  fb3:{c1:"Riconosce il traguardo in modo specifico — non un generico \"bravo\"",c2:"Offre una sfida extra invece di lasciarlo con nulla da fare",c3:"Non lo confronta con gli altri studenti",c4:"Gli ricorda che può alzare la mano in qualsiasi momento invece di aspettare, e gli dà la possibilità di andare avanti da solo se si sente pronto",
+    verdictOk:"Questo è esattamente ciò che il 2.4 intende per adattare la sfida, non solo il ritmo. Nominare il successo, offrire di più, e ricordargli che è libero di alzare la mano o continuare da solo, tutto questo si collega ai momenti di motivazione del 2.5 — aspettare non dovrebbe essere la sua unica opzione.",
+    verdictBad:"Finire in anticipo è un momento di motivazione, non una pausa: nomina in modo specifico cosa ha fatto bene, poi dagli qualcosa in più su cui lavorare invece di dirgli semplicemente di aspettare. Ricordagli anche che non deve stare fermo — può alzare la mano in qualsiasi momento per chiamarti prima, o continuare da solo se si sente a suo agio; in entrambi i casi, sei felice di aiutarlo e rivedere cosa ha fatto.",
+    example:"💬 Esempio: \"Bravo, hai finito più velocemente del previsto — vuoi provare ad aggiungere [funzionalità extra]? E ricorda, puoi alzare la mano in qualsiasi momento se vuoi che lo controlli prima, oppure continuare da solo se ti senti a tuo agio.\""},
+  fb4:{c1:"Non fornisce la risposta, nemmeno sotto pressione",c2:"Richiama un concetto o un pezzo di teoria della lezione per aiutare lo studente a ragionarci sopra — invece di limitarsi a indicare la guida",c3:"Spinge lo studente verso un approccio diverso o più creativo, invece di ripetere semplicemente \"cosa hai provato?\"",
+    verdictOk:"Buon istinto — questo è il caso più diretto del 2.6. Invece di dare semplicemente la risposta o indicare la guida e andartene, sei diventato il ponte: hai ricollegato lo studente a ciò che già sapeva, così potesse ragionare da solo fino alla risposta.",
+    verdictBad:"Questo è il caso più importante del modulo: dare la risposta \"perché di solito è autonomo, quindi non fa nulla\" è esattamente l'errore da evitare. Ma anche dire semplicemente \"la guida è lì\" può avere lo stesso effetto — come se non volessi aiutare. Invece, diventa tu il ponte: richiama un concetto della lezione (\"ricordi quando abbiamo trattato...?\"), e spingilo verso un modo diverso di pensarci. L'obiettivo è che lo studente pratichi la creatività e il pensiero critico, con te che guidi — non che consegni — la scoperta.",
+    example:"💬 Esempio: \"Lo sai fare, di solito — ricordi quando abbiamo trattato [concetto]? Pensaci un attimo. Considerando questo, in che altro modo potresti provare ad affrontarlo?\""},
+  kw:{
+    warm:["per favore","grazie","ottimo lavoro","bravo","fantastico","ben fatto","complimenti","sono orgoglioso","ci vediamo","torno subito"],
+    help:["alza la mano","hai bisogno di aiuto","chiedimi","chiamami","se hai bisogno","sono qui","qui per aiutarti","qui per te"],
+    goTo:["vado a controllare","controllerò","vado da","controlla lo studente 1","vai dallo studente 1"],
+    inform:["permesso","scusa","dammi qualche minuto","tre minuti","3 minuti","un momento","veloce","un attimo","qualche minuto","torno subito"],
+    finish:["inizia a lavorare","lavorare in autonomia","da solo","comincia","inizia l'attività","puoi iniziare","pronto per iniziare"],
+    ackSpecific:["hai finito","più velocemente","ottimo lavoro su","ce l'hai fatta","hai finito","così veloce","così rapidamente"],
+    extraChallenge:["vuoi provare","sfida extra","aggiungere una funzione","andare oltre","bonus","compito extra","provare ad aggiungere"],
+    noCompare:["rispetto a","gli altri sono","altri studenti","più veloce degli altri","avanti agli altri","più lento di te"],
+    autonomyReminder:["alza la mano","quando sei pronto","sentiti libero","se vuoi","vai avanti","continua se","inizia il prossimo","provaci da solo","quando sei pronto","fammi sapere quando","se ti senti a tuo agio","da solo se"],
+    noAnswer:["cosa hai provato","iniziamo da lì","prova ancora una volta","prima che intervenga","un altro tentativo"],
+    bridgeTheory:["ricordi quando","pensa a","cosa abbiamo imparato","ricorda il concetto","rivediamo","qual è la regola per","pensa a cosa abbiamo trattato","ricorda","dalla lezione","abbiamo trattato questo"],
+    creative:["un altro modo","un approccio diverso","pensa in modo creativo","cosa succederebbe se provassi","brainstorming","creativo","un'angolazione diversa","un nuovo modo","una nuova idea"]
+  }
+};
+
+/* ───────────────────────── LANGUAGE REGISTRY ───────────────────────── */
+const LANGS={
+  en:{modules:MODULES_EN,quiz:QUIZ_EN,str:STR_EN,game:GAME_EN},
+  pl:{modules:MODULES_PL,quiz:QUIZ_PL,str:STR_PL,game:GAME_PL},
+  tr:{modules:MODULES_TR,quiz:QUIZ_TR,str:STR_TR,game:GAME_TR},
+  it:{modules:MODULES_IT,quiz:QUIZ_IT,str:STR_IT,game:GAME_IT}
+};
+function T(key,vars){
+  let s=(STR&&STR[key]!=null)?STR[key]:key;
+  if(vars){ Object.keys(vars).forEach(k=>{ s=s.split("{"+k+"}").join(vars[k]); }); }
+  return s;
+}
+function applyStaticI18n(){
+  document.querySelectorAll(".logo-sub").forEach(el=>el.textContent=T("logoSub"));
+  const eb=document.getElementById("heroEyebrowTxt"); if(eb) eb.textContent=T("heroEyebrow");
+  const h1=document.getElementById("heroH1"); if(h1) h1.innerHTML=T("heroTitlePre")+' <span class="h-pill">Parallel Lessons</span>';
+  const ip=document.getElementById("heroIntroP"); if(ip) ip.textContent=T("heroIntro");
+  const r1=document.getElementById("heroReason1Txt"); if(r1) r1.textContent=T("heroReason1");
+  const r2=document.getElementById("heroReason2Txt"); if(r2) r2.textContent=T("heroReason2");
+  const r3=document.getElementById("heroReason3Txt"); if(r3) r3.textContent=T("heroReason3");
+  const wp=document.getElementById("heroWorkP"); if(wp) wp.textContent=T("heroWork");
+  const sb=document.getElementById("startBtnEl"); if(sb) sb.textContent=T("startBtn");
+  document.querySelectorAll(".slbl").forEach(el=>el.textContent=T("learningPath"));
+  document.querySelectorAll(".rpg-tag").forEach(el=>el.textContent=T("rpgTag"));
+}
+function toggleLang(e){ e.stopPropagation(); document.getElementById("langMenu").classList.toggle("show"); }
+document.addEventListener("click",function(){ const m=document.getElementById("langMenu"); if(m) m.classList.remove("show"); });
+function setLang(lang){
+  if(!LANGS[lang]) return;
+  LANG=lang;
+  localStorage.setItem(LANG_KEY,lang);
+  const d=LANGS[lang];
+  MODULES=d.modules; QUIZ=d.quiz; STR=d.str; G=d.game;
+  document.documentElement.lang=lang;
+  const flagMap={en:"🇬🇧",pl:"🇵🇱",tr:"🇹🇷",it:"🇮🇹"};
+  const btn=document.getElementById("langBtn");
+  if(btn) btn.innerHTML=flagMap[lang]+" "+lang.toUpperCase()+' <span style="font-size:10px">▾</span>';
+  document.querySelectorAll(".lang-item").forEach(it=>it.classList.toggle("active",it.getAttribute("data-lang")===lang));
+  const menu=document.getElementById("langMenu"); if(menu) menu.classList.remove("show");
+  applyStaticI18n();
+  goHome();
+}
+
 /* ───────────────────────── CONSOLE SIMULATION (Module 3) ───────────────────────── */
 /* The tutor plays through real console situations and always gets feedback tied
    back to the theory just covered, then continues to the next scene. */
 let rpgStep=0;
-const GM_IMG='Game_module3/';
-const GM_SCENE_LABELS={1:'Scene 1 — The Lobby',2:"Scene 2 — Student 1's Room",3:'Back to the Lobby',4:'Scene 3 — An Empty Room',5:'Scene 4 — Student 2 Arrives',6:'Scene 5 — Student C',7:'Scene 6 — Student D'};
+const GM_IMG="Game_module3/";
+const GM_IMG_SUFFIX={en:"",pl:"_PL",tr:"_TR",it:"_IT"};
+function gmImg(baseName){ return GM_IMG+baseName+(GM_IMG_SUFFIX[LANG]||"")+".png"; }
 function kwHit(text,list){ const t=text.toLowerCase(); return list.some(w=>t.includes(w)); }
 function gmNote(){
-  return '<div class="rpg-note"><span class="ic">📝</span><span>Keep jotting a quick note as you go — task, mood, and next check-in time for each student. That habit from 2.2 is what keeps this whole console manageable.</span></div>';
+  return '<div class="rpg-note"><span class="ic">📝</span><span>'+G.note+"</span></div>";
 }
 function gmHotspot(left,top,label,onclick){
-  return '<div class="rpg-hotspot" style="left:'+left+'%;top:'+top+'%" onclick="'+onclick+'"><div class="rpg-arrow-hint">👇</div><div class="rpg-hint-lbl">'+label+'</div></div>';
+  return '<div class="rpg-hotspot" style="left:'+left+'%;top:'+top+'%" onclick="'+onclick+'"><div class="rpg-arrow-hint">👇</div><div class="rpg-hint-lbl">'+label+"</div></div>";
 }
 
 function startRPG(id){
@@ -641,7 +1660,7 @@ function startRPG(id){
 }
 function exitRPG(){ const m=MODULES.find(x=>x.id===currentModule); if(m) openModule(m); else goDashboard(); }
 function updateRPGProgressTag(){
-  document.getElementById('rpgScoreTag').textContent=GM_SCENE_LABELS[rpgStep]||'';
+  document.getElementById('rpgScoreTag').textContent=G.sceneLabels[rpgStep]||'';
 }
 
 function renderRPG(){
@@ -649,86 +1668,81 @@ function renderRPG(){
   const stage=document.getElementById('rpgStage');
 
   if(rpgStep===0){
-    stage.innerHTML='<div class="rpg-stage rpg-cover"><div class="rpg-cover-em">🎮</div><h2>Two Students, One You — A Console Simulation</h2><p>You are about to face real console situations from a Parallel Lesson. Some moments are multiple choice. Others are free text: write exactly what you would do and say, in your own words.</p>'
+    stage.innerHTML='<div class="rpg-stage rpg-cover"><div class="rpg-cover-em">🎮</div><h2>'+G.coverTitle+'</h2><p>'+G.coverBody+'</p>'
       +gmNote()
-      +'<button class="rpg-continue" onclick="rpgGo(1)">▶ Enter the Console</button></div>';
+      +'<button class="rpg-continue" onclick="rpgGo(1)">'+G.enterBtn+'</button></div>';
     return;
   }
 
   if(rpgStep===1){
-    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Lobby.png" alt="Console lobby with Student 1 and Student 2 panels">'
-      +gmHotspot(25.3,53.6,'Click Student 1','rpgGo(2)')
+    stage.innerHTML='<div class="rpg-frame"><img src="'+gmImg('Lobby')+'" alt="Console lobby with Student 1 and Student 2 panels">'
+      +gmHotspot(25.3,53.6,G.hotspot1Label,'rpgGo(2)')
       +'</div>'
       +gmNote()
-      +'<div class="rpg-bubble">You\'re in the lobby of the console and you have two students. Your <b>Student 1</b> has already joined. In 10 minutes your second student should join. Click on <b>Student 1</b> to enter the room so they can see you.</div>';
+      +'<div class="rpg-bubble">'+G.scene1Bubble+'</div>';
     return;
   }
 
   if(rpgStep===2){
-    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student1.png" alt="Tutor in Student 1\'s room"></div>'
-      +'<div class="rpg-eyebrow">🔗 Ties to: 2.5 Praise &amp; Motivation + 2.6 Growing Independence</div>'
-      +'<div class="rpg-bubble">You\'ve already welcomed the student, explained the theory, and explained the activity to do. 10 minutes have passed. <b>What phrase do you use to step away and say goodbye to the student for a moment</b>, so you can go welcome your other student?</div>'
-      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Type exactly what you would say:</label><textarea class="rpg-input" id="gmA1" placeholder="Type your farewell phrase to the student..." oninput="gmCheckReady(1)"></textarea></label>'
-      +'<button class="rpg-submit" id="gmSubmit1" onclick="gmSubmit1()" disabled>Get Feedback</button>';
+    stage.innerHTML='<div class="rpg-frame"><img src="'+gmImg('Student1')+'" alt="Tutor in Student 1\'s room"></div>'
+      +'<div class="rpg-eyebrow">'+G.scene2TieTo+'</div>'
+      +'<div class="rpg-bubble">'+G.scene2Bubble+'</div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">'+G.sayLabel+'</label><textarea class="rpg-input" id="gmA1" placeholder="'+G.placeholder1+'" oninput="gmCheckReady(1)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit1" onclick="gmSubmit1()" disabled>'+G.submitBtn+'</button>';
     return;
   }
 
   if(rpgStep===3){
-    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Lobby.png" alt="Console lobby with Student 1 and Student 2 panels">'
-      +gmHotspot(74.6,53.6,'Click Student 2','rpgGo(4)')
+    stage.innerHTML='<div class="rpg-frame"><img src="'+gmImg('Lobby')+'" alt="Console lobby with Student 1 and Student 2 panels">'
+      +gmHotspot(74.6,53.6,G.hotspot2Label,'rpgGo(4)')
       +'</div>'
-      +'<div class="rpg-bubble">Nicely handled. Now it\'s time to check on your second student — click on <b>Student 2</b>.</div>';
+      +'<div class="rpg-bubble">'+G.scene3Bubble+'</div>';
     return;
   }
 
   if(rpgStep===4){
-    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student1_1.png" alt="Student 2\'s room, empty"></div>'
-      +'<div class="rpg-eyebrow">🔗 Ties to: 2.2 Working-Memory &amp; Triage</div>'
-      +'<div class="rpg-bubble">Looks like your student hasn\'t arrived yet! <b>What would you do?</b></div>'
+    stage.innerHTML='<div class="rpg-frame"><img src="'+gmImg('Student1_1')+'" alt="Student 2\'s room, empty"></div>'
+      +'<div class="rpg-eyebrow">'+G.scene4TieTo+'</div>'
+      +'<div class="rpg-bubble">'+G.scene4Bubble+'</div>'
       +'<div class="rpg-choice-list" id="gmChoices"></div>';
-    const opts=[
-      "Wait a little longer, inside Student 2's own time — you only just stepped away from Student 1 a couple of minutes ago.",
-      "Go back to Student 1's room right away, since they've already arrived.",
-      "Go back to Student 1's room, since waiting alone here is worse than checking in on someone active."
-    ];
     const box=document.getElementById('gmChoices');
-    opts.forEach((o,idx)=>{ const b=document.createElement('button'); b.className='qopt'; b.textContent=o; b.onclick=()=>gmAnswerChoice(idx); box.appendChild(b); });
+    G.choices.forEach((o,idx)=>{ const b=document.createElement('button'); b.className='qopt'; b.textContent=o; b.onclick=()=>gmAnswerChoice(idx); box.appendChild(b); });
     return;
   }
 
   if(rpgStep===5){
-    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student2.png" alt="Tutor in Student 2\'s room"></div>'
-      +'<div class="rpg-eyebrow">🔗 Ties to: 2.2 Triage + 2.6 Balancing Help</div>'
-      +'<div class="rpg-bubble">Student 2 has arrived! You gave the introduction and are almost done explaining the activity they need to do — but <b>Student 1 has raised their hand</b> back in their own room. <b>What do you do?</b></div>'
-      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Describe what you do and what you say:</label><textarea class="rpg-input" id="gmA2" placeholder="Type what you would do and say..." oninput="gmCheckReady(2)"></textarea></label>'
-      +'<button class="rpg-submit" id="gmSubmit2" onclick="gmSubmit2()" disabled>Get Feedback</button>';
+    stage.innerHTML='<div class="rpg-frame"><img src="'+gmImg('Student2')+'" alt="Tutor in Student 2\'s room"></div>'
+      +'<div class="rpg-eyebrow">'+G.scene5TieTo+'</div>'
+      +'<div class="rpg-bubble">'+G.scene5Bubble+'</div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">'+G.doSayLabel+'</label><textarea class="rpg-input" id="gmA2" placeholder="'+G.placeholder2+'" oninput="gmCheckReady(2)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit2" onclick="gmSubmit2()" disabled>'+G.submitBtn+'</button>';
     return;
   }
 
   if(rpgStep===6){
-    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student1.png" alt="Tutor back with Student 1, later in the lesson"><div class="rpg-frame-badge">⏱️ Later — Student 1 Again</div></div>'
-      +'<div class="rpg-eyebrow">🔗 Ties to: 2.4 Individual Approach + 2.5 Motivation</div>'
-      +'<div class="rpg-bubble">A little later in the same lesson: <b>Student 1</b> — the same student from before — finished the main task early and is just waiting for you. <b>What do you do first, and what do you say?</b></div>'
-      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Describe what you do and what you say:</label><textarea class="rpg-input" id="gmA3" placeholder="Type what you would do and say..." oninput="gmCheckReady(3)"></textarea></label>'
-      +'<button class="rpg-submit" id="gmSubmit3" onclick="gmSubmit3()" disabled>Get Feedback</button>';
+    stage.innerHTML='<div class="rpg-frame"><img src="'+gmImg('Student1')+'" alt="Tutor back with Student 1, later in the lesson"><div class="rpg-frame-badge">'+G.scene6Badge+'</div></div>'
+      +'<div class="rpg-eyebrow">'+G.scene6TieTo+'</div>'
+      +'<div class="rpg-bubble">'+G.scene6Bubble+'</div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">'+G.doSayLabel+'</label><textarea class="rpg-input" id="gmA3" placeholder="'+G.placeholder3+'" oninput="gmCheckReady(3)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit3" onclick="gmSubmit3()" disabled>'+G.submitBtn+'</button>';
     return;
   }
 
   if(rpgStep===7){
-    stage.innerHTML='<div class="rpg-frame"><img src="'+GM_IMG+'Student2.png" alt="Tutor back with Student 2, later in the lesson"><div class="rpg-frame-badge">⏱️ Later — Student 2 Again</div></div>'
-      +'<div class="rpg-eyebrow">🔗 Ties to: 2.6 Balancing Help &amp; Independence</div>'
-      +'<div class="rpg-bubble">Also later in the same lesson: it\'s week 6, and <b>Student 2</b> — who is usually confident working on their own — asks you to "just give me the answer." <b>What do you do first, and what do you say?</b></div>'
-      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">Describe what you do and what you say:</label><textarea class="rpg-input" id="gmA4" placeholder="Type what you would do and say..." oninput="gmCheckReady(4)"></textarea></label>'
-      +'<button class="rpg-submit" id="gmSubmit4" onclick="gmSubmit4()" disabled>Get Feedback</button>';
+    stage.innerHTML='<div class="rpg-frame"><img src="'+gmImg('Student2')+'" alt="Tutor back with Student 2, later in the lesson"><div class="rpg-frame-badge">'+G.scene7Badge+'</div></div>'
+      +'<div class="rpg-eyebrow">'+G.scene7TieTo+'</div>'
+      +'<div class="rpg-bubble">'+G.scene7Bubble+'</div>'
+      +'<label class="rpg-field"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:6px">'+G.doSayLabel+'</label><textarea class="rpg-input" id="gmA4" placeholder="'+G.placeholder4+'" oninput="gmCheckReady(4)"></textarea></label>'
+      +'<button class="rpg-submit" id="gmSubmit4" onclick="gmSubmit4()" disabled>'+G.submitBtn+'</button>';
     return;
   }
 
   if(rpgStep===8){
     setResult(currentModule,100,true);
     const next=MODULES.find(x=>x.id===currentModule+1);
-    stage.innerHTML='<div class="rpg-stage rpg-cover"><div class="rpg-cover-em">🎉</div><h2>Simulation Complete</h2><p>You walked through the full console — two students, an empty room, a raised hand, an early finish, and a confident student asking for the answer. Module 3 is complete.</p>'
-      +(next?('<button class="bdark" style="margin-top:10px" onclick="openModule(MODULES.find(x=>x.id=='+next.id+'))">Continue to Module '+next.id+' →</button>'):'')
-      +'<button class="bline" onclick="goDashboard()">← Back to Dashboard</button></div>';
+    stage.innerHTML='<div class="rpg-stage rpg-cover"><div class="rpg-cover-em">🎉</div><h2>'+G.completeTitle+'</h2><p>'+G.completeBody+'</p>'
+      +(next?('<button class="bdark" style="margin-top:10px" onclick="openModule(MODULES.find(x=>x.id=='+next.id+'))">'+G.continueToModuleLbl.split("{n}").join(next.id)+'</button>'):'')
+      +'<button class="bline" onclick="goDashboard()">'+G.backToDashboard+'</button></div>';
     return;
   }
 }
@@ -742,35 +1756,18 @@ function gmCheckReady(which){
   if(ta&&btn) btn.disabled=ta.value.trim().length<10;
 }
 
-const KW={
-  warm:["please","thanks","thank you","great job","good job","awesome","well done","nice work","proud","excellent","doing great","you're doing","see you","back soon"],
-  help:["raise your hand","hand up","need help","ask me","call me","shout if","if you need","wave","flag me","i'm here","here to help","here for you"],
-  goTo:["go check","go see","go to","head over","pop over","visit","stop by","swing by","go over","check on student 1","go to student 1"],
-  inform:["permission","excuse me","give me a few minutes","three minutes","3 minutes","just a moment","quick","one moment","couple of minutes","be right back","a few minutes"],
-  finish:["finish explaining","start working","work independently","on your own","get started","begin the activity","so you can start","ready to start"],
-  ackSpecific:["finished that","faster than","nice work on","you nailed","you got through","you finished","that fast","that quickly"],
-  extraChallenge:["want to try","extra challenge","add a feature","take it further","bonus","stretch goal","try adding","another challenge"],
-  noCompare:["compared to","others are","other students","faster than the rest","ahead of the others","slower than you"],
-  autonomyReminder:["raise your hand","hand up","whenever you're ready","feel free to","if you'd like","move ahead","keep going if","start the next","go ahead and try","when you're ready","let me know when","if you feel comfortable","on your own if"],
-  noAnswer:["what have you tried","let's start there","try once more","before i jump in","one more try","try it once more"],
-  bridgeTheory:["remember when we","think back to","what did we learn","remember the concept","let's review","what's the rule for","think about what we covered","recall","what do you remember about","we covered this","from the lesson"],
-  creative:["another way","different approach","think creatively","what if you tried","brainstorm","creative","different angle","other way","new idea"]
-};
-
 function gmSubmit1(){
   const text=document.getElementById('gmA1').value;
-  const hitWarm=kwHit(text,KW.warm), hitHelp=kwHit(text,KW.help);
+  const hitWarm=kwHit(text,G.kw.warm), hitHelp=kwHit(text,G.kw.help);
   const checklist='<div class="rpg-checklist">'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitWarm?'✅':'❌')+'</span><span>Uses a warm, friendly tone</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitHelp?'✅':'❌')+'</span><span>Lets the student know they can raise their hand / ask for help</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitWarm?'✅':'❌')+'</span><span>'+G.fb1.c1+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitHelp?'✅':'❌')+'</span><span>'+G.fb1.c2+'</span></div>'
     +'</div>';
   const ok=hitWarm&&hitHelp;
-  const verdict=ok
-    ?"A warm goodbye that reminds the student help is always available keeps them confident and independent while you're away — that's the balance 2.5 and 2.6 are both pointing at."
-    :"A strong farewell needs both pieces: friendly AND a reminder that they can raise their hand if they need help. That reassurance matters as much as the content you just taught — it's what lets them keep working independently while you step away.";
+  const verdict=ok?G.fb1.verdictOk:G.fb1.verdictBad;
   const stage=document.getElementById('rpgStage');
-  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">💬 Example: "I\'m going to say hi to my other student for a few minutes — keep going, and raise your hand if you need me, I\'ll be right back!"</div></div>'
-    +'<button class="rpg-continue" onclick="rpgGo(3)">Continue →</button>';
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">'+G.feedbackHeading+'</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">'+G.fb1.example+'</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(3)">'+G.continueLabel+'</button>';
   window.scrollTo(0,document.body.scrollHeight);
 }
 
@@ -779,70 +1776,62 @@ function gmAnswerChoice(idx){
   const correct=0;
   const ok=idx===correct;
   document.querySelectorAll('#gmChoices .qopt').forEach((b,i)=>{ b.classList.add('answered'); if(i===correct)b.classList.add('correct'); else if(i===idx&&!ok)b.classList.add('wrong'); });
-  const verdict=ok
-    ?"Exactly — remember, silence never automatically means a student is fine, that's still the 2.2 rule. But you only just left Student 1 a couple of minutes ago, and this is exactly the moment Student 2 is due. The right call is to wait a little longer — inside Student 2's own time, not by cutting into anyone else's."
-    :"Think back to 2.2: silence never automatically means a student is fine. But that's not the deciding factor here — you only just left Student 1 a couple of minutes ago, and this is exactly when Student 2 is due. Jumping into Student 1's room now interrupts their independent work far too soon; waiting a little longer, within Student 2's own time, is the right call.";
+  const verdict=ok?G.fbChoice.verdictOk:G.fbChoice.verdictBad;
   const stage=document.getElementById('rpgStage');
-  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4><div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div></div>'
-    +'<button class="rpg-continue" onclick="rpgGo(5)">Continue →</button>';
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">'+G.feedbackHeading+'</h4><div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(5)">'+G.continueLabel+'</button>';
   window.scrollTo(0,document.body.scrollHeight);
 }
 
 function gmSubmit2(){
   const text=document.getElementById('gmA2').value;
-  const hitGo=kwHit(text,KW.goTo), hitInform=kwHit(text,KW.inform), hitFinish=kwHit(text,KW.finish);
+  const hitGo=kwHit(text,G.kw.goTo), hitInform=kwHit(text,G.kw.inform), hitFinish=kwHit(text,G.kw.finish);
   const checklist='<div class="rpg-checklist">'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitGo?'✅':'❌')+'</span><span>Goes to check on Student 1 instead of ignoring the raised hand</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitInform?'✅':'❌')+'</span><span>Tells Student 2 they need a brief moment (e.g. "about 3 minutes") before stepping away</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitFinish?'✅':'❌')+'</span><span>Makes sure Student 2 has what they need to start working independently</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitGo?'✅':'❌')+'</span><span>'+G.fb2.c1+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitInform?'✅':'❌')+'</span><span>'+G.fb2.c2+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitFinish?'✅':'❌')+'</span><span>'+G.fb2.c3+'</span></div>'
     +'</div>';
   const pts=(hitGo?1:0)+(hitInform?1:0)+(hitFinish?1:0);
   const ok=pts>=2;
-  const verdict=ok
-    ?"Strong judgment — Student 1 feels heard, and Student 2 isn't left mid-explanation without a way to start working. That balance between 2.2 triage and 2.6 independence is exactly the goal of this scene."
-    :"The goal here is for Student 1 to feel heard <em>and</em> for Student 2 to be able to start working independently, without either one feeling dropped: check on Student 1 (briefly asking Student 2's permission first), resolve it quickly or promise to come back, and make sure Student 2 has enough to get started before you switch focus.";
+  const verdict=ok?G.fb2.verdictOk:G.fb2.verdictBad;
   const stage=document.getElementById('rpgStage');
-  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div></div>'
-    +'<button class="rpg-continue" onclick="rpgGo(6)">Continue →</button>';
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">'+G.feedbackHeading+'</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(6)">'+G.continueLabel+'</button>';
   window.scrollTo(0,document.body.scrollHeight);
 }
 
 function gmSubmit3(){
   const text=document.getElementById('gmA3').value;
-  const hitAck=kwHit(text,KW.ackSpecific), hitChallenge=kwHit(text,KW.extraChallenge), hitNoCompare=!kwHit(text,KW.noCompare), hitAutonomy=kwHit(text,KW.autonomyReminder);
+  const hitAck=kwHit(text,G.kw.ackSpecific), hitChallenge=kwHit(text,G.kw.extraChallenge), hitNoCompare=!kwHit(text,G.kw.noCompare), hitAutonomy=kwHit(text,G.kw.autonomyReminder);
   const checklist='<div class="rpg-checklist">'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitAck?'✅':'❌')+'</span><span>Acknowledges the achievement specifically — not a generic "good job"</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitChallenge?'✅':'❌')+'</span><span>Offers an extra challenge instead of leaving them idle</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitNoCompare?'✅':'❌')+'</span><span>Doesn\'t compare them to the other students</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitAutonomy?'✅':'❌')+'</span><span>Reminds them they can raise their hand anytime instead of waiting, and gives them the choice to move ahead on their own if they feel ready</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitAck?'✅':'❌')+'</span><span>'+G.fb3.c1+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitChallenge?'✅':'❌')+'</span><span>'+G.fb3.c2+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitNoCompare?'✅':'❌')+'</span><span>'+G.fb3.c3+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitAutonomy?'✅':'❌')+'</span><span>'+G.fb3.c4+'</span></div>'
     +'</div>';
   const pts=(hitAck?1:0)+(hitChallenge?1:0)+(hitNoCompare?1:0)+(hitAutonomy?1:0);
   const ok=pts>=3;
-  const verdict=ok
-    ?"This is exactly what 2.4 means by adjusting the challenge, not just the pace. Naming the win, offering more, and reminding them they're free to raise a hand or keep going on their own all tie back to the motivation moments from 2.5 — waiting shouldn't be their only option."
-    :"Finishing early is a motivation moment, not a pause: name specifically what they did well, then hand them something extra to chew on instead of just telling them to wait. Also remind them they don't have to sit still — they can raise their hand anytime to call you over sooner, or keep going on their own if they feel comfortable; either way, you're happy to help and review what they've done.";
+  const verdict=ok?G.fb3.verdictOk:G.fb3.verdictBad;
   const stage=document.getElementById('rpgStage');
-  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">💬 Example: "Nice, you finished that faster than expected — want to try adding [extra feature]? And remember, you can raise your hand anytime if you want me to check it sooner, or keep going on your own if you\'re comfortable."</div></div>'
-    +'<button class="rpg-continue" onclick="rpgGo(7)">Continue →</button>';
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">'+G.feedbackHeading+'</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">'+G.fb3.example+'</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(7)">'+G.continueLabel+'</button>';
   window.scrollTo(0,document.body.scrollHeight);
 }
 
 function gmSubmit4(){
   const text=document.getElementById('gmA4').value;
-  const hitNoAnswer=kwHit(text,KW.noAnswer), hitBridge=kwHit(text,KW.bridgeTheory), hitCreative=kwHit(text,KW.creative);
+  const hitNoAnswer=kwHit(text,G.kw.noAnswer), hitBridge=kwHit(text,G.kw.bridgeTheory), hitCreative=kwHit(text,G.kw.creative);
   const checklist='<div class="rpg-checklist">'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitNoAnswer?'✅':'❌')+'</span><span>Doesn\'t hand over the answer, even under pressure</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitBridge?'✅':'❌')+'</span><span>Brings back a concept or piece of theory from the lesson to help the student reason it out — instead of just pointing at the guide</span></div>'
-    +'<div class="rpg-check-item"><span class="cic">'+(hitCreative?'✅':'❌')+'</span><span>Nudges the student toward a different or more creative approach, instead of just repeating "what have you tried?"</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitNoAnswer?'✅':'❌')+'</span><span>'+G.fb4.c1+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitBridge?'✅':'❌')+'</span><span>'+G.fb4.c2+'</span></div>'
+    +'<div class="rpg-check-item"><span class="cic">'+(hitCreative?'✅':'❌')+'</span><span>'+G.fb4.c3+'</span></div>'
     +'</div>';
   const pts=(hitNoAnswer?1:0)+(hitBridge?1:0)+(hitCreative?1:0);
   const ok=pts>=2;
-  const verdict=ok
-    ?"Good instincts — this is the most direct case of 2.6. Instead of just handing over the answer or pointing at the guide and walking away, you became the bridge: reconnecting the student to what they already know so they could reason their way to the answer themselves."
-    :'This is the most important case in the module: giving the answer "because they\'re usually independent, so it\'s fine" is exactly the mistake to avoid. But simply saying "the guide is right there" can land the same way — like you don\'t want to help. Instead, be the bridge yourself: bring back a concept from the lesson ("remember when we covered...?"), and nudge them toward a different way of thinking about it. The goal is for the student to practice being creative and thinking critically, with you guiding — not handing over — the discovery.';
+  const verdict=ok?G.fb4.verdictOk:G.fb4.verdictBad;
   const stage=document.getElementById('rpgStage');
-  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">Feedback</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">💬 Example: "I know you\'ve got this most of the time — remember when we covered [concept]? Think back to that for a second. Given that, what\'s a different way you could try approaching this?"</div></div>'
-    +'<button class="rpg-continue" onclick="rpgGo(8)">Finish the Simulation →</button>';
+  stage.innerHTML+='<div class="rpg-stage"><h4 style="font-family:\'Baloo 2\',sans-serif;margin-bottom:10px">'+G.feedbackHeading+'</h4>'+checklist+'<div class="rpg-verdict '+(ok?'ok':'bad')+'">'+verdict+'</div><div class="rpg-example">'+G.fb4.example+'</div></div>'
+    +'<button class="rpg-continue" onclick="rpgGo(8)">'+G.finishLabel+'</button>';
   window.scrollTo(0,document.body.scrollHeight);
 }
 
@@ -850,19 +1839,19 @@ function gmSubmit4(){
 function showResults(pct,passed){
   let acts='';
   const m=MODULES.find(x=>x.id===currentModule);
-  if(passed&&m.id<TOTAL) acts+='<button class="bdark" onclick="openModule(MODULES.find(x=>x.id=='+(m.id+1)+'))">Next Module →</button>';
-  if(passed&&m.id===TOTAL) acts+='<button class="bdark" onclick="showComplete()">What\'s Next →</button>';
-  acts+='<button class="bline" onclick="openModule(MODULES.find(x=>x.id=='+m.id+'))">Review Module '+m.id+'</button>';
-  acts+='<button class="bline" onclick="startQuiz('+m.id+')">Retake the Check</button>';
-  const scoreLine='You answered '+score+' / '+quizData.length+' correctly.';
-  const sub=scoreLine+(passed?' Module unlocked — nice work! 🎉':' You need 70% to unlock the next module — give it another go.');
-  document.getElementById('rbody').innerHTML='<div class="remi">'+(passed?'🎉':'😅')+'</div><div class="rtitle">'+(passed?'You Passed!':'Keep Studying')+'</div><div class="rpct '+(passed?'pass':'fail')+'">'+pct+'%</div><div class="rsub">'+sub+'</div>'+acts;
+  if(passed&&m.id<TOTAL) acts+='<button class="bdark" onclick="openModule(MODULES.find(x=>x.id=='+(m.id+1)+'))">'+T('nextModule')+'</button>';
+  if(passed&&m.id===TOTAL) acts+='<button class="bdark" onclick="showComplete()">'+T('whatsNext')+'</button>';
+  acts+='<button class="bline" onclick="openModule(MODULES.find(x=>x.id=='+m.id+'))">'+T('reviewModule',{n:m.id})+'</button>';
+  acts+='<button class="bline" onclick="startQuiz('+m.id+')">'+T('retakeCheck')+'</button>';
+  const scoreLine=T('answeredCorrectly',{score:score,total:quizData.length});
+  const sub=scoreLine+(passed?' '+T('moduleUnlocked'):' '+T('need70'));
+  document.getElementById('rbody').innerHTML='<div class="remi">'+(passed?'🎉':'😅')+'</div><div class="rtitle">'+(passed?T('youPassed'):T('keepStudying'))+'</div><div class="rpct '+(passed?'pass':'fail')+'">'+pct+'%</div><div class="rsub">'+sub+'</div>'+acts;
   showScreen('screen-results'); window.scrollTo(0,0); renderHome();
 }
 
 /* ───────────────────────── SELF-STUDY COMPLETE ───────────────────────── */
 function showComplete(){
-  document.getElementById('compbody').innerHTML='<div style="font-size:72px">🎉</div><h1 style="font-family:\'Baloo 2\',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.5px;margin-top:15px;color:var(--onbg)">Self-Study Complete!</h1><p style="color:var(--onbg2);margin-top:9px;font-size:15.5px;line-height:1.65">You\'ve worked through all '+TOTAL+' modules of the Parallel Lessons training.</p><div class="cert"><div class="clbl2">Next Step</div><h2>Join the Webinar</h2><p>Self-study gets you the theory and the mindset — now it\'s time to practice on a real console. The next step is attending the live webinar, where you\'ll reinforce everything you\'ve learned here with hands-on practice in an actual Parallel Group.</p></div><button class="bdark" onclick="goDashboard()">← Back to Dashboard</button>';
+  document.getElementById('compbody').innerHTML='<div style="font-size:72px">🎉</div><h1 style="font-family:\'Baloo 2\',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.5px;margin-top:15px;color:var(--onbg)">'+T('selfStudyComplete')+'</h1><p style="color:var(--onbg2);margin-top:9px;font-size:15.5px;line-height:1.65">'+T('workedThrough',{total:TOTAL})+'</p><div class="cert"><div class="clbl2">'+T('nextStepLbl')+'</div><h2>'+T('joinWebinar')+'</h2><p>'+T('webinarBody')+'</p></div><button class="bdark" onclick="goDashboard()">'+T('backToDashboard')+'</button>';
   showScreen('screen-complete'); window.scrollTo(0,0);
 }
 
@@ -909,6 +1898,21 @@ function showDevBadge(on){
   else if(b){ b.remove(); }
 }
 if(localStorage.getItem('kl-pl-devmode')==='1') showDevBadge(true);
+
+/* ───────────────────────── LANGUAGE INIT ───────────────────────── */
+(function initLang(){
+  const saved=localStorage.getItem(LANG_KEY);
+  const lang=LANGS[saved]?saved:'en';
+  LANG=lang;
+  const d=LANGS[lang];
+  MODULES=d.modules; QUIZ=d.quiz; STR=d.str; G=d.game;
+  document.documentElement.lang=lang;
+  const flagMap={en:'🇬🇧',pl:'🇵🇱',tr:'🇹🇷',it:'🇮🇹'};
+  const btn=document.getElementById('langBtn');
+  if(btn) btn.innerHTML=flagMap[lang]+' '+lang.toUpperCase()+' <span style="font-size:10px">▾</span>';
+  document.querySelectorAll('.lang-item').forEach(it=>it.classList.toggle('active',it.getAttribute('data-lang')===lang));
+  applyStaticI18n();
+})();
 </script>
 </body>
 </html>
