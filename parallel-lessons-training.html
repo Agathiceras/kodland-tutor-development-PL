@@ -381,7 +381,8 @@ body{background:var(--bg-gradient);color:var(--text);font-family:'Inter',sans-se
 <script>
 const PROG_KEY='kl-pl-progress';
 const LANG_KEY='kl-pl-lang';
-const TOTAL=5;
+const TOTAL=6;
+const EXAM_LINKS={en:'https://forms.gle/UEki8E7qVHDtVjWQ6',pl:'https://forms.gle/SjHQxWPkp1mwdwWr8',tr:'https://forms.gle/gAWAQdB4J4pMX2ve7',it:'https://forms.gle/B1pZKw6ecx9t4VLz7'};
 let currentModule=null, quizData=[], qi=0, score=0;
 let LANG='en', MODULES, QUIZ, STR, G;
 
@@ -562,6 +563,43 @@ const MODULES_EN=[
   {t:"🎮 Put It Into Practice: A Console Simulation",cards:[
     {type:'cute',h:'How this works',b:"You're about to face real console situations from a Parallel Lesson. Some moments are multiple choice. Others are free text: write exactly what you would do and say, in your own words. You'll always get feedback tying your answer back to the dashboard skills you just learned — situational awareness, attention flow, emotional intelligence, coaching, and tracking."}
   ]}
+ ]},
+{id:6,emoji:'🏁',title:"Final Exam & Wrap-Up",desc:"A short exam to complete before the webinar, plus a checklist and self-check to review beforehand.",final:true,
+ sections:[
+  {t:"📝 Before the Webinar",cards:[
+    {type:'text',b:"Complete this 9-question exam before the practical webinar. Finishing it doesn't just complete part of this training — it also reinforces what you've learned, so you walk into the webinar ready to practice, not to review."},
+    {type:'examlink',label:"📝 Take the Exam →"}
+  ]},
+  {t:"✅ Your Pre-Webinar Checklist",cards:[
+    {type:'text',b:"Keep this list nearby as you get ready for your first Parallel Lesson — a quick way to check you're covering the essentials, technical and pedagogical."},
+    {type:'hi',h:"🔧 Technical Essentials",b:"Make sure these are second nature before you go live."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'🖥️',h:'1. Opening the console correctly',b:"You know both ways to open it — via Schedule (30 minutes before) or your regular Groups list (60 minutes before, until the lesson ends) — and which one to use when."},
+      {ic:'🧩',h:'2. Understanding the Parallel Group structure',b:"You can explain that it's one container holding several individual student-groups, each with its own tracked attendance and projects — and that there are no WhatsApp groups in this format."},
+      {ic:'⏱️',h:'3. Knowing the timing structure',b:"You know every student always gets a full 60 minutes, and that your own session stretches to fit the group — with welcomes and check-ins staggered roughly every 10 minutes."}
+    ]},
+    {type:'hi',h:"🎯 Pedagogical Essentials",b:"These are the habits that make the format actually work, not just run."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'📝',h:'1. Taking notes on every student',b:"One line per student, per check-in: task / mood / blocker / next check-in time. Written down beats remembered."},
+      {ic:'🪜',h:'2. Keeping the lesson structure',b:"You run the 8 stages — connection, mood, homework, goal, demo & feedback, wrap-up, reflection, homework announced — every time, not just when there's time left."},
+      {ic:'🧭',h:'3. Promoting independence',b:"You default to a question or a hint before an answer, so students build the coaching-not-answers habit this format depends on."},
+      {ic:'⏳',h:'4. Managing your time across rotations',b:"You triage by who actually needs you first — not by visiting in a fixed \"fair\" order — and you protect the closing beat even when time is tight."},
+      {ic:'🤝',h:'5. Building a real connection with each student',b:"You use specific, personal references instead of generic check-ins, so five students feel like five relationships, not one lesson repeated five times."},
+      {ic:'💬',h:'6. Giving effective, specific feedback',b:"You name exactly what worked and what's next — \"good job\" alone doesn't answer any of the questions a student actually needs answered."},
+      {ic:'❤️',h:'7. Reading emotional states',b:"You catch a shift in tone, typing pace, or camera behavior early, and respond with empathy before logistics."}
+    ]},
+    {type:'downloadBtn',label:"⬇️ Download the Checklist"}
+  ]},
+  {t:"🪞 Self-Assessment",cards:[
+    {type:'list',h:"Ask yourself honestly before the webinar",items:[
+      "Can I open the console both ways without having to think about it?",
+      "Do I know the 8 lesson stages well enough to run them without checking notes?",
+      "When a student goes quiet, do I have a plan beyond just waiting?",
+      "Am I comfortable giving a hint instead of the answer when a student is stuck?",
+      "Do I have a simple note-taking habit I can actually keep up with live?",
+      "Could I explain, in my own words, why this format works for students ages 10+?"
+    ]}
+  ]}
  ]}
 ];
 
@@ -598,7 +636,7 @@ const STR_EN={
   heroReason1:"Understand what changes (and what doesn't) when you teach in this format.",
   heroReason2:"Learn how to navigate the console and the technical setup behind a Parallel Group.",
   heroReason3:"Practice the mindset with a role-play simulation — real decisions, real feedback.",
-  heroWork:"Work through 5 modules. Each one has a short check that unlocks the next — score 70%+ to move forward.",
+  heroWork:"Work through 6 modules. Each one has a short check that unlocks the next — score 70%+ to move forward.",
   startBtn:"🚀 Start Training",
   learningPath:"Your learning path",
   modulesAllDone:"All modules complete 🎉",
@@ -614,7 +652,7 @@ const STR_EN={
   hasShortCheck:"Has a short check",
   finalNum:"Final",
   nextStepWebinarTitle:"Next Step: The Webinar",
-  nextStepWebinarDesc:"See what comes after self-study once all 5 modules are complete.",
+  nextStepWebinarDesc:"See what comes after self-study once all 6 modules are complete.",
   unlocked:"Unlocked",
   wrapUp:"Wrap-up",
   moduleOfTotal:"Module {n} of {total}",
@@ -642,7 +680,10 @@ const STR_EN={
   joinWebinar:"Join the Webinar",
   webinarBody:"Self-study gets you the theory and the mindset — now it's time to practice on a real console. The next step is attending the live webinar, where you'll reinforce everything you've learned here with hands-on practice in an actual Parallel Group.",
   backToDashboard:"← Back to Dashboard",
-  rpgTag:"🎮 Module 5 · Simulation"
+  rpgTag:"🎮 Module 5 · Simulation",
+  markExamComplete:"✅ Mark Exam as Completed",
+  completedLbl:"✅ Completed",
+  finalExamTag:"External exam + checklist"
 };
 
 const STR_PL={
@@ -653,7 +694,7 @@ const STR_PL={
   heroReason1:"Zrozum, co się zmienia (a co nie) podczas nauczania w tym formacie.",
   heroReason2:"Naucz się poruszać po konsoli i konfiguracji technicznej Parallel Group.",
   heroReason3:"Przećwicz to podejście w symulacji z odgrywaniem ról — realne decyzje, realny feedback.",
-  heroWork:"Przejdź przez 5 modułów. Każdy ma krótki test, który odblokowuje następny — zdobądź 70%+, aby przejść dalej.",
+  heroWork:"Przejdź przez 6 modułów. Każdy ma krótki test, który odblokowuje następny — zdobądź 70%+, aby przejść dalej.",
   startBtn:"🚀 Zacznij szkolenie",
   learningPath:"Twoja ścieżka nauki",
   modulesAllDone:"Wszystkie moduły zakończone 🎉",
@@ -669,7 +710,7 @@ const STR_PL={
   hasShortCheck:"Zawiera krótki test",
   finalNum:"Finał",
   nextStepWebinarTitle:"Następny krok: webinar",
-  nextStepWebinarDesc:"Zobacz, co czeka Cię po samodzielnej nauce, gdy zakończysz wszystkie 5 modułów.",
+  nextStepWebinarDesc:"Zobacz, co czeka Cię po samodzielnej nauce, gdy zakończysz wszystkie 6 modułów.",
   unlocked:"Odblokowano",
   wrapUp:"Podsumowanie",
   moduleOfTotal:"Moduł {n} z {total}",
@@ -697,7 +738,10 @@ const STR_PL={
   joinWebinar:"Weź udział w webinarze",
   webinarBody:"Samodzielna nauka dała Ci teorię i sposób myślenia — teraz czas przećwiczyć to na prawdziwej konsoli. Następny krok to udział w webinarze na żywo, na którym utrwalisz wszystko, czego się tu nauczyłeś/aś, w praktyce w prawdziwej Parallel Group.",
   backToDashboard:"← Wróć do panelu",
-  rpgTag:"🎮 Moduł 5 · Symulacja"
+  rpgTag:"🎮 Moduł 5 · Symulacja",
+  markExamComplete:"✅ Oznacz egzamin jako zakończony",
+  completedLbl:"✅ Zakończono",
+  finalExamTag:"Egzamin zewnętrzny + checklista"
 };
 
 const STR_TR={
@@ -708,7 +752,7 @@ const STR_TR={
   heroReason1:"Bu formatta ders verirken neyin değişip neyin değişmediğini anlayın.",
   heroReason2:"Konsolda gezinmeyi ve bir Parallel Group'un teknik kurulumunu öğrenin.",
   heroReason3:"Rol yapma simülasyonuyla zihniyeti pratik yapın — gerçek kararlar, gerçek geri bildirim.",
-  heroWork:"5 modülü tamamlayın. Her birinde bir sonrakini açan kısa bir kontrol var — ilerlemek için %70+ puan alın.",
+  heroWork:"6 modülü tamamlayın. Her birinde bir sonrakini açan kısa bir kontrol var — ilerlemek için %70+ puan alın.",
   startBtn:"🚀 Eğitime Başla",
   learningPath:"Öğrenme yolunuz",
   modulesAllDone:"Tüm modüller tamamlandı 🎉",
@@ -724,7 +768,7 @@ const STR_TR={
   hasShortCheck:"Kısa bir kontrol içerir",
   finalNum:"Son",
   nextStepWebinarTitle:"Sonraki Adım: Webinar",
-  nextStepWebinarDesc:"5 modülün tamamı bittiğinde bireysel çalışmadan sonra ne geldiğini görün.",
+  nextStepWebinarDesc:"6 modülün tamamı bittiğinde bireysel çalışmadan sonra ne geldiğini görün.",
   unlocked:"Kilidi açıldı",
   wrapUp:"Özet",
   moduleOfTotal:"Modül {n} / {total}",
@@ -752,7 +796,10 @@ const STR_TR={
   joinWebinar:"Webinara Katılın",
   webinarBody:"Bireysel çalışma size teoriyi ve zihniyeti verdi — şimdi gerçek bir konsolda pratik yapma zamanı. Sonraki adım, gerçek bir Parallel Group'ta uygulamalı pratikle burada öğrendiklerinizi güçlendireceğiniz canlı webinara katılmaktır.",
   backToDashboard:"← Panele Dön",
-  rpgTag:"🎮 Modül 5 · Simülasyon"
+  rpgTag:"🎮 Modül 5 · Simülasyon",
+  markExamComplete:"✅ Sınavı Tamamlandı Olarak İşaretle",
+  completedLbl:"✅ Tamamlandı",
+  finalExamTag:"Harici sınav + kontrol listesi"
 };
 
 const STR_IT={
@@ -763,7 +810,7 @@ const STR_IT={
   heroReason1:"Capisci cosa cambia (e cosa non cambia) quando insegni in questo formato.",
   heroReason2:"Impara a navigare la console e la configurazione tecnica di un Parallel Group.",
   heroReason3:"Metti in pratica la mentalità con una simulazione di ruolo — decisioni reali, feedback reale.",
-  heroWork:"Completa 5 moduli. Ognuno ha una breve verifica che sblocca il successivo — ottieni almeno il 70% per andare avanti.",
+  heroWork:"Completa 6 moduli. Ognuno ha una breve verifica che sblocca il successivo — ottieni almeno il 70% per andare avanti.",
   startBtn:"🚀 Inizia la formazione",
   learningPath:"Il tuo percorso di apprendimento",
   modulesAllDone:"Tutti i moduli completati 🎉",
@@ -779,7 +826,7 @@ const STR_IT={
   hasShortCheck:"Contiene una breve verifica",
   finalNum:"Finale",
   nextStepWebinarTitle:"Prossimo passo: il webinar",
-  nextStepWebinarDesc:"Scopri cosa viene dopo l'autoapprendimento, una volta completati tutti i 5 moduli.",
+  nextStepWebinarDesc:"Scopri cosa viene dopo l'autoapprendimento, una volta completati tutti i 6 moduli.",
   unlocked:"Sbloccato",
   wrapUp:"Riepilogo",
   moduleOfTotal:"Modulo {n} di {total}",
@@ -807,7 +854,10 @@ const STR_IT={
   joinWebinar:"Partecipa al webinar",
   webinarBody:"L'autoapprendimento ti ha dato la teoria e la mentalità giusta — ora è il momento di esercitarti su una console reale. Il prossimo passo è partecipare al webinar dal vivo, dove consoliderai tutto ciò che hai imparato qui con pratica concreta in un vero Parallel Group.",
   backToDashboard:"← Torna alla dashboard",
-  rpgTag:"🎮 Modulo 5 · Simulazione"
+  rpgTag:"🎮 Modulo 5 · Simulazione",
+  markExamComplete:"✅ Segna l'esame come completato",
+  completedLbl:"✅ Completato",
+  finalExamTag:"Esame esterno + checklist"
 };
 
 /* ───────────────────────── MODULE CONTENT (PL) ───────────────────────── */
@@ -986,6 +1036,43 @@ const MODULES_PL=[
   ]},
   {t:"🎮 Zastosuj to w praktyce: symulacja konsoli",cards:[
     {type:"cute",h:"Jak to działa",b:"Za chwilę staniesz przed prawdziwymi sytuacjami z konsoli w Parallel Lesson. Niektóre momenty są testem wielokrotnego wyboru. Inne to wolny tekst: napisz dokładnie, co byś zrobił/a i powiedział/a, własnymi słowami. Zawsze otrzymasz feedback, który łączy twoją odpowiedź z umiejętnościami panelu, których właśnie się nauczyłeś/aś — świadomością sytuacyjną, przepływem uwagi, inteligencją emocjonalną, coachingiem i śledzeniem."}
+  ]}
+ ]},
+{id:6,emoji:"🏁",title:"Egzamin końcowy i podsumowanie",desc:"Krótki egzamin do zrobienia przed webinarem, plus checklista i samoocena do przejrzenia wcześniej.",final:true,
+ sections:[
+  {t:"📝 Przed webinarem",cards:[
+    {type:"text",b:"Uzupełnij ten egzamin złożony z 9 pytań przed praktycznym webinarem. Jego wykonanie nie tylko kończy część tego szkolenia — utrwala też to, czego się nauczyłeś/aś, dzięki czemu na webinar przychodzisz gotowy/a do praktyki, a nie do powtórki."},
+    {type:"examlink",label:"📝 Przejdź do egzaminu →"}
+  ]},
+  {t:"✅ Twoja checklista przed webinarem",cards:[
+    {type:"text",b:"Miej tę listę pod ręką, gdy szykujesz się na swoją pierwszą Parallel Lesson — to szybki sposób, aby sprawdzić, że masz pokryte najważniejsze aspekty, techniczne i pedagogiczne."},
+    {type:"hi",h:"🔧 Najważniejsze aspekty techniczne",b:"Upewnij się, że to jest dla ciebie naturalne, zanim zaczniesz lekcję na żywo."},
+    {type:"iconlist",cols:1,items:[
+      {ic:"🖥️",h:"1. Prawidłowe otwieranie konsoli",b:"Znasz obie metody otwierania: przez Harmonogram (30 minut wcześniej) lub przez zwykłą listę grup (60 minut wcześniej, aż do zakończenia lekcji) — i wiesz, kiedy użyć której."},
+      {ic:"🧩",h:"2. Zrozumienie struktury Parallel Group",b:"Możesz wyjaśnić, że to jeden kontener zawierający kilka indywidualnych grup uczniów, każda z własną, śledzoną obecnością i projektami — i że w tym formacie nie ma grup na WhatsApp."},
+      {ic:"⏱️",h:"3. Znajomość struktury czasowej",b:"Wiesz, że każdy uczeń zawsze otrzymuje pełne 60 minut, a twoja własna sesja wydłuża się, aby zmieścić grupę — z przywitaniami i sprawdzeniami rozłożonymi co około 10 minut."}
+    ]},
+    {type:"hi",h:"🎯 Najważniejsze aspekty pedagogiczne",b:"To nawyki, które sprawiają, że ten format naprawdę działa, a nie tylko funkcjonuje."},
+    {type:"iconlist",cols:1,items:[
+      {ic:"📝",h:"1. Robienie notatek o każdym uczniu",b:"Jedna linijka na ucznia, na każde sprawdzenie: zadanie / nastrój / przeszkoda / czas kolejnego sprawdzenia. Zapisane zawsze wygrywa z zapamiętanym."},
+      {ic:"🪜",h:"2. Zachowanie struktury lekcji",b:"Prowadzisz 8 etapów — połączenie, nastrój, praca domowa, cel, prezentacja i feedback, podsumowanie, refleksja, ogłoszenie pracy domowej — każdy raz, nie tylko wtedy, gdy zostaje czas."},
+      {ic:"🧭",h:"3. Promowanie samodzielności",b:"Domyślnie stawiasz pytanie lub wskazówkę przed odpowiedzią, aby uczniowie budowali nawyk coachingu zamiast podawania odpowiedzi, na którym opiera się ten format."},
+      {ic:"⏳",h:"4. Zarządzanie czasem podczas rotacji",b:"Segregujesz priorytety według tego, kto naprawdę potrzebuje cię najpierw — a nie odwiedzając w ustalonej „sprawiedliwej” kolejności — i chronisz etap zamknięcia, nawet gdy czasu jest mało."},
+      {ic:"🤝",h:"5. Budowanie prawdziwej relacji z każdym uczniem",b:"Używasz konkretnych, osobistych odniesień, a nie ogólnych sprawdzeń, dzięki czemu pięciu uczniów odczuwa to jako pięć relacji, nie jedną lekcję powtórzoną pięć razy."},
+      {ic:"💬",h:"6. Udzielanie skutecznego, konkretnego feedbacku",b:"Nazywasz dokładnie to, co zadziałało i co dalej — samo „dobra robota” nie odpowiada na żadne z pytań, na które uczeń faktycznie potrzebuje odpowiedzi."},
+      {ic:"❤️",h:"7. Odczytywanie stanów emocjonalnych",b:"Wychwytujesz zmianę tonu, tempa pisania lub zachowania przy kamerze wcześnie i reagujesz empatią, zanim logistyką."}
+    ]},
+    {type:"downloadBtn",label:"⬇️ Pobierz checklistę"}
+  ]},
+  {t:"🪞 Samoocena",cards:[
+    {type:"list",h:"Zadaj sobie szczerze te pytania przed webinarem",items:[
+      "Czy mogę otworzyć konsolę obiema metodami bez zastanowienia?",
+      "Czy znam 8 etapów lekcji na tyle dobrze, aby je prowadzić bez zaglądania do notatek?",
+      "Gdy uczeń zamilknie, czy mam plan poza samym czekaniem?",
+      "Czy czuję się swobodnie, dając wskazówkę zamiast odpowiedzi, gdy uczeń jest zablokowany?",
+      "Czy mam prosty nawyk robienia notatek, który realnie mogę utrzymać na żywo?",
+      "Czy mógłbym/mogłabym wyjaśnić własnymi słowami, dlaczego ten format działa dla uczniów w wieku 10+?"
+    ]}
   ]}
  ]}
 ];
@@ -1191,6 +1278,43 @@ const MODULES_TR=[
   {t:"🎮 Uygulamaya Geçirin: Bir Konsol Simülasyonu",cards:[
     {type:'cute',h:'Bu nasıl çalışır',b:"Bir Parallel Lesson'dan gerçek konsol durumlarıyla yüzleşmek üzeresiniz. Bazı anlar çoktan seçmelidir. Diğerleri serbest metindir: ne yapacağınızı ve ne söyleyeceğinizi kendi kelimelerinizle tam olarak yazın. Cevabınızı az önce öğrendiğiniz kontrol paneli becerileriyle ilişkilendiren geri bildirimi her zaman alacaksınız — durumsal farkındalık, dikkat akışı, duygusal zekâ, koçluk ve takip."}
   ]}
+ ]},
+{id:6,emoji:'🏁',title:"Final Sınavı ve Özet",desc:"Webinardan önce tamamlanacak kısa bir sınav, ayrıca önceden gözden geçirmeniz için bir kontrol listesi ve öz değerlendirme.",final:true,
+ sections:[
+  {t:"📝 Webinardan Önce",cards:[
+    {type:'text',b:"Uygulamalı webinardan önce bu 9 soruluk sınavı tamamlayın. Bunu bitirmek sadece bu eğitimin bir bölümünü tamamlamanızı sağlamaz — aynı zamanda öğrendiklerinizi güçlendirir, böylece webinara tekrar gözden geçirmek için değil, pratik yapmaya hazır olarak gelirsiniz."},
+    {type:'examlink',label:"📝 Sınava Git →"}
+  ]},
+  {t:"✅ Webinar Öncesi Kontrol Listeniz",cards:[
+    {type:'text',b:"İlk Parallel Lesson'ınıza hazırlanırken bu listeyi yanınızda tutun — temel noktaları, teknik ve pedagojik olarak, karşıladığınızı hızlıca kontrol etmenin bir yolu."},
+    {type:'hi',h:"🔧 Teknik Temel Noktalar",b:"Canlıya geçmeden önce bunların sizin için doğal hâle geldiğinden emin olun."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'🖥️',h:'1. Konsolu doğru şekilde açmak',b:"Konsolu açmanın her iki yolunu da biliyorsunuz — Takvim üzerinden (30 dakika önce) veya normal Gruplar listeniz üzerinden (60 dakika önce, ders bitene kadar) — ve hangisini ne zaman kullanacağınızı biliyorsunuz."},
+      {ic:'🧩',h:'2. Parallel Group yapısını anlamak',b:"Bunun, her biri kendi takip edilen katılımı ve projeleri olan birkaç bireysel öğrenci grubunu barındıran bir kapsayıcı olduğunu açıklayabiliyorsunuz — ve bu formatta WhatsApp grubu bulunmadığını biliyorsunuz."},
+      {ic:'⏱️',h:'3. Zamanlama yapısını bilmek',b:"Her öğrencinin her zaman tam 60 dakika aldığını ve kendi oturumunuzun gruba sığacak şekilde uzadığını biliyorsunuz — karşılamalar ve kontroller yaklaşık her 10 dakikada bir kaydırmalı olarak yapılır."}
+    ]},
+    {type:'hi',h:"🎯 Pedagojik Temel Noktalar",b:"Bunlar, formatın sadece işlemesini değil, gerçekten işe yaramasını sağlayan alışkanlıklardır."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'📝',h:'1. Her öğrenci için not almak',b:"Her öğrenci için, her kontrolde bir satır: görev / ruh hâli / engel / sonraki kontrol zamanı. Yazılı olan, her zaman hatırlanandan üstündür."},
+      {ic:'🪜',h:'2. Ders yapısını korumak',b:"8 aşamayı — bağlantı, ruh hâli, ödev, hedef, gösterim ve geri bildirim, toparlama, yansıma, ödev duyurusu — her seferinde yürütürsünüz, sadece zaman kaldığında değil."},
+      {ic:'🧭',h:'3. Bağımsızlığı desteklemek',b:"Cevap vermeden önce varsayılan olarak bir soru veya ipucu verirsiniz, böylece öğrenciler bu formatın dayandığı cevap vermek yerine koçluk yapma alışkanlığını geliştirir."},
+      {ic:'⏳',h:'4. Rotasyonlar arasında zamanınızı yönetmek',b:"Sabit bir \"adil\" sırayla ziyaret etmek yerine, gerçekten önce kime ihtiyaç olduğuna göre önceliklendirirsiniz — ve zaman kısıtlı olsa bile kapanış anını korursunuz."},
+      {ic:'🤝',h:'5. Her öğrenciyle gerçek bir bağ kurmak',b:"Genel kontroller yerine özel, kişisel referanslar kullanırsınız, böylece beş öğrenci beş kez tekrarlanan bir ders gibi değil, beş ilişki gibi hissedilir."},
+      {ic:'💬',h:'6. Etkili, somut geri bildirim vermek',b:"Neyin işe yaradığını ve sırada ne olduğunu tam olarak belirtirsiniz — sadece \"aferin\" bir öğrencinin gerçekten cevaplanmasına ihtiyaç duyduğu sorulardan hiçbirini yanıtlamaz."},
+      {ic:'❤️',h:'7. Duygusal durumları okumak',b:"Ton, yazma hızı veya kamera davranışındaki bir değişimi erken yakalar ve lojistikten önce empatiyle yanıt verirsiniz."}
+    ]},
+    {type:'downloadBtn',label:"⬇️ Kontrol Listesini İndir"}
+  ]},
+  {t:"🪞 Öz Değerlendirme",cards:[
+    {type:'list',h:"Webinardan önce kendinize dürüstçe sorun",items:[
+      "Konsolu iki yöntemle de düşünmeden açabiliyor muyum?",
+      "8 ders aşamasını not almadan yürütecek kadar iyi biliyor muyum?",
+      "Bir öğrenci sessizleştiğinde, beklemekten öteye bir planım var mı?",
+      "Bir öğrenci takıldığında cevap vermek yerine ipucu vermekte kendimi rahat hissediyor muyum?",
+      "Canlı bir derste gerçekten sürdürebileceğim basit bir not alma alışkanlığım var mı?",
+      "Bu formatın 10 yaş ve üzeri öğrenciler için neden işe yaradığını kendi kelimelerimle açıklayabilir miyim?"
+    ]}
+  ]}
  ]}
 ];
 
@@ -1395,6 +1519,43 @@ const MODULES_IT=[
   {t:"🎮 Mettilo in Pratica: una Simulazione nella Console",cards:[
     {type:'cute',h:'Come funziona',b:"Stai per affrontare situazioni reali della console durante una Parallel Lesson. Alcuni momenti sono a scelta multipla. Altri sono a testo libero: scrivi esattamente cosa faresti e diresti, con le tue parole. Riceverai sempre un feedback che collega la tua risposta alle competenze del cruscotto che hai appena imparato — consapevolezza situazionale, flusso di attenzione, intelligenza emotiva, coaching e tracciamento."}
   ]}
+ ]},
+{id:6,emoji:'🏁',title:"Esame Finale e Riepilogo",desc:"Un breve esame da completare prima del webinar, più una checklist e un'autovalutazione da rivedere in anticipo.",final:true,
+ sections:[
+  {t:"📝 Prima del Webinar",cards:[
+    {type:'text',b:"Completa questo esame di 9 domande prima del webinar pratico. Completarlo non serve solo a concludere una parte di questa formazione — rinforza anche ciò che hai imparato, così arrivi al webinar pronto a praticare, non a ripassare."},
+    {type:'examlink',label:"📝 Vai all'Esame →"}
+  ]},
+  {t:"✅ La Tua Checklist Pre-Webinar",cards:[
+    {type:'text',b:"Tieni questa lista a portata di mano mentre ti prepari per la tua prima Parallel Lesson — un modo rapido per verificare di aver coperto i punti essenziali, tecnici e pedagogici."},
+    {type:'hi',h:"🔧 Punti Tecnici Essenziali",b:"Assicurati che questi ti vengano naturali prima di andare in diretta."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'🖥️',h:'1. Aprire correttamente la console',b:"Conosci entrambi i modi per aprirla — tramite Schedule (30 minuti prima) o tramite la tua normale lista Gruppi (60 minuti prima, fino alla fine della lezione) — e sai quale usare quando."},
+      {ic:'🧩',h:'2. Capire la struttura del Parallel Group',b:"Sai spiegare che è un contenitore che racchiude diversi gruppi individuali di studenti, ognuno con le proprie presenze e progetti monitorati — e che in questo formato non ci sono gruppi WhatsApp."},
+      {ic:'⏱️',h:'3. Conoscere la struttura degli orari',b:"Sai che ogni studente riceve sempre 60 minuti pieni, e che la tua sessione si allunga per adattarsi al gruppo — con accoglienze e controlli scaglionati circa ogni 10 minuti."}
+    ]},
+    {type:'hi',h:"🎯 Punti Pedagogici Essenziali",b:"Sono le abitudini che fanno davvero funzionare il formato, non solo farlo procedere."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'📝',h:'1. Prendere appunti su ogni studente',b:"Una riga per studente, per ogni controllo: compito / umore / blocco / orario del prossimo controllo. Scritto batte ricordato."},
+      {ic:'🪜',h:'2. Mantenere la struttura della lezione',b:"Segui le 8 fasi — connessione, umore, compiti, obiettivo, dimostrazione e feedback, conclusione, riflessione, assegnazione dei compiti — ogni volta, non solo quando resta tempo."},
+      {ic:'🧭',h:'3. Promuovere l\'autonomia',b:"Per impostazione predefinita proponi una domanda o un indizio prima di una risposta, così gli studenti costruiscono l'abitudine del coaching invece delle risposte su cui si basa questo formato."},
+      {ic:'⏳',h:'4. Gestire il tuo tempo tra le rotazioni',b:"Fai triage in base a chi ha davvero bisogno di te prima — non visitando in un ordine fisso \"equo\" — e proteggi il momento della chiusura anche quando il tempo scarseggia."},
+      {ic:'🤝',h:'5. Costruire una connessione reale con ogni studente',b:"Usi riferimenti specifici e personali invece di controlli generici, così cinque studenti si sentono come cinque relazioni, non come la stessa lezione ripetuta cinque volte."},
+      {ic:'💬',h:'6. Dare un feedback efficace e concreto',b:"Nomini esattamente cosa ha funzionato e cosa viene dopo — un semplice \"bravo\" non risponde a nessuna delle domande a cui uno studente ha davvero bisogno di risposta."},
+      {ic:'❤️',h:'7. Leggere gli stati emotivi',b:"Cogli presto un cambiamento nel tono, nel ritmo di scrittura o nel comportamento davanti alla telecamera, e rispondi con empatia prima della logistica."}
+    ]},
+    {type:'downloadBtn',label:"⬇️ Scarica la Checklist"}
+  ]},
+  {t:"🪞 Autovalutazione",cards:[
+    {type:'list',h:"Chiediti onestamente prima del webinar",items:[
+      "Riesco ad aprire la console in entrambi i modi senza doverci pensare?",
+      "Conosco le 8 fasi della lezione abbastanza bene da gestirle senza controllare gli appunti?",
+      "Quando uno studente resta in silenzio, ho un piano oltre al semplice aspettare?",
+      "Mi sento a mio agio a dare un indizio invece della risposta quando uno studente è bloccato?",
+      "Ho un'abitudine semplice di presa di appunti che riesco davvero a mantenere dal vivo?",
+      "Saprei spiegare, con le mie parole, perché questo formato funziona per studenti dai 10 anni in su?"
+    ]}
+  ]}
  ]}
 ];
 
@@ -1441,7 +1602,7 @@ function renderHome(){
     const el=document.createElement('div'); el.className='mc'+(locked?' locked':'');
     const pct=getScore(m.id);
     const badge=isDone?'<span class="badge bd">'+T('badgeCompleted')+'</span>':locked?'<span class="badge bl">'+T('badgeLocked')+'</span>':'<span class="badge bs">'+T('badgeStart')+'</span>';
-    const stag=m.rpg?(isDone?'<span class="stag">'+T('simulationComplete')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('consoleSimInside')+'</span>'):(isDone?('<span class="stag">'+T('scoreLabel')+' <b>'+pct+'%</b></span>'):locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('hasShortCheck')+'</span>');
+    const stag=m.rpg?(isDone?'<span class="stag">'+T('simulationComplete')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('consoleSimInside')+'</span>'):m.final?(isDone?'<span class="stag">'+T('completedLbl')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('finalExamTag')+'</span>'):(isDone?('<span class="stag">'+T('scoreLabel')+' <b>'+pct+'%</b></span>'):locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('hasShortCheck')+'</span>');
     el.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">'+T('moduleN',{n:m.id})+'</div><div class="mc-em">'+m.emoji+'</div></div><div class="mc-title">'+m.title+'</div><div class="mc-desc">'+m.desc+'</div><div class="mc-foot">'+badge+stag+'</div></div>';
     if(!locked) el.onclick=()=>openModule(m);
     g.appendChild(el);
@@ -1462,6 +1623,9 @@ function openModule(m){
   if(m.rpg){
     const lbl=isPassed(m.id)?T('playAgain'):T('startSimulation');
     html+='<button class="ctabtn" onclick="startRPG('+m.id+')">'+lbl+'</button>';
+  }else if(m.final){
+    if(isPassed(m.id)) html+='<button class="ctabtn" disabled>'+T('completedLbl')+'</button>';
+    else html+='<button class="ctabtn" onclick="completeFinalExam('+m.id+')">'+T('markExamComplete')+'</button>';
   }else{
     const lbl=isPassed(m.id)?T('retakeCheck'):T('startCheck');
     html+='<button class="ctabtn" onclick="startQuiz('+m.id+')">'+lbl+'</button>';
@@ -1494,6 +1658,12 @@ function rc(c){
   }
   if(c.type==='threecol'){
     return '<div class="three-col">'+c.items.map(i=>'<div class="card hi"><h4>'+i.h+'</h4><p>'+i.b+'</p></div>').join('')+'</div>';
+  }
+  if(c.type==='examlink'){
+    return '<div class="media-card" style="text-align:center;padding:30px 20px"><a class="ctabtn" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="'+(EXAM_LINKS[LANG]||EXAM_LINKS.en)+'">'+c.label+'</a></div>';
+  }
+  if(c.type==='downloadBtn'){
+    return '<div style="text-align:center;margin:20px 0"><button class="ctabtn" onclick="downloadChecklist()">'+c.label+'</button></div>';
   }
   if(c.type==='img'){
     return '<div class="media-card"><img src="'+c.src+'" alt="'+(c.alt||'')+'" loading="lazy">'+(c.cap?'<div class="media-cap">'+c.cap+'</div>':'')+'</div>';
@@ -1541,6 +1711,17 @@ function nextQ(){
   setResult(currentModule,pct,passed); showResults(pct,passed);
 }
 function exitQuiz(){ const m=MODULES.find(x=>x.id===currentModule); if(m) openModule(m); else goDashboard(); }
+function downloadChecklist(){
+  const a=document.createElement('a');
+  a.href='Checklists/Checklist_'+LANG.toUpperCase()+'.pdf';
+  a.download='Parallel-Lessons-Checklist-'+LANG.toUpperCase()+'.pdf';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function completeFinalExam(id){
+  setResult(id,100,true);
+  const next=MODULES.find(x=>x.id===id+1);
+  if(next) openModule(next); else showComplete();
+}
 
 /* ───────────────────────── CONSOLE SIMULATION DATA (Module 3, per language) ───────────────────────── */
 const GAME_EN={
@@ -1578,7 +1759,7 @@ const GAME_EN={
   scene7Bubble:"Also later in the same lesson: it's week 6, and <b>Student 2</b> — who is usually confident working on their own — asks you to \"just give me the answer.\" <b>What do you do first, and what do you say?</b>",
   placeholder4:"Type what you would do and say...",
   completeTitle:"Simulation Complete",
-  completeBody:"You walked through the full console — two students, an empty room, a raised hand, an early finish, and a confident student asking for the answer. Module 5 is complete — you've finished the training.",
+  completeBody:"You walked through the full console — two students, an empty room, a raised hand, an early finish, and a confident student asking for the answer. Module 5 is complete — one more step before the webinar: the final exam and checklist in Module 6.",
   continueToModuleLbl:"Continue to Module {n} →",
   backToDashboard:"← Back to Dashboard",
   feedbackHeading:"Feedback",
@@ -1653,7 +1834,7 @@ const GAME_PL={
   scene7Bubble:"Również później, na tej samej lekcji: jest 6. tydzień, a <b>Uczeń 2</b> — który zwykle pracuje samodzielnie i z pewnością siebie — prosi cię, żebyś „po prostu podał/a odpowiedź”. <b>Co robisz najpierw i co mówisz?</b>",
   placeholder4:"Wpisz, co byś zrobił/a i powiedział/a...",
   completeTitle:"Symulacja zakończona",
-  completeBody:"Przeszedłeś/aś przez całą konsolę — dwóch uczniów, pusty pokój, podniesioną rękę, wcześniejsze zakończenie i pewnego siebie ucznia proszącego o odpowiedź. Moduł 5 jest ukończony — zakończyłeś/aś szkolenie.",
+  completeBody:"Przeszedłeś/aś przez całą konsolę — dwóch uczniów, pusty pokój, podniesioną rękę, wcześniejsze zakończenie i pewnego siebie ucznia proszącego o odpowiedź. Moduł 5 jest ukończony — pozostał jeszcze jeden krok przed webinarem: egzamin końcowy i checklista w Module 6.",
   continueToModuleLbl:"Przejdź do Modułu {n} →",
   backToDashboard:"← Wróć do panelu",
   feedbackHeading:"Feedback",
@@ -1728,7 +1909,7 @@ const GAME_TR={
   scene7Bubble:"Yine aynı dersin sonrasında: 6. hafta ve genellikle kendi başına güvenle çalışan <b>Öğrenci 2</b>, sizden \"sadece cevabı ver\" diyor. <b>Önce ne yaparsınız ve ne söylersiniz?</b>",
   placeholder4:"Ne yapıp ne söyleyeceğinizi yazın...",
   completeTitle:"Simülasyon Tamamlandı",
-  completeBody:"Konsolun tamamında ilerlediniz — iki öğrenci, boş bir oda, kaldırılmış bir el, erken bir bitiş ve cevabı isteyen kendinden emin bir öğrenci. Modül 5 tamamlandı — eğitimi bitirdiniz.",
+  completeBody:"Konsolun tamamında ilerlediniz — iki öğrenci, boş bir oda, kaldırılmış bir el, erken bir bitiş ve cevabı isteyen kendinden emin bir öğrenci. Modül 5 tamamlandı — webinardan önce bir adım kaldı: Modül 6'daki final sınavı ve kontrol listesi.",
   continueToModuleLbl:"Modül {n}'e Devam Et →",
   backToDashboard:"← Panele Dön",
   feedbackHeading:"Geri Bildirim",
@@ -1803,7 +1984,7 @@ const GAME_IT={
   scene7Bubble:"Anche più tardi nella stessa lezione: è la settimana 6, e <b>lo Studente 2</b> — di solito sicuro di sé quando lavora da solo — ti chiede di \"dammi solo la risposta\". <b>Cosa fai prima, e cosa dici?</b>",
   placeholder4:"Scrivi cosa faresti e diresti...",
   completeTitle:"Simulazione completata",
-  completeBody:"Hai affrontato l'intero percorso nella console — due studenti, una stanza vuota, una mano alzata, un compito finito in anticipo e uno studente sicuro di sé che chiede la risposta. Il Modulo 5 è completo — hai terminato la formazione.",
+  completeBody:"Hai affrontato l'intero percorso nella console — due studenti, una stanza vuota, una mano alzata, un compito finito in anticipo e uno studente sicuro di sé che chiede la risposta. Il Modulo 5 è completo — resta un ultimo passo prima del webinar: l'esame finale e la checklist nel Modulo 6.",
   continueToModuleLbl:"Continua al Modulo {n} →",
   backToDashboard:"← Torna alla dashboard",
   feedbackHeading:"Feedback",
