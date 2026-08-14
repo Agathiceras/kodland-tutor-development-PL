@@ -155,6 +155,32 @@ body{background:var(--bg-gradient);color:var(--text);font-family:'Inter',sans-se
 .faq-ic{font-size:30px;line-height:1;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:50%}
 .faq-body h4{font-family:'Baloo 2',sans-serif;font-size:15.5px;font-weight:700;color:var(--text);margin-bottom:6px}
 .faq-body p{font-size:14px;color:var(--text2);line-height:1.65;margin:0}
+.accordion{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);margin-bottom:11px;box-shadow:var(--shadow);overflow:hidden}
+.acc-q{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 20px;cursor:pointer;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.acc-q:hover{background:var(--surface2)}
+.acc-chev{transition:transform .2s;flex-shrink:0;color:var(--text2);font-size:14px}
+.accordion.open .acc-chev{transform:rotate(180deg)}
+.acc-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.accordion.open .acc-a{max-height:3000px}
+.acc-a-in{padding:0 20px 19px;font-size:14px;color:var(--text2);line-height:1.7}
+.acc-a-in p{margin-bottom:8px}
+.acc-a-in p:last-child{margin-bottom:0}
+.ladder{display:flex;flex-direction:column;gap:0}
+.ladder-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.ladder-row:last-child{border-bottom:none}
+.ladder-rank{width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ladder-chip{padding:7px 13px;border-radius:8px;font-size:13px;font-weight:700;transition:transform .15s}
+.ladder-chip:hover{transform:translateY(-2px)}
+.ladder-chip.win{background:var(--ok-bg);color:var(--ok-t)}
+.ladder-chip.lose{background:var(--surface2);color:var(--text2)}
+.ladder-vs{font-size:11px;color:var(--text-muted);font-style:italic;text-transform:uppercase;letter-spacing:.04em}
+.drivewrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--rsm)}
+.drivewrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.consoletabs .ct-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.consoletabs .ct-tab{flex:1;min-width:160px;padding:11px 14px;border-radius:10px;border:2px solid var(--border);background:var(--surface2);font-family:'Baloo 2',sans-serif;font-weight:700;font-size:13.5px;cursor:pointer;color:var(--text2);text-align:center;transition:all .15s}
+.consoletabs .ct-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.consoletabs .ct-pane{display:none;font-size:14px;color:var(--text2);line-height:1.7}
+.consoletabs .ct-pane.active{display:block}
 .divider{border:none;border-top:2px solid var(--border);margin:30px 0}
 .ctabtn{display:block;width:100%;padding:17px;background:var(--blue);color:#fff;border:none;border-radius:var(--rpill);font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:all .15s;margin-bottom:40px;margin-top:4px;box-shadow:0 4px 16px rgba(29,79,216,.28)}
 .ctabtn:hover{background:var(--pink-hover-d);transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,137,195,.4)}
@@ -381,7 +407,7 @@ body{background:var(--bg-gradient);color:var(--text);font-family:'Inter',sans-se
 <script>
 const PROG_KEY='kl-pl-progress';
 const LANG_KEY='kl-pl-lang';
-const TOTAL=6;
+const TOTAL=7;
 const EXAM_LINKS={en:'https://forms.gle/UEki8E7qVHDtVjWQ6',pl:'https://forms.gle/SjHQxWPkp1mwdwWr8',tr:'https://forms.gle/gAWAQdB4J4pMX2ve7',it:'https://forms.gle/B1pZKw6ecx9t4VLz7'};
 let currentModule=null, quizData=[], qi=0, score=0;
 let LANG='en', MODULES, QUIZ, STR, G;
@@ -400,7 +426,16 @@ const MODULES_EN=[
   ]},
   {t:"What Changes, and What Doesn't",cards:[
     {type:'twocol',left:{h:'✅ Changes',items:["How the lesson is delivered","How you rotate between students","How you communicate — individually, no WhatsApp groups"]},right:{h:"❌ Doesn't Change",plain:true,items:["Course content","Attendance tracking","Project submissions — all tracked per individual group, exactly as before"]}},
-    {type:'warnbox',h:'Important scope',b:"Parallel Lesson does <strong>not</strong> replace how Kodland teaches overall — it only replaces the <strong>premium 1-on-1 format</strong>, for selected courses."}
+    {type:'warnbox',h:'Important scope',b:"Parallel Lesson does <strong>not</strong> replace how Kodland teaches overall — it only replaces the <strong>premium format</strong>, for selected courses."}
+  ]},
+  {t:"📋 How a Lesson Actually Runs",cards:[
+    {type:'text',b:"Lesson format: <strong>parallel</strong>. Every student's lesson is designed for a full 60 minutes — and there are no group activities. If a card or a slide still mentions a group activity, ignore it: <strong>references to group activities are not relevant to this lesson format.</strong> The tutor provides support at the beginning and end of each student's lesson; during self-study, they check in from time to time and whenever the student asks for help."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'🎙️',h:"The tutor's role",b:"In the synchronous parts, the tutor sets the tone, explains the goal, and checks that the technical setup is ready. During self-study, the tutor does not lead the lesson for the student — they provide targeted help only when the student asks. The cards themselves include reminders for the student to call the tutor before saving and at key steps."},
+      {ic:'🔁',h:"The teaching approach is deductive",b:"The student first sees a finished project, then explores how it was made, and applies the same principle to their own project — result first, mechanism second, application third."},
+      {ic:'💬',h:'Feedback: Tutor + Self',b:"There is no peer feedback in this format. AI is not used in the first lessons, in later lessons in the module, AI is added as a third feedback channel where appropriate."},
+      {ic:'🌟',h:'The mindset this is building',full:true,b:"The main focus is the feeling: <em>\"I can create a working digital project on my own.\"</em> Mistakes are a normal part of the creative process, not a sign that something went wrong."}
+    ]}
   ]},
   {t:"🧠 Why This Works for Students Ages 10+",cards:[
     {type:'text',h:"This Isn't Guesswork",b:"Parallel Lessons ask something specific of a student: work productively for stretches without a tutor hovering, then re-engage fully the moment the tutor arrives. That's not a small ask — and it's exactly why PL is built for students 10 and up, not younger ones. The format is designed around what we actually know about how children this age think, focus, and regulate themselves, not around what's convenient to schedule."},
@@ -416,13 +451,7 @@ const MODULES_EN=[
  sections:[
   {t:"What a Parallel Group Looks Like in BO",cards:[
     {type:'text',b:"A container that groups several individual student-groups under one tutor. Each student still has their own individual group, just like in the premium format — the link to join as teacher is simply the same for all of them."},
-    {type:'img',src:'images/Image2.png',alt:'BO screenshot showing a Parallel Group card containing several individual groups, with the console icon highlighted',cap:'The Parallel Group card in BO — one card, several individual groups inside, one console link.'}
-  ]},
-  {t:"How Do I Open the Console?",cards:[
-    {type:'text',h:'Option 1 — Via Schedule',b:"Click the new group (name includes “PL”) → see the individual student-groups inside → click Open console. Available <strong>30 minutes before</strong> the lesson."},
-    {type:'img',src:'images/Image3.gif',alt:'Animated walkthrough of opening the console via Schedule'},
-    {type:'text',h:'Option 2 — Via Your Regular Groups List',b:"Click Open console on the right. Available <strong>60 minutes before</strong> the lesson, until it ends."},
-    {type:'img',src:'images/Image4.gif',alt:'Animated walkthrough of opening the console from the regular Groups list',cap:'Opening the console from the regular Groups list.'}
+    {type:'simlink',href:'BO_simulator/Simulacion_BO_PL.html',label:'🖥️ Open the Parallel Lessons BO Simulator',cap:"A full, click-through replica of BO — see the Parallel Group card for yourself, with several individual groups inside and one console link."}
   ]},
   {t:"Communication & Tracking Rules",cards:[
     {type:'list',h:'Working within the format',items:[
@@ -475,8 +504,7 @@ const MODULES_EN=[
     {type:'iconlist',cols:1,items:[
       {ic:'🗣️',h:'1. Adapting explanations for different learners',b:"The same concept explained the same way will land differently for every student — that's not a flaw in the explanation, it's a normal feature of different backgrounds and thinking styles."},
       {ic:'📊',h:'2. Recognizing different levels of prior knowledge',b:"A quick, low-stakes question at the start of independent work ('what do you already know about this?') surfaces prior knowledge in seconds, and tells you how much scaffolding this specific stretch actually needs."},
-      {ic:'⏱️',h:'3. Adjusting your pace appropriately',b:'Pace is a differentiation tool, not a fixed setting — slow down for a student building a new concept, move faster for one consolidating something familiar.'},
-      {ic:'🧩',h:'4. Meeting students where they are',b:"This is the throughline of the whole section: your job isn't to deliver one explanation and hope it fits everyone, it's to notice where each student actually is and adjust from there, every time."}
+      {ic:'⏱️',h:'3. Adjusting your pace appropriately',b:'Pace is a differentiation tool, not a fixed setting — slow down for a student building a new concept, move faster for one consolidating something familiar.'}
     ]}
   ]},
   {t:"🧪 Try It Yourself",cards:[
@@ -564,7 +592,25 @@ const MODULES_EN=[
     {type:'cute',h:'How this works',b:"You're about to face real console situations from a Parallel Lesson. Some moments are multiple choice. Others are free text: write exactly what you would do and say, in your own words. You'll always get feedback tying your answer back to the dashboard skills you just learned — situational awareness, attention flow, emotional intelligence, coaching, and tracking."}
   ]}
  ]},
-{id:6,emoji:'🏁',title:"Final Exam & Wrap-Up",desc:"A short exam to complete before the webinar, plus a checklist and self-check to review beforehand.",final:true,
+{id:6,emoji:'❓',title:"Q&A: Your Questions About Parallel Lessons",desc:"Straight answers from the team to the technical and teaching questions tutors actually ask — no test, just read through it.",qa:true,
+ sections:[
+  {t:"Q&A Section",cards:[
+   {type:'text',b:"This section answers real technical and teaching questions raised by tutors during the Parallel Lessons rollout. There's no test here — just click a question to see the answer."},
+   {type:'faq',ic:'⏱️',q:"With 5 students, how do \"onboard a new one every 10 min\" and \"check in with everyone active every 10 min\" both fit, if the 8 mandatory stages already fill most of each window?",a:"<p>The tutor doesn't run continuous check-ins with every active student — you only go to whoever raises their hand. Priority order:</p><ul style='margin:8px 0 8px 20px'><li>Onboarding &gt; raised hand</li><li>Offboarding (closing) &gt; raised hand</li><li>Onboarding &gt; offboarding</li><li>Raised hand &gt; regular check-in</li></ul><p>\"Relaxed\" check-ins only happen when there's no one to onboard, no one to close out, and no hand raised.</p>"},
+   {type:'faq',ic:'🚦',q:"If the 10-minute onboarding window gets used up solving a technical problem (connection, audio, Roblox) and the next student arrives at that exact moment, who does the tutor attend to first?",a:"<p>The student who arrived on time is the priority. The student with the technical problem is attended to <strong>after</strong> you finish with the one who arrived punctually. That's because every lesson follows this priority protocol:</p><div class=\"ladder\"><div class=\"ladder-row\"><span class=\"ladder-rank\">1</span><span class=\"ladder-chip win\">Onboarding</span><span class=\"ladder-vs\">beats</span><span class=\"ladder-chip lose\">Raised hand</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">2</span><span class=\"ladder-chip win\">Offboarding (closing)</span><span class=\"ladder-vs\">beats</span><span class=\"ladder-chip lose\">Raised hand</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">3</span><span class=\"ladder-chip win\">Onboarding</span><span class=\"ladder-vs\">beats</span><span class=\"ladder-chip lose\">Offboarding</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">4</span><span class=\"ladder-chip win\">Raised hand</span><span class=\"ladder-vs\">beats</span><span class=\"ladder-chip lose\">Regular check-in</span></div></div>"},
+   {type:'faq',ic:'🌍',q:"What's the scope of PL — is this a test?",a:"<p>PL fully replaces the group format in Italy and Poland for DC Level 2 and Roblox Junior. That's why every tutor on those courses is currently being trained on it. The format has already been tested in other large regions, including Brazil and LatAm, with very positive results.</p>"},
+   {type:'faq',ic:'🎬',q:"If the content is the same, how do I explain theory, practice, and give feedback in only 10 minutes?",a:"<p>The core of the content is the same in terms of tools and the theoretical knowledge you need to teach it. What changes is the storytelling: it's written for a more mature, more independent student, and designed so the student doesn't depend 100% on you to complete the lesson.</p><h4 style='margin:14px 0 6px'>What this format is built on</h4><p>The lesson follows a <strong>deductive approach</strong>: the student first sees a finished project, then explores how it was made, and applies the principle to their own project.</p><p><strong>Feedback: Tutor + Self.</strong> There's no peer feedback. AI isn't used in the first lessons; in later lessons in the module, AI is added as a third feedback channel where appropriate.</p><p>The main focus is the feeling: <em>\"I can create a working digital project on my own.\"</em> Mistakes are a normal part of the creative process.</p><p style='margin-top:10px'>Watch this video to understand how the content changes, for you and for the student:</p><div class=\"drivewrap\"><iframe src=\"https://drive.google.com/file/d/1bomksIHXI7Q4FJy_YYk3j7vEWsnir1a9/preview\" allow=\"autoplay\" loading=\"lazy\"></iframe></div>"},
+   {type:'faq',ic:'🔗',q:"Where can I see the courses adapted to PL?",a:"<p>Full documentation is still being finalized, but the PL versions of Digital Creativity Level 2 are already live:</p><ul style='margin:8px 0 8px 20px'><li><a href=\"https://bo.kodland.org/courses/2077\" target=\"_blank\" rel=\"noopener\">[2077] 👥 Digital Creativity. Level 2 [2026][10-12][60 min][40 L][Poland][in progress]</a></li><li><a href=\"https://bo.kodland.org/courses/2078\" target=\"_blank\" rel=\"noopener\">[2078] 👥 Digital Creativity. Level 2 [2026][10-12][60 min][40 L][Italy][in progress]</a></li><li><a href=\"https://bo.kodland.org/courses/2079?tab=2&lessonId=42404\" target=\"_blank\" rel=\"noopener\">[2079] 👥 Digital Creativity. Level 2 [2026][10-12][60 min][40 L][ENG][in progress]</a></li></ul>"},
+   {type:'faq',ic:'👥',q:"What's the maximum number of students a Parallel Lesson group can have?",a:"<p>Maximum <strong>5 students / 100 minutes</strong>.</p>"},
+   {type:'faq',ic:'💙',q:"How do I manage the time of a PL lesson with students who have disabilities or neurodivergences that need more attention and support?",a:"<p>CS will leave a note whenever a student has a known disability, as usual. If a tutor later realizes the PL format isn't suitable for a particular student, they should simply discuss the case with their TL and we'll find the best solution together.</p><p>We don't see this as a major concern specific to PL — in many cases, the format may actually work <em>better</em> than a traditional group lesson, because the student still receives individual attention.</p><p>That said, it's worth remembering that questions about independence, individual work, and past experience with self-paced courses are already asked during the trial class — so if the person running the trial class (TCM) sees that a student wouldn't be comfortable in PL, that student simply isn't offered this format.</p>"},
+   {type:'faq',ic:'⏰',q:"What's the protocol for students who arrive late?",a:"<p>With 5 students, each one joins 10 minutes apart (e.g., 16:00, 16:10, 16:20...). Onboarding and closing out one student takes about 6–7 minutes in practice, so the tutor always has some margin for late arrivals within the slot's total 100 minutes (60 minutes of lesson per student).</p><h4 style='margin:14px 0 6px'>If a student doesn't join within their first 5 minutes</h4><ul style='margin:8px 0 8px 20px'><li>Message them or their guardian directly on WhatsApp.</li><li>If their window ends and they still haven't joined, welcome the next student — you don't wait indefinitely.</li><li>If the student joins late, invite them in, but finish with the student already in progress first.</li><li>A late student does <strong>not</strong> get a full 60-minute lesson — it ends when their originally planned window ends.</li></ul><h4 style='margin:14px 0 6px'>Official example</h4><p>Anna was expected to join between 16:10–16:20. At 16:15 she still hasn't connected, so you message her on WhatsApp and welcome the next student, Mario. At 16:21 Anna appears in the waiting room, but you're still with Mario — you let her know on WhatsApp that you'll be with her in a few minutes. You finish with Mario by 16:25 at the latest, and only then welcome Anna. Anna's planned window: 16:10–17:10 → her actual time after the late arrival: 16:25–17:10.</p>"},
+   {type:'faq',ic:'💬',q:"Do I need a WhatsApp group with all the students in the parallel group?",a:"<p>PL is positioned as individualized learning. Tutors must <strong>not</strong> create WhatsApp groups for the students in a single slot — every student is treated individually, and all communication goes through direct WhatsApp messages.</p>"},
+   {type:'faq',ic:'🔄',q:"Will all courses move to this format? Is this the new default at Kodland?",a:"<p>No — PL only replaces the premium group format, for selected courses.</p>"},
+   {type:'faq',ic:'👪',q:"Are parents aware of this format when enrolling?",a:"<p>Yes. Parents are informed about the PL format as part of the enrollment and communication process, for the selected courses.</p>"},
+   {type:'faq',ic:'💰',q:"How do payments work in PL?",a:"<p>Payments depend on the pay rate for the time slot, which in turn depends on how many students you have in the group. For calculations specific to your own case, contact your TL.</p>"}
+  ]}
+ ]},
+{id:7,emoji:'🏁',title:"Final Exam & Wrap-Up",desc:"A short exam to complete before the webinar, plus a checklist and self-check to review beforehand.",final:true,
  sections:[
   {t:"📝 Before the Webinar",cards:[
     {type:'text',b:"Complete this 9-question exam before the practical webinar. Finishing it doesn't just complete part of this training — it also reinforces what you've learned, so you walk into the webinar ready to practice, not to review."},
@@ -605,7 +651,7 @@ const MODULES_EN=[
 
 const QUIZ_EN={
 1:[
-  {q:"PL replaces how Kodland teaches overall, across all courses and formats.",opts:["False — it only replaces the premium 1-on-1 format, for selected courses","True — it changes everything about how Kodland teaches"],c:0,fb:"PL is scoped to the premium 1-on-1 format on selected courses. Everything else about how Kodland teaches stays the same."},
+  {q:"PL replaces how Kodland teaches overall, across all courses and formats.",opts:["False — it only replaces the premium format, for selected courses","True — it changes everything about how Kodland teaches"],c:0,fb:"PL is scoped to the premium format on selected courses. Everything else about how Kodland teaches stays the same."},
   {q:"Which of these changes with Parallel Lessons?",opts:["Course content and the classroom interface","Only the refund policy","How the lesson is delivered and how the tutor rotates between students"],c:2,fb:"Content, attendance tracking, and project submissions all stay exactly the same — only the delivery and rotation change."},
   {q:"How many minutes does a single student always get in a Parallel Lesson, regardless of group size?",opts:["45 minutes","60 minutes","It varies by course"],c:1,fb:"Every student always gets their full, uninterrupted 60 minutes — it's the tutor's total time that stretches to fit the group."},
   {q:"Why is Parallel Lessons built for students ages 10+ rather than younger children?",opts:["Younger children are less capable learners overall, so the format wouldn't suit them.","Around this age, executive function and self-regulation have developed enough to make independent stretches realistic — younger children still need an adult present to help regulate focus.","It's mostly a scheduling decision — younger classes simply have fewer students available to group together."],c:1,fb:"It's a developmental fit, not a judgment on ability. Executive function and self-regulation take a real step forward around ages 10–12 (Diamond, 2013), which is what makes unsupervised stretches workable instead of overwhelming."}
@@ -636,7 +682,7 @@ const STR_EN={
   heroReason1:"Understand what changes (and what doesn't) when you teach in this format.",
   heroReason2:"Learn how to navigate the console and the technical setup behind a Parallel Group.",
   heroReason3:"Practice the mindset with a role-play simulation — real decisions, real feedback.",
-  heroWork:"Work through 6 modules. Each one has a short check that unlocks the next — score 70%+ to move forward.",
+  heroWork:"Work through 7 modules. Most have a short check that unlocks the next — score 70%+ to move forward.",
   startBtn:"🚀 Start Training",
   learningPath:"Your learning path",
   modulesAllDone:"All modules complete 🎉",
@@ -652,7 +698,7 @@ const STR_EN={
   hasShortCheck:"Has a short check",
   finalNum:"Final",
   nextStepWebinarTitle:"Next Step: The Webinar",
-  nextStepWebinarDesc:"See what comes after self-study once all 6 modules are complete.",
+  nextStepWebinarDesc:"See what comes after self-study once all 7 modules are complete.",
   unlocked:"Unlocked",
   wrapUp:"Wrap-up",
   moduleOfTotal:"Module {n} of {total}",
@@ -683,7 +729,9 @@ const STR_EN={
   rpgTag:"🎮 Module 5 · Simulation",
   markExamComplete:"✅ Mark Exam as Completed",
   completedLbl:"✅ Completed",
-  finalExamTag:"External exam + checklist"
+  finalExamTag:"External exam + checklist",
+  qaTag:"❓ Q&A — no test",
+  markQAReviewed:"✅ Got my answers — Continue"
 };
 
 const STR_PL={
@@ -694,7 +742,7 @@ const STR_PL={
   heroReason1:"Zrozum, co się zmienia (a co nie) podczas nauczania w tym formacie.",
   heroReason2:"Naucz się poruszać po konsoli i konfiguracji technicznej Grupy równoległej.",
   heroReason3:"Przećwicz to podejście w symulacji z odgrywaniem ról — realne decyzje, realny feedback.",
-  heroWork:"Przejdź przez 6 modułów. Każdy ma krótki test, który odblokowuje następny — zdobądź 70%+, aby przejść dalej.",
+  heroWork:"Przejdź przez 7 modułów. Większość ma krótki test, który odblokowuje następny — zdobądź 70%+, aby przejść dalej.",
   startBtn:"🚀 Zacznij szkolenie",
   learningPath:"Twoja ścieżka nauki",
   modulesAllDone:"Wszystkie moduły zakończone 🎉",
@@ -710,7 +758,7 @@ const STR_PL={
   hasShortCheck:"Zawiera krótki test",
   finalNum:"Finał",
   nextStepWebinarTitle:"Następny krok: webinar",
-  nextStepWebinarDesc:"Zobacz, co czeka Cię po samodzielnej nauce, gdy zakończysz wszystkie 6 modułów.",
+  nextStepWebinarDesc:"Zobacz, co czeka Cię po samodzielnej nauce, gdy zakończysz wszystkie 7 modułów.",
   unlocked:"Odblokowano",
   wrapUp:"Podsumowanie",
   moduleOfTotal:"Moduł {n} z {total}",
@@ -741,7 +789,9 @@ const STR_PL={
   rpgTag:"🎮 Moduł 5 · Symulacja",
   markExamComplete:"✅ Oznacz egzamin jako zakończony",
   completedLbl:"✅ Zakończono",
-  finalExamTag:"Egzamin zewnętrzny + checklista"
+  finalExamTag:"Egzamin zewnętrzny + checklista",
+  qaTag:"❓ Q&A — bez testu",
+  markQAReviewed:"✅ Mam odpowiedzi — Dalej"
 };
 
 const STR_TR={
@@ -752,7 +802,7 @@ const STR_TR={
   heroReason1:"Bu formatta ders verirken neyin değişip neyin değişmediğini anlayın.",
   heroReason2:"Konsolda gezinmeyi ve bir Parallel Group'un teknik kurulumunu öğrenin.",
   heroReason3:"Rol yapma simülasyonuyla zihniyeti pratik yapın — gerçek kararlar, gerçek geri bildirim.",
-  heroWork:"6 modülü tamamlayın. Her birinde bir sonrakini açan kısa bir kontrol var — ilerlemek için %70+ puan alın.",
+  heroWork:"7 modülü tamamlayın. Çoğunda bir sonrakini açan kısa bir kontrol var — ilerlemek için %70+ puan alın.",
   startBtn:"🚀 Eğitime Başla",
   learningPath:"Öğrenme yolunuz",
   modulesAllDone:"Tüm modüller tamamlandı 🎉",
@@ -768,7 +818,7 @@ const STR_TR={
   hasShortCheck:"Kısa bir kontrol içerir",
   finalNum:"Son",
   nextStepWebinarTitle:"Sonraki Adım: Webinar",
-  nextStepWebinarDesc:"6 modülün tamamı bittiğinde bireysel çalışmadan sonra ne geldiğini görün.",
+  nextStepWebinarDesc:"7 modülün tamamı bittiğinde bireysel çalışmadan sonra ne geldiğini görün.",
   unlocked:"Kilidi açıldı",
   wrapUp:"Özet",
   moduleOfTotal:"Modül {n} / {total}",
@@ -799,7 +849,9 @@ const STR_TR={
   rpgTag:"🎮 Modül 5 · Simülasyon",
   markExamComplete:"✅ Sınavı Tamamlandı Olarak İşaretle",
   completedLbl:"✅ Tamamlandı",
-  finalExamTag:"Harici sınav + kontrol listesi"
+  finalExamTag:"Harici sınav + kontrol listesi",
+  qaTag:"❓ Soru-Cevap — sınav yok",
+  markQAReviewed:"✅ Cevaplarımı aldım — Devam et"
 };
 
 const STR_IT={
@@ -810,7 +862,7 @@ const STR_IT={
   heroReason1:"Capisci cosa cambia (e cosa non cambia) quando insegni in questo formato.",
   heroReason2:"Impara a navigare la console e la configurazione tecnica di un Parallel Group.",
   heroReason3:"Metti in pratica la mentalità con una simulazione di ruolo — decisioni reali, feedback reale.",
-  heroWork:"Completa 6 moduli. Ognuno ha una breve verifica che sblocca il successivo — ottieni almeno il 70% per andare avanti.",
+  heroWork:"Completa 7 moduli. Quasi tutti hanno una breve verifica che sblocca il successivo — ottieni almeno il 70% per andare avanti.",
   startBtn:"🚀 Inizia la formazione",
   learningPath:"Il tuo percorso di apprendimento",
   modulesAllDone:"Tutti i moduli completati 🎉",
@@ -826,7 +878,7 @@ const STR_IT={
   hasShortCheck:"Contiene una breve verifica",
   finalNum:"Finale",
   nextStepWebinarTitle:"Prossimo passo: il webinar",
-  nextStepWebinarDesc:"Scopri cosa viene dopo l'autoapprendimento, una volta completati tutti i 6 moduli.",
+  nextStepWebinarDesc:"Scopri cosa viene dopo l'autoapprendimento, una volta completati tutti i 7 moduli.",
   unlocked:"Sbloccato",
   wrapUp:"Riepilogo",
   moduleOfTotal:"Modulo {n} di {total}",
@@ -857,7 +909,9 @@ const STR_IT={
   rpgTag:"🎮 Modulo 5 · Simulazione",
   markExamComplete:"✅ Segna l'esame come completato",
   completedLbl:"✅ Completato",
-  finalExamTag:"Esame esterno + checklist"
+  finalExamTag:"Esame esterno + checklist",
+  qaTag:"❓ Q&A — nessuna verifica",
+  markQAReviewed:"✅ Ho le mie risposte — Continua"
 };
 
 /* ───────────────────────── MODULE CONTENT (PL) ───────────────────────── */
@@ -874,7 +928,16 @@ const MODULES_PL=[
   ]},
   {t:"Co się zmienia, a co nie",cards:[
     {type:"twocol",left:{h:"✅ Zmienia się",items:["Sposób prowadzenia lekcji","Sposób rotacji między uczniami","Sposób komunikacji — indywidualnie, bez grup na WhatsApp"]},right:{h:"❌ Nie zmienia się",plain:true,items:["Treść kursu","Śledzenie obecności","Zgłaszanie projektów — wszystko śledzone per indywidualna grupa, dokładnie jak wcześniej"]}},
-    {type:"warnbox",h:"Ważny zakres",b:"Lekcja równoległa <strong>nie</strong> zastępuje ogólnego sposobu nauczania w Kodland — zastępuje jedynie <strong>format premium 1-na-1</strong>, dla wybranych kursów."}
+    {type:"warnbox",h:"Ważny zakres",b:"Lekcja równoległa <strong>nie</strong> zastępuje ogólnego sposobu nauczania w Kodland — zastępuje jedynie <strong>format premium</strong>, dla wybranych kursów."}
+  ]},
+  {t:"📋 Jak faktycznie przebiega lekcja",cards:[
+    {type:"text",b:"Format lekcji: <strong>równoległy</strong>. Lekcja każdego ucznia jest zaprojektowana na pełne 60 minut — i nie ma żadnych aktywności grupowych. Jeśli jakaś karta lub slajd wciąż wspomina o aktywności grupowej, zignoruj to: <strong>odniesienia do aktywności grupowych nie mają znaczenia w tym formacie lekcji.</strong> Trener wspiera ucznia na początku i na końcu jego lekcji; podczas pracy samodzielnej sprawdza go od czasu do czasu i zawsze, gdy uczeń prosi o pomoc."},
+    {type:"iconlist",cols:1,items:[
+      {ic:"🎙️",h:"Rola trenera",b:"W częściach synchronicznych trener nadaje ton, wyjaśnia cel i sprawdza, czy konfiguracja techniczna jest gotowa. Podczas pracy samodzielnej trener nie prowadzi lekcji za ucznia — udziela ukierunkowanej pomocy tylko wtedy, gdy uczeń o nią poprosi. Same karty przypominają uczniowi, aby zawołał trenera przed zapisaniem pracy i w kluczowych momentach."},
+      {ic:"🔁",h:"Podejście dydaktyczne jest dedukcyjne",b:"Uczeń najpierw widzi gotowy projekt, potem odkrywa, jak został zrobiony, a następnie stosuje tę samą zasadę we własnym projekcie — najpierw wynik, potem mechanizm, na końcu zastosowanie."},
+      {ic:"💬",h:"Feedback: trener + samoocena",b:"W tym formacie nie ma feedbacku rówieśniczego. AI nie jest używane w pierwszych lekcjach — w kolejnych lekcjach modułu AI dodawane jest jako trzeci kanał feedbacku, tam gdzie to zasadne."},
+      {ic:"🌟",h:"Postawa, którą to buduje",full:true,b:"Głównym celem jest poczucie: <em>„Potrafię samodzielnie stworzyć działający projekt cyfrowy”.</em> Błędy są normalną częścią procesu twórczego, a nie sygnałem, że coś poszło nie tak."}
+    ]}
   ]},
   {t:"🧠 Dlaczego to działa dla uczniów w wieku 10+",cards:[
     {type:"text",h:"To nie jest zgadywanka",b:"Lekcja równoległa wymaga od ucznia czegoś konkretnego: produktywnej pracy przez dłuższe odcinki czasu bez trenera „nad głową”, a następnie pełnego zaangażowania w chwili, gdy trener wraca. To niemałe wymaganie — i właśnie dlatego LR jest zaprojektowana dla uczniów od 10 roku życia, a nie młodszych. Format opiera się na tym, co faktycznie wiemy o tym, jak dzieci w tym wieku myślą, skupiają uwagę i regulują same siebie, a nie na tym, co jest wygodne z punktu widzenia grafiku."},
@@ -890,13 +953,7 @@ const MODULES_PL=[
  sections:[
   {t:"Jak wygląda Grupa równoległa w BO",cards:[
     {type:"text",b:"Kontener, który grupuje kilka indywidualnych grup uczniów pod jednym trenerem. Każdy uczeń wciąż ma swoją własną indywidualną grupę, tak jak w formacie premium — link do dołączenia jako nauczyciel jest po prostu ten sam dla wszystkich."},
-    {type:"img",src:"images/Image2_PL.png",alt:"Zrzut ekranu BO pokazujący kartę Grupy równoległej zawierającą kilka indywidualnych grup, z podświetloną ikoną konsoli",cap:"Karta Grupy równoległej w BO — jedna karta, kilka indywidualnych grup wewnątrz, jeden link do konsoli."}
-  ]},
-  {t:"Jak otworzyć konsolę?",cards:[
-    {type:"text",h:"Opcja 1 — przez Harmonogram",b:"Kliknij nową grupę (nazwa zawiera „PL”) → zobacz indywidualne grupy uczniów wewnątrz → kliknij Otwórz konsolę. Dostępne <strong>30 minut wcześniej</strong> przed lekcją."},
-    {type:"img",src:"images/Image3.gif",alt:"Animowany przewodnik otwierania konsoli przez Harmonogram"},
-    {type:"text",h:"Opcja 2 — przez zwykłą listę grup",b:"Kliknij Otwórz konsolę po prawej stronie. Dostępne <strong>60 minut wcześniej</strong> przed lekcją, aż do jej zakończenia."},
-    {type:"img",src:"images/Image4.gif",alt:"Animowana instrukcja otwierania konsoli ze zwykłej listy grup",cap:"Otwieranie konsoli ze zwykłej listy grup."}
+    {type:"simlink",href:"BO_simulator/Simulacion_BO_PL.html",label:"🖥️ Otwórz symulator BO Lekcji równoległych",cap:"Pełna, klikalna replika BO — zobacz kartę Grupy równoległej na własne oczy, z kilkoma indywidualnymi grupami w środku i jednym linkiem do konsoli."}
   ]},
   {t:"Zasady komunikacji i śledzenia",cards:[
     {type:"list",h:"Praca w tym formacie",items:[
@@ -949,8 +1006,7 @@ const MODULES_PL=[
     {type:"iconlist",cols:1,items:[
       {ic:"🗣️",h:"1. Dostosowywanie wyjaśnień do różnych uczniów",b:"To samo pojęcie wyjaśnione w ten sam sposób trafi do każdego ucznia inaczej — to nie wada wyjaśnienia, lecz naturalny efekt różnych doświadczeń i stylów myślenia."},
       {ic:"📊",h:"2. Rozpoznawanie różnych poziomów wiedzy wstępnej",b:"Krótkie, niskoryzykowne pytanie na początku pracy samodzielnej („co już o tym wiesz?”) ujawnia wiedzę wstępną w kilka sekund i pokazuje, ile scaffoldingu naprawdę potrzeba w tym konkretnym odcinku pracy."},
-      {ic:"⏱️",h:"3. Odpowiednie dostosowywanie tempa",b:"Tempo jest narzędziem różnicowania, a nie stałym ustawieniem — zwolnij dla ucznia budującego nowe pojęcie, przyspiesz dla tego, który utrwala coś znajomego."},
-      {ic:"🧩",h:"4. Wychodzenie naprzeciw uczniom tam, gdzie są",b:"To myśl przewodnia całej sekcji: twoim zadaniem nie jest podanie jednego wyjaśnienia i liczenie na to, że pasuje do wszystkich, lecz zauważenie, gdzie naprawdę znajduje się każdy uczeń, i dostosowanie się do tego za każdym razem."}
+      {ic:"⏱️",h:"3. Odpowiednie dostosowywanie tempa",b:"Tempo jest narzędziem różnicowania, a nie stałym ustawieniem — zwolnij dla ucznia budującego nowe pojęcie, przyspiesz dla tego, który utrwala coś znajomego."}
     ]}
   ]},
   {t:"🧪 Wypróbuj sam/sama",cards:[
@@ -1038,7 +1094,25 @@ const MODULES_PL=[
     {type:"cute",h:"Jak to działa",b:"Za chwilę staniesz przed prawdziwymi sytuacjami z konsoli w lekcji równoległej. Niektóre momenty są testem wielokrotnego wyboru. Inne to wolny tekst: napisz dokładnie, co byś zrobił/a i powiedział/a, własnymi słowami. Zawsze otrzymasz feedback, który łączy twoją odpowiedź z umiejętnościami panelu, których właśnie się nauczyłeś/aś — świadomością sytuacyjną, przepływem uwagi, inteligencją emocjonalną, coachingiem i śledzeniem."}
   ]}
  ]},
-{id:6,emoji:"🏁",title:"Egzamin końcowy i podsumowanie",desc:"Krótki egzamin do zrobienia przed webinarem, plus checklista i samoocena do przejrzenia wcześniej.",final:true,
+{id:6,emoji:"❓",title:"Q&A: Twoje pytania o Lekcje równoległe",desc:"Konkretne odpowiedzi zespołu na techniczne i dydaktyczne pytania, które faktycznie zadają trenerzy — bez testu, wystarczy przeczytać.",qa:true,
+ sections:[
+  {t:"Sekcja Q&A",cards:[
+   {type:"text",b:"Ta sekcja odpowiada na realne pytania techniczne i dydaktyczne, które trenerzy zadawali podczas wdrażania Lekcji równoległych. Nie ma tu testu — po prostu kliknij pytanie, aby zobaczyć odpowiedź."},
+   {type:"faq",ic:"⏱️",q:"Przy 5 uczniach, jak pogodzić „przyjmowanie nowego ucznia co 10 minut” z „sprawdzaniem wszystkich aktywnych uczniów co 10 minut”, skoro 8 obowiązkowych etapów wypełnia już większość każdego okna czasowego?",a:"<p>Trener nie prowadzi ciągłych sprawdzeń ze wszystkimi aktywnymi uczniami — idziesz tylko do tego, kto podniesie rękę. Kolejność priorytetów:</p><ul style='margin:8px 0 8px 20px'><li>Przyjęcie ucznia &gt; podniesiona ręka</li><li>Pożegnanie ucznia (zamknięcie) &gt; podniesiona ręka</li><li>Przyjęcie ucznia &gt; pożegnanie ucznia</li><li>Podniesiona ręka &gt; zwykłe sprawdzenie</li></ul><p>„Zrelaksowane” sprawdzenia zdarzają się tylko wtedy, gdy nie ma nikogo do przyjęcia, do pożegnania, i nikt nie podniósł ręki.</p>"},
+   {type:"faq",ic:"🚦",q:"Jeśli 10-minutowe okno na przyjęcie ucznia zostanie zużyte na rozwiązanie problemu technicznego (połączenie, dźwięk, Roblox), a w tym samym momencie zjawia się kolejny uczeń, kogo trener obsługuje najpierw?",a:"<p>Uczeń, który zjawił się na czas, jest priorytetem. Uczeń z problemem technicznym jest obsługiwany <strong>po</strong> zakończeniu pracy z tym, który przyszedł punktualnie. Dzieje się tak, ponieważ każda lekcja kieruje się tym protokołem priorytetów:</p><div class=\"ladder\"><div class=\"ladder-row\"><span class=\"ladder-rank\">1</span><span class=\"ladder-chip win\">Przyjęcie ucznia</span><span class=\"ladder-vs\">wygrywa z</span><span class=\"ladder-chip lose\">Podniesiona ręka</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">2</span><span class=\"ladder-chip win\">Pożegnanie ucznia (zamknięcie)</span><span class=\"ladder-vs\">wygrywa z</span><span class=\"ladder-chip lose\">Podniesiona ręka</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">3</span><span class=\"ladder-chip win\">Przyjęcie ucznia</span><span class=\"ladder-vs\">wygrywa z</span><span class=\"ladder-chip lose\">Pożegnanie ucznia</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">4</span><span class=\"ladder-chip win\">Podniesiona ręka</span><span class=\"ladder-vs\">wygrywa z</span><span class=\"ladder-chip lose\">Zwykłe sprawdzenie</span></div></div>"},
+   {type:"faq",ic:"🌍",q:"Jaki jest zakres LR — czy to jest test?",a:"<p>LR całkowicie zastępuje format grupowy w Polsce dla Digital Creativity Poziom 2 i Roblox Junior. Dlatego właśnie wszyscy trenerzy prowadzący te kursy są obecnie szkoleni w tym formacie. Format był już testowany w innych dużych regionach, w tym w Brazylii i Ameryce Łacińskiej, z bardzo pozytywnymi wynikami.</p>"},
+   {type:"faq",ic:"🎬",q:"Jeśli treść jest taka sama, jak mam wyjaśnić teorię, praktykę i udzielić feedbacku w zaledwie 10 minut?",a:"<p>Sedno treści jest takie samo pod względem narzędzi i wiedzy teoretycznej, którą musisz mieć, aby jej nauczać. Zmienia się narracja: jest napisana dla bardziej dojrzałego, bardziej samodzielnego ucznia i zaprojektowana tak, aby uczeń nie zależał od ciebie w 100%, by ukończyć lekcję.</p><h4 style='margin:14px 0 6px'>Na czym opiera się ten format</h4><p>Lekcja stosuje podejście <strong>dedukcyjne</strong>: uczeń najpierw widzi gotowy projekt, potem odkrywa, jak został zrobiony, i stosuje tę zasadę we własnym projekcie.</p><p><strong>Feedback: trener + samoocena.</strong> Nie ma feedbacku rówieśniczego. AI nie jest używane w pierwszych lekcjach; w kolejnych lekcjach modułu AI dodawane jest jako trzeci kanał feedbacku, tam gdzie to zasadne.</p><p>Głównym celem jest poczucie: <em>„Potrafię samodzielnie stworzyć działający projekt cyfrowy”.</em> Błędy są normalną częścią procesu twórczego.</p><p style='margin-top:10px'>Obejrzyj ten film, aby zrozumieć, jak zmienia się treść — dla ciebie i dla ucznia:</p><div class=\"drivewrap\"><iframe src=\"https://drive.google.com/file/d/19EcpVYLwkJNLmYMEo_V-gtWOS8A8q2R8/preview\" allow=\"autoplay\" loading=\"lazy\"></iframe></div>"},
+   {type:"faq",ic:"🔗",q:"Gdzie mogę zobaczyć kursy dostosowane do LR?",a:"<p>Pełna dokumentacja jest jeszcze w trakcie przygotowania, ale wersja LR Digital Creativity Poziom 2 jest już dostępna:</p><ul style='margin:8px 0 8px 20px'><li><a href=\"https://bo.kodland.org/courses/2077\" target=\"_blank\" rel=\"noopener\">[2077] 👥 Digital Creativity. Level 2 [2026][10-12][60 min][40 L] — Polska [w toku]</a></li></ul>"},
+   {type:"faq",ic:"👥",q:"Jaka jest maksymalna liczba uczniów w grupie Lekcji równoległej?",a:"<p>Maksymalnie <strong>5 uczniów / 100 minut</strong>.</p>"},
+   {type:"faq",ic:"💙",q:"Jak zarządzać czasem lekcji LR z uczniami z niepełnosprawnościami lub neuroróżnorodnością, którzy potrzebują więcej uwagi i wsparcia?",a:"<p>CS, jak zawsze, zostawi notatkę, gdy uczeń ma stwierdzoną niepełnosprawność. Jeśli trener później uzna, że format LR nie jest odpowiedni dla konkretnego ucznia, powinien po prostu omówić przypadek ze swoim TL — razem znajdziemy najlepsze rozwiązanie.</p><p>Nie uważamy tego za poważny problem specyficzny dla LR — w wielu przypadkach ten format może działać nawet lepiej niż tradycyjna lekcja grupowa, ponieważ uczeń wciąż otrzymuje indywidualną uwagę.</p><p>Warto jednak pamiętać, że pytania o samodzielność, pracę indywidualną i wcześniejsze doświadczenia z kursami samodzielnymi zadawane są już podczas lekcji próbnej — więc jeśli osoba prowadząca lekcję próbną (TCM) uzna, że uczeń nie czułby się komfortowo w LR, ten format nie jest mu oferowany.</p>"},
+   {type:"faq",ic:"⏰",q:"Jaki jest protokół dla uczniów, którzy spóźniają się?",a:"<p>Przy 5 uczniach każdy dołącza w odstępach 10 minut (np. 16:00, 16:10, 16:20...). Przyjęcie i pożegnanie jednego ucznia zajmuje w praktyce 6–7 minut, więc trener zawsze ma margines na spóźnienia w ramach łącznych 100 minut slotu (60 minut lekcji na ucznia).</p><h4 style='margin:14px 0 6px'>Jeśli uczeń nie dołączy w pierwszych 5 minutach swojego okna</h4><ul style='margin:8px 0 8px 20px'><li>Napisz do niego lub jego opiekuna bezpośrednio na WhatsApp.</li><li>Jeśli jego okno się skończy, a on wciąż nie dołączył, przywitaj kolejnego ucznia — nie czekasz w nieskończoność.</li><li>Jeśli spóźniony uczeń dołączy, zaproś go, ale najpierw dokończ z uczniem, z którym już pracujesz.</li><li>Spóźniony uczeń <strong>nie</strong> otrzymuje pełnej 60-minutowej lekcji — kończy się ona, gdy kończy się jego pierwotnie zaplanowane okno.</li></ul><h4 style='margin:14px 0 6px'>Oficjalny przykład</h4><p>Anna miała dołączyć między 16:10 a 16:20. O 16:15 wciąż się nie połączyła, więc piszesz do niej na WhatsApp i witasz kolejnego ucznia, Maria. O 16:21 Anna pojawia się w poczekalni, ale ty wciąż pracujesz z Mariem — informujesz ją na WhatsApp, że zajmiesz się nią za kilka minut. Kończysz z Mariem najpóźniej o 16:25, i dopiero wtedy witasz Annę. Zaplanowane okno Anny: 16:10–17:10 → jej rzeczywisty czas po spóźnieniu: 16:25–17:10.</p>"},
+   {type:"faq",ic:"💬",q:"Czy muszę mieć grupę na WhatsApp ze wszystkimi uczniami z grupy równoległej?",a:"<p>LR jest pozycjonowana jako nauczanie zindywidualizowane. Trenerzy <strong>nie</strong> mogą tworzyć grup na WhatsApp dla uczniów z jednego slotu — każdy uczeń jest traktowany indywidualnie, a cała komunikacja odbywa się przez bezpośrednie wiadomości na WhatsApp.</p>"},
+   {type:"faq",ic:"🔄",q:"Czy wszystkie kursy przejdą na ten format? Czy to nowy standard w Kodland?",a:"<p>Nie — LR zastępuje wyłącznie format grupy premium, dla wybranych kursów.</p>"},
+   {type:"faq",ic:"👪",q:"Czy rodzice wiedzą o tym formacie przy zapisie?",a:"<p>Tak. Rodzice są informowani o formacie LR w ramach procesu zapisu i komunikacji, dla wybranych kursów.</p>"},
+   {type:"faq",ic:"💰",q:"Jak wyglądają płatności w LR?",a:"<p>Płatności zależą od stawki za czas w danym slocie, która z kolei zależy od liczby uczniów w grupie. Po dokładne wyliczenia dla twojego konkretnego przypadku skontaktuj się ze swoim TL.</p>"}
+  ]}
+ ]},
+{id:7,emoji:"🏁",title:"Egzamin końcowy i podsumowanie",desc:"Krótki egzamin do zrobienia przed webinarem, plus checklista i samoocena do przejrzenia wcześniej.",final:true,
  sections:[
   {t:"📝 Przed webinarem",cards:[
     {type:"text",b:"Uzupełnij ten egzamin złożony z 9 pytań przed praktycznym webinarem. Jego wykonanie nie tylko kończy część tego szkolenia — utrwala też to, czego się nauczyłeś/aś, dzięki czemu na webinar przychodzisz gotowy/a do praktyki, a nie do powtórki."},
@@ -1079,7 +1153,7 @@ const MODULES_PL=[
 
 const QUIZ_PL={
 1:[
-  {q:"LR zastępuje ogólny sposób nauczania w Kodland, we wszystkich kursach i formatach.",opts:["Fałsz — zastępuje tylko format premium 1-na-1, dla wybranych kursów","Prawda — zmienia wszystko w sposobie nauczania Kodland"],c:0,fb:"LR jest ograniczona do formatu premium 1-na-1 w wybranych kursach. Wszystko inne w sposobie nauczania Kodland pozostaje takie samo."},
+  {q:"LR zastępuje ogólny sposób nauczania w Kodland, we wszystkich kursach i formatach.",opts:["Fałsz — zastępuje tylko format premium, dla wybranych kursów","Prawda — zmienia wszystko w sposobie nauczania Kodland"],c:0,fb:"LR jest ograniczona do formatu premium w wybranych kursach. Wszystko inne w sposobie nauczania Kodland pozostaje takie samo."},
   {q:"Co zmienia się w lekcji równoległej?",opts:["Treść kursu i interfejs klasy","Tylko polityka zwrotów","Sposób prowadzenia lekcji i sposób rotacji trenera między uczniami"],c:2,fb:"Treść, śledzenie obecności i zgłaszanie projektów pozostają dokładnie takie same — zmienia się tylko sposób prowadzenia i rotacji."},
   {q:"Ile minut zawsze otrzymuje jeden uczeń w lekcji równoległej, niezależnie od wielkości grupy?",opts:["45 minut","60 minut","To zależy od kursu"],c:1,fb:"Każdy uczeń zawsze otrzymuje pełne, nieprzerwane 60 minut — to całkowity czas trenera się wydłuża, aby zmieścić grupę."},
   {q:"Dlaczego Lekcje równoległe są zaprojektowane dla uczniów w wieku 10+, a nie dla młodszych dzieci?",opts:["Młodsze dzieci są ogólnie mniej zdolnymi uczniami, więc ten format by im nie odpowiadał.","W tym wieku funkcje wykonawcze i samoregulacja rozwinęły się na tyle, że samodzielne odcinki pracy stają się realne — młodsze dzieci wciąż potrzebują obecności dorosłego, by pomóc im regulować skupienie.","To głównie decyzja związana z harmonogramem — w młodszych grupach po prostu jest mniej dostępnych uczniów, których można pogrupować."],c:1,fb:"To kwestia dopasowania rozwojowego, a nie oceny zdolności. Funkcje wykonawcze i samoregulacja robią realny krok naprzód mniej więcej między 10. a 12. rokiem życia (Diamond, 2013), co sprawia, że odcinki pracy bez nadzoru stają się wykonalne, a nie przytłaczające."}
@@ -1115,7 +1189,16 @@ const MODULES_TR=[
   ]},
   {t:"Ne Değişir, Ne Değişmez",cards:[
     {type:'twocol',left:{h:'✅ Değişenler',items:["Dersin nasıl verildiği","Öğrenciler arasında nasıl geçiş yaptığınız","Nasıl iletişim kurduğunuz — bireysel olarak, WhatsApp grupları olmadan"]},right:{h:"❌ Değişmeyenler",plain:true,items:["Kurs içeriği","Devam takibi","Proje teslimleri — her şey öncekiyle tamamen aynı şekilde, bireysel grup başına takip edilir"]}},
-    {type:'warnbox',h:'Önemli kapsam',b:"Parallel Lesson, Kodland'ın genel öğretim şeklini <strong>değiştirmez</strong> — yalnızca seçili kurslar için <strong>premium birebir formatı</strong> değiştirir."}
+    {type:'warnbox',h:'Önemli kapsam',b:"Parallel Lesson, Kodland'ın genel öğretim şeklini <strong>değiştirmez</strong> — yalnızca seçili kurslar için <strong>premium formatı</strong> değiştirir."}
+  ]},
+  {t:"📋 Bir Ders Aslında Nasıl İşler",cards:[
+    {type:'text',b:"Ders formatı: <strong>paralel</strong>. Her öğrencinin dersi tam 60 dakika sürecek şekilde tasarlanmıştır — ve hiçbir grup etkinliği yoktur. Bir kart veya slayt hâlâ bir grup etkinliğinden bahsediyorsa görmezden gelin: <strong>grup etkinliklerine yapılan atıflar bu ders formatıyla ilgili değildir.</strong> Eğitmen, her öğrencinin dersinin başında ve sonunda destek sağlar; bireysel çalışma sırasında ise ara sıra ve öğrenci yardım istediğinde kontrol eder."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'🎙️',h:"Eğitmenin rolü",b:"Eşzamanlı bölümlerde eğitmen tonu belirler, hedefi açıklar ve teknik kurulumun hazır olduğunu kontrol eder. Bireysel çalışma sırasında eğitmen dersi öğrenci adına yönetmez — yalnızca öğrenci istediğinde hedefe yönelik yardım sağlar. Kartların kendisi, öğrenciye kaydetmeden önce ve önemli adımlarda eğitmeni çağırmasını hatırlatır."},
+      {ic:'🔁',h:"Öğretim yaklaşımı tümdengelimlidir",b:"Öğrenci önce bitmiş bir projeyi görür, sonra nasıl yapıldığını keşfeder ve aynı ilkeyi kendi projesine uygular — önce sonuç, sonra mekanizma, en sonda uygulama."},
+      {ic:'💬',h:'Geri bildirim: Eğitmen + Kendi Kendine',b:"Bu formatta akran geri bildirimi yoktur. AI ilk derslerde kullanılmaz — modüldeki sonraki derslerde, uygun olduğunda AI üçüncü bir geri bildirim kanalı olarak eklenir."},
+      {ic:'🌟',h:'Bu formatın oluşturduğu zihniyet',full:true,b:"Ana odak şu duygudur: <em>\"Çalışan bir dijital projeyi kendi başıma oluşturabilirim.\"</em> Hatalar, bir şeylerin yanlış gittiğinin işareti değil, yaratıcı sürecin normal bir parçasıdır."}
+    ]}
   ]},
   {t:"🧠 Bu Neden 10 Yaş ve Üzeri Öğrenciler İçin İşe Yarar",cards:[
     {type:'text',h:"Bu Bir Tahmin Değil",b:"Parallel Lessons öğrenciden belirli bir şey ister: eğitmen etrafta dolaşmadan üretken bir şekilde çalışmaya devam etmek, sonra eğitmen geldiği anda tam olarak yeniden dahil olmak. Bu küçük bir talep değil — ve PL'nin neden daha küçük değil de 10 yaş ve üzeri öğrenciler için tasarlandığının tam nedeni bu. Format, bu yaştaki çocukların gerçekte nasıl düşündüğü, odaklandığı ve kendini düzenlediği konusunda bildiklerimize göre tasarlanmıştır, programlamanın kolayına göre değil."},
@@ -1131,13 +1214,7 @@ const MODULES_TR=[
  sections:[
   {t:"BO'da Parallel Group Nasıl Görünür",cards:[
     {type:'text',b:"Parallel Group, bir eğitmene bağlı birden fazla bireysel öğrenci grubunu bir araya getiren bir yapıdır. Her öğrencinin, premium formatta olduğu gibi kendi bireysel grubu vardır — öğretmen olarak katılma linki basitçe hepsi için aynıdır."},
-    {type:'img',src:'images/Image2_TR.png',alt:'Konsol simgesi vurgulanmış, birkaç bireysel grubu içeren bir Parallel Group kartını gösteren BO ekran görüntüsü',cap:'BO\'daki Parallel Group kartı — bir kart, içinde birkaç bireysel grup, bir konsol bağlantısı.'}
-  ]},
-  {t:"Konsolu Nasıl Açarım?",cards:[
-    {type:'text',h:'Seçenek 1 — Takvim üzerinden',b:"Yeni grubu tıklayın (adında “PL” geçer) → içindeki bireysel öğrenci gruplarını görün → Konsolu Aç'a tıklayın. Dersten <strong>30 dakika önce</strong> kullanılabilir."},
-    {type:'img',src:'images/Image3.gif',alt:'Takvim üzerinden konsolu açmanın animasyonlu anlatımı'},
-    {type:'text',h:'Seçenek 2 — Normal Gruplar listesi üzerinden',b:"Sağdaki Konsolu Aç'a tıklayın. Dersten <strong>60 dakika önce</strong>, ders bitene kadar kullanılabilir."},
-    {type:'img',src:'images/Image4.gif',alt:'Konsolu normal Gruplar listesinden açmanın animasyonlu anlatımı',cap:'Konsolu normal Gruplar listesinden açma.'}
+    {type:'simlink',href:'BO_simulator/Simulacion_BO_PL.html',label:'🖥️ Parallel Lessons BO Simülatörünü Aç',cap:"BO'nun tıklanabilir, tam bir kopyası — Parallel Group kartını kendi gözlerinizle görün: içinde birkaç bireysel grup ve tek bir konsol bağlantısı."}
   ]},
   {t:"İletişim ve Takip Kuralları",cards:[
     {type:'list',h:'Bu formatta çalışırken',items:[
@@ -1190,8 +1267,7 @@ const MODULES_TR=[
     {type:'iconlist',cols:1,items:[
       {ic:'🗣️',h:'1. Açıklamaları farklı öğrenenler için uyarlamak',b:"Aynı şekilde açıklanan aynı kavram her öğrencide farklı şekilde karşılık bulur — bu açıklamanın bir kusuru değil, farklı geçmişlerin ve düşünme tarzlarının normal bir özelliğidir."},
       {ic:'📊',h:'2. Farklı ön bilgi düzeylerini fark etmek',b:"Bağımsız çalışmanın başında hızlı, düşük riskli bir soru ('bu konuda zaten ne biliyorsun?'), ön bilgiyi saniyeler içinde ortaya çıkarır ve bu belirli aralığın gerçekte ne kadar destek gerektirdiğini size söyler."},
-      {ic:'⏱️',h:'3. Hızınızı uygun şekilde ayarlamak',b:'Hız, sabit bir ayar değil, bir farklılaştırma aracıdır — yeni bir kavram inşa eden bir öğrenci için yavaşlayın, tanıdık bir şeyi pekiştiren biri için hızlanın.'},
-      {ic:'🧩',h:'4. Öğrencileri bulundukları yerde karşılamak',b:"Bu, tüm bölümün ana fikridir: işiniz tek bir açıklama sunup herkese uymasını ummak değil, her öğrencinin gerçekte nerede olduğunu fark etmek ve her seferinde buna göre ayarlamaktır."}
+      {ic:'⏱️',h:'3. Hızınızı uygun şekilde ayarlamak',b:'Hız, sabit bir ayar değil, bir farklılaştırma aracıdır — yeni bir kavram inşa eden bir öğrenci için yavaşlayın, tanıdık bir şeyi pekiştiren biri için hızlanın.'}
     ]}
   ]},
   {t:"🧪 Kendiniz Deneyin",cards:[
@@ -1279,7 +1355,25 @@ const MODULES_TR=[
     {type:'cute',h:'Bu nasıl çalışır',b:"Bir Parallel Lesson'dan gerçek konsol durumlarıyla yüzleşmek üzeresiniz. Bazı anlar çoktan seçmelidir. Diğerleri serbest metindir: ne yapacağınızı ve ne söyleyeceğinizi kendi kelimelerinizle tam olarak yazın. Cevabınızı az önce öğrendiğiniz kontrol paneli becerileriyle ilişkilendiren geri bildirimi her zaman alacaksınız — durumsal farkındalık, dikkat akışı, duygusal zekâ, koçluk ve takip."}
   ]}
  ]},
-{id:6,emoji:'🏁',title:"Final Sınavı ve Özet",desc:"Webinardan önce tamamlanacak kısa bir sınav, ayrıca önceden gözden geçirmeniz için bir kontrol listesi ve öz değerlendirme.",final:true,
+{id:6,emoji:'❓',title:"Soru-Cevap: Parallel Lessons Hakkındaki Sorularınız",desc:"Eğitmenlerin gerçekten sorduğu teknik ve öğretimle ilgili sorulara ekipten net cevaplar — sınav yok, sadece okuyun.",qa:true,
+ sections:[
+  {t:"Soru-Cevap Bölümü",cards:[
+   {type:'text',b:"Bu bölüm, Parallel Lessons'ın uygulanması sırasında eğitmenlerin gündeme getirdiği gerçek teknik ve öğretimle ilgili sorulara cevap verir. Burada sınav yok — cevabı görmek için bir soruya tıklamanız yeterli."},
+   {type:'faq',ic:'⏱️',q:"5 öğrenciyle, 8 zorunlu aşama her pencerenin çoğunu zaten doldururken, \"her 10 dakikada bir yeni öğrenciyi karşılama\" ile \"her 10 dakikada bir tüm aktif öğrencileri kontrol etme\" nasıl bir arada yürür?",a:"<p>Eğitmen, aktif olan her öğrenciyle sürekli kontrol yapmaz — yalnızca elini kaldırana gidersiniz. Öncelik sırası:</p><ul style='margin:8px 0 8px 20px'><li>Karşılama &gt; kaldırılan el</li><li>Vedalaşma (kapanış) &gt; kaldırılan el</li><li>Karşılama &gt; vedalaşma</li><li>Kaldırılan el &gt; normal kontrol</li></ul><p>\"Rahat\" kontroller yalnızca karşılanacak, vedalaşılacak veya eli kalkmış kimse olmadığında gerçekleşir.</p>"},
+   {type:'faq',ic:'🚦',q:"10 dakikalık karşılama penceresi bir teknik sorunu çözmekle (bağlantı, ses, Roblox) tükenirse ve tam o anda bir sonraki öğrenci gelirse, eğitmen önce kime bakar?",a:"<p>Zamanında gelen öğrenci önceliklidir. Teknik sorunu olan öğrenci, zamanında gelenle işiniz bittikten <strong>sonra</strong> ilgilenilir. Bunun nedeni, her dersin şu öncelik protokolünü izlemesidir:</p><div class=\"ladder\"><div class=\"ladder-row\"><span class=\"ladder-rank\">1</span><span class=\"ladder-chip win\">Karşılama</span><span class=\"ladder-vs\">kazanır</span><span class=\"ladder-chip lose\">Kaldırılan el</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">2</span><span class=\"ladder-chip win\">Vedalaşma (kapanış)</span><span class=\"ladder-vs\">kazanır</span><span class=\"ladder-chip lose\">Kaldırılan el</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">3</span><span class=\"ladder-chip win\">Karşılama</span><span class=\"ladder-vs\">kazanır</span><span class=\"ladder-chip lose\">Vedalaşma</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">4</span><span class=\"ladder-chip win\">Kaldırılan el</span><span class=\"ladder-vs\">kazanır</span><span class=\"ladder-chip lose\">Normal kontrol</span></div></div>"},
+   {type:'faq',ic:'🌍',q:"PL'nin kapsamı nedir — bu bir test mi?",a:"<p>PL formatı, Matematik dersleri için grup formatının tamamen yerini alıyor. Bu yüzden şu anda bu kurslardaki tüm eğitmenler bu konuda eğitiliyor. Format, Brezilya ve LatAm dahil diğer büyük bölgelerde zaten test edildi ve çok olumlu sonuçlar alındı.</p>"},
+   {type:'faq',ic:'🎬',q:"İçerik aynıysa, teoriyi, pratiği ve geri bildirimi yalnızca 10 dakikada nasıl anlatırım?",a:"<p>İçeriğin özü, araçlar ve öğretmek için sahip olmanız gereken teorik bilgi açısından aynıdır. Değişen şey anlatım biçimidir: daha olgun, bağımsız olabilen çocuklar için yazılmıştır ve öğrencinin dersi tamamlamak için size %100 bağımlı olmaması için tasarlanmıştır.</p><h4 style='margin:14px 0 6px'>Bu format neye dayanıyor</h4><p>Ders <strong>tümdengelimli</strong> bir yaklaşım izler: öğrenci önce bitmiş bir projeyi görür, sonra nasıl yapıldığını keşfeder ve ilkeyi kendi projesine uygular.</p><p><strong>Geri bildirim: Eğitmen + Kendi Kendine.</strong> Akran geri bildirimi yoktur. AI ilk derslerde kullanılmaz; modüldeki sonraki derslerde, uygun olduğunda üçüncü bir geri bildirim kanalı olarak eklenir.</p><p>Ana odak şu duygudur: <em>\"Çalışan bir dijital projeyi kendi başıma oluşturabilirim.\"</em> Hatalar, yaratıcı sürecin normal bir parçasıdır.</p><p style='margin-top:10px'>İçeriğin sizin ve öğrenci için nasıl değiştiğini anlamak için bu videoyu izleyin:</p><div class=\"drivewrap\"><iframe src=\"https://drive.google.com/file/d/1qmTnjGnGEjQhkASR9JB6nxmdX4n1F4eX/preview\" allow=\"autoplay\" loading=\"lazy\"></iframe></div>"},
+   {type:'faq',ic:'🔗',q:"PL'ye uyarlanmış kursları nerede görebilirim?",a:"<p>Tam belgeler hâlâ hazırlanıyor, ancak referans olarak Digital Creativity Level 2'nin PL sürümü zaten yayında:</p><ul style='margin:8px 0 8px 20px'><li><a href=\"https://bo.kodland.org/courses/2079?tab=2&lessonId=42404\" target=\"_blank\" rel=\"noopener\">[2079] 👥 Digital Creativity. Level 2 [2026][10-12][60 min][40 L][ENG][devam ediyor]</a></li></ul>"},
+   {type:'faq',ic:'👥',q:"Bir Parallel Lesson grubunun sahip olabileceği maksimum öğrenci sayısı nedir?",a:"<p>Maksimum <strong>5 öğrenci / 100 dakika</strong>.</p>"},
+   {type:'faq',ic:'💙',q:"Daha fazla ilgi ve desteğe ihtiyaç duyan engelli veya nörofarklı öğrencilerle bir PL dersinin zamanını nasıl yönetirim?",a:"<p>CS, her zamanki gibi, bir öğrencinin bilinen bir engeli olduğunda bir not bırakacaktır. Bir eğitmen daha sonra PL formatının belirli bir öğrenci için uygun olmadığını fark ederse, durumu basitçe TL'siyle konuşmalıdır — birlikte en iyi çözümü bulacağız.</p><p>Bunu PL'ye özgü büyük bir sorun olarak görmüyoruz — birçok durumda format, geleneksel bir grup dersinden daha iyi işleyebilir, çünkü öğrenci yine de bireysel ilgi almaya devam eder.</p><p>Yine de, bağımsızlık, bireysel çalışma ve kendi kendine ilerleyen kurslarla geçmiş deneyimlerle ilgili sorular zaten deneme dersinde soruluyor — bu yüzden deneme dersini yürüten kişi (TCM) öğrencinin PL'de rahat olmayacağını düşünürse, bu format o öğrenciye sunulmaz.</p>"},
+   {type:'faq',ic:'⏰',q:"Geç kalan öğrenciler için protokol nedir?",a:"<p>5 öğrenciyle, her biri 10 dakika arayla katılır (örn. 16:00, 16:10, 16:20...). Bir öğrenciyi karşılamak ve vedalaşmak pratikte 6-7 dakika sürer, bu yüzden eğitmenin slotun toplam 100 dakikası içinde (öğrenci başına 60 dakika ders) geç kalmalar için her zaman bir payı vardır.</p><h4 style='margin:14px 0 6px'>Bir öğrenci ilk 5 dakika içinde katılmazsa</h4><ul style='margin:8px 0 8px 20px'><li>Kendisine veya velisine doğrudan WhatsApp'tan mesaj gönderin.</li><li>Penceresi biterse ve hâlâ katılmadıysa, sonraki öğrenciyi karşılayın — süresiz beklemezsiniz.</li><li>Öğrenci geç katılırsa, onu davet edin, ama önce zaten devam etmekte olan öğrenciyle işi bitirin.</li><li>Geç kalan öğrenci tam 60 dakikalık bir ders <strong>almaz</strong> — kendi planlanan penceresi bittiğinde ders de biter.</li></ul><h4 style='margin:14px 0 6px'>Resmi örnek</h4><p>Anna'nın 16:10-16:20 arasında katılması bekleniyordu. 16:15'te hâlâ bağlanmadı: kendisine WhatsApp'tan yazıyorsunuz ve sıradaki öğrenci Mario'yu karşılıyorsunuz. 16:21'de Anna bekleme odasında görünüyor, ama siz hâlâ Mario ile ilgileniyorsunuz — WhatsApp'tan birkaç dakika içinde ona geleceğinizi bildiriyorsunuz. Mario ile en geç 16:25'te bitiriyorsunuz ve ancak o zaman Anna'yı karşılıyorsunuz. Anna'nın planlanan penceresi: 16:10-17:10 → geç katılım sonrası gerçek zamanı: 16:25-17:10.</p>"},
+   {type:'faq',ic:'💬',q:"Parallel group'taki tüm öğrencilerle bir WhatsApp grubum olmalı mı?",a:"<p>PL, bireyselleştirilmiş öğrenme olarak konumlandırılır. Eğitmenler tek bir slottaki öğrenciler için WhatsApp grupları <strong>oluşturmamalıdır</strong> — her öğrenci bireysel olarak ele alınır ve tüm iletişim doğrudan WhatsApp mesajları üzerinden yapılır.</p>"},
+   {type:'faq',ic:'🔄',q:"Tüm kurslar bu formata mı geçecek? Bu Kodland'ın yeni varsayılanı mı?",a:"<p>Hayır — PL yalnızca seçili kurslar için premium grup formatının yerini alır.</p>"},
+   {type:'faq',ic:'👪',q:"Ebeveynler kayıt sırasında bu formattan haberdar mı?",a:"<p>Evet. Ebeveynler, seçili kurslar için kayıt ve iletişim sürecinin bir parçası olarak PL formatı hakkında bilgilendirilir.</p>"},
+   {type:'faq',ic:'💰',q:"PL'de ödemeler nasıl işliyor?",a:"<p>Ödemeler, zaman dilimi için geçerli olan ücret oranına bağlıdır; bu da gruptaki öğrenci sayısına bağlıdır. Kendi özel durumunuza yönelik hesaplamalar için TL'nizle iletişime geçmelisiniz.</p>"}
+  ]}
+ ]},
+{id:7,emoji:'🏁',title:"Final Sınavı ve Özet",desc:"Webinardan önce tamamlanacak kısa bir sınav, ayrıca önceden gözden geçirmeniz için bir kontrol listesi ve öz değerlendirme.",final:true,
  sections:[
   {t:"📝 Webinardan Önce",cards:[
     {type:'text',b:"Uygulamalı webinardan önce bu 9 soruluk sınavı tamamlayın. Bunu bitirmek sadece bu eğitimin bir bölümünü tamamlamanızı sağlamaz — aynı zamanda öğrendiklerinizi güçlendirir, böylece webinara tekrar gözden geçirmek için değil, pratik yapmaya hazır olarak gelirsiniz."},
@@ -1320,7 +1414,7 @@ const MODULES_TR=[
 
 const QUIZ_TR={
 1:[
-  {q:"PL, tüm kurslar ve formatlar genelinde Kodland'ın genel öğretim şeklini değiştirir.",opts:["Yanlış — yalnızca seçili kurslar için premium birebir formatı değiştirir","Doğru — Kodland'ın öğretim şeklindeki her şeyi değiştirir"],c:0,fb:"PL, seçili kurslardaki premium birebir formatla sınırlıdır. Kodland'ın öğretim şekli hakkındaki diğer her şey aynı kalır."},
+  {q:"PL, tüm kurslar ve formatlar genelinde Kodland'ın genel öğretim şeklini değiştirir.",opts:["Yanlış — yalnızca seçili kurslar için premium formatı değiştirir","Doğru — Kodland'ın öğretim şeklindeki her şeyi değiştirir"],c:0,fb:"PL, seçili kurslardaki premium formatla sınırlıdır. Kodland'ın öğretim şekli hakkındaki diğer her şey aynı kalır."},
   {q:"Parallel Lessons ile bunlardan hangisi değişir?",opts:["Kurs içeriği ve sınıf arayüzü","Sadece iade politikası","Dersin nasıl verildiği ve eğitmenin öğrenciler arasında nasıl döndüğü"],c:2,fb:"İçerik, devam takibi ve proje teslimleri tamamen aynı kalır — yalnızca sunum ve dönüş şekli değişir."},
   {q:"Grup büyüklüğü ne olursa olsun, bir Parallel Lesson'da tek bir öğrenci her zaman kaç dakika alır?",opts:["45 dakika","60 dakika","Kursa göre değişir"],c:1,fb:"Her öğrenci her zaman tam, kesintisiz 60 dakika alır — uzayan şey grup büyüklüğüne sığması için eğitmenin toplam süresidir."},
   {q:"Parallel Lessons neden daha küçük çocuklar yerine 10 yaş ve üzeri öğrenciler için tasarlanmıştır?",opts:["Daha küçük çocuklar genel olarak daha az yetenekli öğrenenlerdir, bu yüzden format onlara uygun olmaz.","Bu yaş civarında yönetici işlevler ve öz-düzenleme, bağımsız aralıkları gerçekçi kılacak kadar gelişmiştir — daha küçük çocukların odaklanmayı düzenlemeye yardımcı olacak bir yetişkine hâlâ ihtiyacı vardır.","Bu çoğunlukla bir programlama kararıdır — daha küçük sınıflarda basitçe bir araya getirilebilecek daha az öğrenci vardır."],c:1,fb:"Bu bir gelişimsel uyumdur, yetenek hakkında bir yargı değil. Yönetici işlevler ve öz-düzenleme 10–12 yaşları civarında gerçek bir ilerleme kaydeder (Diamond, 2013), bu da denetimsiz aralıkları bunaltıcı olmak yerine uygulanabilir kılan şeydir."}
@@ -1356,7 +1450,16 @@ const MODULES_IT=[
   ]},
   {t:"Cosa Cambia e Cosa Non Cambia",cards:[
     {type:'twocol',left:{h:'✅ Cambia',items:["Come si svolge la lezione","Come ruoti tra gli studenti","Come comunichi — individualmente, senza gruppi WhatsApp"]},right:{h:"❌ Non Cambia",plain:true,items:["Il contenuto del corso","Il monitoraggio delle presenze","L'invio dei progetti — tutto tracciato per singolo gruppo, esattamente come prima"]}},
-    {type:'warnbox',h:'Ambito importante',b:"La Parallel Lesson <strong>non</strong> sostituisce il modo generale in cui Kodland insegna — sostituisce solo il <strong>formato individuale premium</strong>, per i corsi selezionati."}
+    {type:'warnbox',h:'Ambito importante',b:"La Parallel Lesson <strong>non</strong> sostituisce il modo generale in cui Kodland insegna — sostituisce solo il <strong>formato premium</strong>, per i corsi selezionati."}
+  ]},
+  {t:"📋 Come Si Svolge Davvero una Lezione",cards:[
+    {type:'text',b:"Formato della lezione: <strong>parallelo</strong>. La lezione di ogni studente è pensata per durare 60 minuti pieni — e non ci sono attività di gruppo. Se una card o una slide menziona ancora un'attività di gruppo, ignorala: <strong>i riferimenti alle attività di gruppo non sono rilevanti per questo formato di lezione.</strong> Il tutor supporta lo studente all'inizio e alla fine della sua lezione; durante l'autostudio, controlla di tanto in tanto e ogni volta che lo studente chiede aiuto."},
+    {type:'iconlist',cols:1,items:[
+      {ic:'🎙️',h:"Il ruolo del tutor",b:"Nelle parti sincrone, il tutor dà il tono, spiega l'obiettivo e verifica che la configurazione tecnica sia pronta. Durante l'autostudio, il tutor non conduce la lezione al posto dello studente — fornisce un aiuto mirato solo quando lo studente lo chiede. Le stesse card ricordano allo studente di chiamare il tutor prima di salvare e nei punti chiave."},
+      {ic:'🔁',h:"L'approccio didattico è deduttivo",b:"Lo studente vede prima un progetto finito, poi scopre come è stato realizzato, e infine applica lo stesso principio al proprio progetto — prima il risultato, poi il meccanismo, infine l'applicazione."},
+      {ic:'💬',h:'Feedback: Tutor + Auto-valutazione',b:"In questo formato non c'è feedback tra pari. L'IA non è usata nelle prime lezioni — nelle lezioni successive del modulo, l'IA viene aggiunta come terzo canale di feedback, dove opportuno."},
+      {ic:'🌟',h:'La mentalità che questo formato costruisce',full:true,b:"L'obiettivo principale è la sensazione: <em>\"Riesco a creare da solo/a un progetto digitale funzionante.\"</em> Gli errori sono una parte normale del processo creativo, non il segnale che qualcosa è andato storto."}
+    ]}
   ]},
   {t:"🧠 Perché Questo Funziona per Studenti dai 10 Anni in Su",cards:[
     {type:'text',h:"Non È una Scelta Casuale",b:"Le Parallel Lessons chiedono qualcosa di specifico a uno studente: lavorare in modo produttivo per periodi prolungati senza un tutor sempre presente, per poi tornare pienamente coinvolto nel momento in cui il tutor arriva. Non è una richiesta da poco — ed è esattamente per questo che la PL è pensata per studenti dai 10 anni in su, non per i più piccoli. Il formato è costruito attorno a ciò che sappiamo realmente su come i bambini di questa età pensano, si concentrano e si autoregolano, non attorno a ciò che è comodo dal punto di vista organizzativo."},
@@ -1372,13 +1475,7 @@ const MODULES_IT=[
  sections:[
   {t:"Come si Presenta un Parallel Group nel BO",cards:[
     {type:'text',b:"Un contenitore che raggruppa diversi gruppi individuali di studenti sotto un unico tutor. Ogni studente ha comunque il proprio gruppo individuale, esattamente come nel formato premium — il link per accedere come tutor è semplicemente lo stesso per tutti."},
-    {type:'img',src:'images/Image2_IT.png',alt:'Screenshot del BO che mostra una card Parallel Group contenente diversi gruppi individuali, con l\'icona della console evidenziata',cap:'La card Parallel Group nel BO — una card, diversi gruppi individuali all\'interno, un solo link alla console.'}
-  ]},
-  {t:"Come Apro la Console?",cards:[
-    {type:'text',h:'Opzione 1 — Tramite Schedule',b:"Clicca sul nuovo gruppo (il nome contiene “PL”) → vedi i gruppi individuali degli studenti al suo interno → clicca su Open console. Disponibile <strong>30 minuti prima</strong> della lezione."},
-    {type:'img',src:'images/Image3.gif',alt:'Percorso animato per aprire la console tramite Schedule'},
-    {type:'text',h:'Opzione 2 — Dalla tua lista Groups',b:"Clicca su Open console a destra. Disponibile <strong>60 minuti prima</strong> della lezione, fino alla sua fine."},
-    {type:'img',src:'images/Image4.gif',alt:'Percorso animato per aprire la console dalla normale lista dei gruppi',cap:'Aprire la console dalla normale lista dei gruppi.'}
+    {type:'simlink',href:'BO_simulator/Simulacion_BO_PL.html',label:'🖥️ Apri il Simulatore BO delle Parallel Lessons',cap:"Una replica completa e cliccabile del BO — guarda tu stesso/a la card Parallel Group, con diversi gruppi individuali all'interno e un solo link alla console."}
   ]},
   {t:"Regole di Comunicazione e Monitoraggio",cards:[
     {type:'list',h:'Lavorare all\'interno del formato',items:[
@@ -1431,8 +1528,7 @@ const MODULES_IT=[
     {type:'iconlist',cols:1,items:[
       {ic:'🗣️',h:'1. Adattare le spiegazioni a studenti diversi',b:"Lo stesso concetto spiegato nello stesso modo arriverà in modo diverso a ogni studente — non è un difetto della spiegazione, è una caratteristica normale di background e stili di pensiero diversi."},
       {ic:'📊',h:'2. Riconoscere diversi livelli di conoscenza pregressa',b:"Una domanda veloce e senza pressione all'inizio del lavoro autonomo ('cosa sai già di questo argomento?') fa emergere le conoscenze pregresse in pochi secondi, e ti dice di quanto sostegno ha davvero bisogno questo specifico intervallo."},
-      {ic:'⏱️',h:'3. Adattare il ritmo in modo appropriato',b:'Il ritmo è uno strumento di differenziazione, non un\'impostazione fissa — rallenta per uno studente che sta costruendo un concetto nuovo, accelera per uno che sta consolidando qualcosa che già conosce.'},
-      {ic:'🧩',h:'4. Incontrare gli studenti dove si trovano',b:"Questo è il filo conduttore dell'intera sezione: il tuo compito non è dare un'unica spiegazione sperando che vada bene per tutti, ma notare dove si trova davvero ogni studente e regolarti di conseguenza, ogni volta."}
+      {ic:'⏱️',h:'3. Adattare il ritmo in modo appropriato',b:'Il ritmo è uno strumento di differenziazione, non un\'impostazione fissa — rallenta per uno studente che sta costruendo un concetto nuovo, accelera per uno che sta consolidando qualcosa che già conosce.'}
     ]}
   ]},
   {t:"🧪 Mettiti alla Prova",cards:[
@@ -1520,7 +1616,25 @@ const MODULES_IT=[
     {type:'cute',h:'Come funziona',b:"Stai per affrontare situazioni reali della console durante una Parallel Lesson. Alcuni momenti sono a scelta multipla. Altri sono a testo libero: scrivi esattamente cosa faresti e diresti, con le tue parole. Riceverai sempre un feedback che collega la tua risposta alle competenze del quadro di controllo che hai appena imparato — consapevolezza situazionale, flusso di attenzione, intelligenza emotiva, coaching e tracciamento."}
   ]}
  ]},
-{id:6,emoji:'🏁',title:"Esame Finale e Riepilogo",desc:"Un breve esame da completare prima del webinar, più una checklist e un'autovalutazione da rivedere in anticipo.",final:true,
+{id:6,emoji:'❓',title:"Q&A: Le Tue Domande sulle Parallel Lessons",desc:"Risposte dirette del team alle domande tecniche e didattiche che i tutor fanno davvero — nessuna verifica, basta leggere.",qa:true,
+ sections:[
+  {t:"Sezione Q&A",cards:[
+   {type:'text',b:"Questa sezione risponde a domande tecniche e didattiche reali sollevate dai tutor durante il lancio delle Parallel Lessons. Non c'è nessuna verifica qui — clicca semplicemente su una domanda per vedere la risposta."},
+   {type:'faq',ic:'⏱️',q:"Con 5 studenti, come si conciliano \"accogliere un nuovo studente ogni 10 minuti\" e \"controllare tutti gli studenti attivi ogni 10 minuti\", se le 8 fasi obbligatorie occupano già la maggior parte di ogni finestra?",a:"<p>Il tutor non fa controlli continui con tutti gli studenti attivi — vai solo da chi alza la mano. Ordine di priorità:</p><ul style='margin:8px 0 8px 20px'><li>Accoglienza &gt; mano alzata</li><li>Congedo (chiusura) &gt; mano alzata</li><li>Accoglienza &gt; congedo</li><li>Mano alzata &gt; controllo regolare</li></ul><p>I controlli \"rilassati\" avvengono solo quando non c'è nessuno da accogliere, nessuno da congedare e nessuna mano alzata.</p>"},
+   {type:'faq',ic:'🚦',q:"Se i 10 minuti di accoglienza vengono usati per risolvere un problema tecnico (connessione, audio, Roblox) e in quel momento arriva lo studente successivo, chi segue prima il tutor?",a:"<p>Lo studente arrivato in orario è la priorità. Lo studente con il problema tecnico viene seguito <strong>dopo</strong> aver finito con chi è arrivato puntuale. Questo perché ogni lezione segue questo protocollo di priorità:</p><div class=\"ladder\"><div class=\"ladder-row\"><span class=\"ladder-rank\">1</span><span class=\"ladder-chip win\">Accoglienza</span><span class=\"ladder-vs\">batte</span><span class=\"ladder-chip lose\">Mano alzata</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">2</span><span class=\"ladder-chip win\">Congedo (chiusura)</span><span class=\"ladder-vs\">batte</span><span class=\"ladder-chip lose\">Mano alzata</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">3</span><span class=\"ladder-chip win\">Accoglienza</span><span class=\"ladder-vs\">batte</span><span class=\"ladder-chip lose\">Congedo</span></div><div class=\"ladder-row\"><span class=\"ladder-rank\">4</span><span class=\"ladder-chip win\">Mano alzata</span><span class=\"ladder-vs\">batte</span><span class=\"ladder-chip lose\">Controllo regolare</span></div></div>"},
+   {type:'faq',ic:'🌍',q:"Qual è la portata della PL — è un test?",a:"<p>Il formato PL sostituisce completamente il formato di gruppo in Italia per Digital Creativity Livello 2 e Roblox Junior. Per questo motivo tutti i tutor di questi corsi vengono attualmente formati su questo formato. Il formato è già stato testato in altre grandi regioni, tra cui Brasile e LatAm, con risultati molto positivi.</p>"},
+   {type:'faq',ic:'🎬',q:"Se il contenuto è lo stesso, come faccio a spiegare teoria, pratica e dare feedback in soli 10 minuti?",a:"<p>Il nucleo del contenuto è lo stesso in termini di strumenti e di conoscenze teoriche necessarie per insegnarlo. Ciò che cambia è lo storytelling: è scritto per uno studente più maturo e più autonomo, e progettato perché lo studente non dipenda al 100% da te per completare la lezione.</p><h4 style='margin:14px 0 6px'>Su cosa si basa questo formato</h4><p>La lezione segue un approccio <strong>deduttivo</strong>: lo studente vede prima un progetto finito, poi scopre come è stato realizzato, e applica lo stesso principio al proprio progetto.</p><p><strong>Feedback: Tutor + Auto-valutazione.</strong> Non c'è feedback tra pari. L'IA non è usata nelle prime lezioni; nelle lezioni successive del modulo, l'IA viene aggiunta come terzo canale di feedback, dove opportuno.</p><p>L'obiettivo principale è la sensazione: <em>\"Riesco a creare da solo/a un progetto digitale funzionante.\"</em> Gli errori sono una parte normale del processo creativo.</p><p style='margin-top:10px'>Guarda questo video per capire come cambia il contenuto, per te e per lo studente:</p><div class=\"drivewrap\"><iframe src=\"https://drive.google.com/file/d/1kxAoU5IrfLbhcm4Nl5KMN9vPlzQA2OaR/preview\" allow=\"autoplay\" loading=\"lazy\"></iframe></div>"},
+   {type:'faq',ic:'🔗',q:"Dove posso vedere i corsi adattati alla PL?",a:"<p>La documentazione completa è ancora in fase di definizione, ma la versione PL di Digital Creativity Livello 2 è già disponibile:</p><ul style='margin:8px 0 8px 20px'><li><a href=\"https://bo.kodland.org/courses/2078\" target=\"_blank\" rel=\"noopener\">[2078] 👥 Digital Creativity. Level 2 [2026][10-12][60 min][40 L] — Italia [in corso]</a></li></ul>"},
+   {type:'faq',ic:'👥',q:"Qual è il numero massimo di studenti che può avere un gruppo Parallel Lesson?",a:"<p>Massimo <strong>5 studenti / 100 minuti</strong>.</p>"},
+   {type:'faq',ic:'💙',q:"Come gestisco il tempo di una lezione PL con studenti con disabilità o neurodivergenze che richiedono più attenzione e supporto?",a:"<p>Il CS lascerà sempre una nota quando uno studente ha una disabilità nota, come di consueto. Se un tutor si accorge in seguito che il formato PL non è adatto a un determinato studente, dovrebbe semplicemente discutere il caso con il proprio TL — troveremo insieme la soluzione migliore.</p><p>Non lo consideriamo un problema importante specifico della PL — in molti casi il formato può funzionare persino meglio di una lezione di gruppo tradizionale, perché lo studente riceve comunque attenzione individuale.</p><p>Detto questo, vale la pena ricordare che le domande su autonomia, lavoro individuale ed esperienze pregresse con corsi in autoapprendimento vengono già fatte durante la lezione di prova — quindi se chi conduce la lezione di prova (TCM) nota che lo studente non si troverebbe a proprio agio in PL, questo formato non gli viene proposto.</p>"},
+   {type:'faq',ic:'⏰',q:"Qual è il protocollo per gli studenti che arrivano in ritardo?",a:"<p>Con 5 studenti, ognuno entra a 10 minuti di distanza (es. 16:00, 16:10, 16:20...). Accogliere e congedare uno studente richiede in pratica 6-7 minuti, quindi il tutor ha sempre un margine per i ritardi entro i 100 minuti totali dello slot (60 minuti di lezione per studente).</p><h4 style='margin:14px 0 6px'>Se uno studente non entra nei primi 5 minuti</h4><ul style='margin:8px 0 8px 20px'><li>Scrivigli, o scrivi al suo tutore, direttamente su WhatsApp.</li><li>Se la sua finestra finisce e ancora non è entrato, accogli lo studente successivo — non si aspetta indefinitamente.</li><li>Se lo studente arriva in ritardo, invitalo, ma finisci prima con lo studente già in corso.</li><li>Lo studente in ritardo <strong>non</strong> riceve una lezione completa di 60 minuti — termina quando finisce la sua finestra originariamente pianificata.</li></ul><h4 style='margin:14px 0 6px'>Esempio ufficiale</h4><p>Anna doveva entrare tra le 16:10 e le 16:20. Alle 16:15 non si è ancora collegata: le scrivi su WhatsApp e accogli lo studente successivo, Mario. Alle 16:21 Anna compare nella sala d'attesa, ma tu sei ancora con Mario — le fai sapere su WhatsApp che la raggiungerai tra qualche minuto. Finisci con Mario entro le 16:25 al più tardi, e solo allora accogli Anna. Finestra pianificata di Anna: 16:10-17:10 → il suo orario reale dopo l'arrivo in ritardo: 16:25-17:10.</p>"},
+   {type:'faq',ic:'💬',q:"Devo avere un gruppo WhatsApp con tutti gli studenti del parallel group?",a:"<p>La PL è pensata come apprendimento individualizzato. I tutor <strong>non</strong> devono creare gruppi WhatsApp per gli studenti di uno stesso slot — ogni studente viene trattato individualmente, e tutta la comunicazione avviene tramite messaggi WhatsApp diretti.</p>"},
+   {type:'faq',ic:'🔄',q:"Tutti i corsi passeranno a questo formato? È il nuovo standard di Kodland?",a:"<p>No — la PL sostituisce solo il formato di gruppo premium, per i corsi selezionati.</p>"},
+   {type:'faq',ic:'👪',q:"I genitori sono a conoscenza di questo formato al momento dell'iscrizione?",a:"<p>Sì. I genitori vengono informati sul formato PL come parte del processo di iscrizione e comunicazione, per i corsi selezionati.</p>"},
+   {type:'faq',ic:'💰',q:"Come funzionano i pagamenti nella PL?",a:"<p>I pagamenti dipendono dalla tariffa oraria per lo slot, che a sua volta dipende dal numero di studenti nel gruppo. Per i calcoli specifici del tuo caso, contatta il tuo TL.</p>"}
+  ]}
+ ]},
+{id:7,emoji:'🏁',title:"Esame Finale e Riepilogo",desc:"Un breve esame da completare prima del webinar, più una checklist e un'autovalutazione da rivedere in anticipo.",final:true,
  sections:[
   {t:"📝 Prima del Webinar",cards:[
     {type:'text',b:"Completa questo esame di 9 domande prima del webinar pratico. Completarlo non serve solo a concludere una parte di questa formazione — rinforza anche ciò che hai imparato, così arrivi al webinar pronto a praticare, non a ripassare."},
@@ -1561,7 +1675,7 @@ const MODULES_IT=[
 
 const QUIZ_IT={
 1:[
-  {q:"La PL sostituisce il formato generale di insegnamento di Kodland, in tutti i corsi e formati.",opts:["Falso — sostituisce solo il formato individuale premium, per i corsi selezionati","Vero — cambia tutto il modo in cui insegna Kodland"],c:0,fb:"La PL è limitata al formato individuale premium nei corsi selezionati. Tutto il resto del modo in cui insegna Kodland resta uguale."},
+  {q:"La PL sostituisce il formato generale di insegnamento di Kodland, in tutti i corsi e formati.",opts:["Falso — sostituisce solo il formato premium, per i corsi selezionati","Vero — cambia tutto il modo in cui insegna Kodland"],c:0,fb:"La PL è limitata al formato premium nei corsi selezionati. Tutto il resto del modo in cui insegna Kodland resta uguale."},
   {q:"Quale di questi cambia con le Parallel Lessons?",opts:["Il contenuto del corso e l'interfaccia dell'aula","Solo la politica di rimborso","Come si svolge la lezione e come il tutor ruota tra gli studenti"],c:2,fb:"Contenuto, monitoraggio delle presenze e invio dei progetti restano esattamente gli stessi — cambia solo l'erogazione e la rotazione."},
   {q:"Quanti minuti riceve sempre un singolo studente in una Parallel Lesson, indipendentemente dalla dimensione del gruppo?",opts:["45 minuti","60 minuti","Varia in base al corso"],c:1,fb:"Ogni studente riceve sempre i suoi 60 minuti pieni e ininterrotti — è il tempo totale del tutor che si allunga per adattarsi al gruppo."},
   {q:"Perché le Parallel Lessons sono pensate per studenti dai 10 anni in su piuttosto che per bambini più piccoli?",opts:["I bambini più piccoli sono complessivamente studenti meno capaci, quindi il formato non farebbe per loro.","A questa età, le funzioni esecutive e l'autoregolazione si sono sviluppate abbastanza da rendere realistici i periodi di lavoro autonomo — i bambini più piccoli hanno ancora bisogno della presenza di un adulto per aiutarli a regolare la concentrazione.","È soprattutto una decisione organizzativa — le classi più giovani hanno semplicemente meno studenti disponibili da raggruppare."],c:1,fb:"Non è un giudizio sulle capacità, ma una questione di sviluppo. Le funzioni esecutive e l'autoregolazione fanno un vero passo avanti intorno ai 10–12 anni (Diamond, 2013), ed è proprio questo che rende gestibili, invece che travolgenti, i periodi di lavoro senza supervisione."}
@@ -1602,7 +1716,7 @@ function renderHome(){
     const el=document.createElement('div'); el.className='mc'+(locked?' locked':'');
     const pct=getScore(m.id);
     const badge=isDone?'<span class="badge bd">'+T('badgeCompleted')+'</span>':locked?'<span class="badge bl">'+T('badgeLocked')+'</span>':'<span class="badge bs">'+T('badgeStart')+'</span>';
-    const stag=m.rpg?(isDone?'<span class="stag">'+T('simulationComplete')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('consoleSimInside')+'</span>'):m.final?(isDone?'<span class="stag">'+T('completedLbl')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('finalExamTag')+'</span>'):(isDone?('<span class="stag">'+T('scoreLabel')+' <b>'+pct+'%</b></span>'):locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('hasShortCheck')+'</span>');
+    const stag=m.rpg?(isDone?'<span class="stag">'+T('simulationComplete')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('consoleSimInside')+'</span>'):m.final?(isDone?'<span class="stag">'+T('completedLbl')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('finalExamTag')+'</span>'):m.qa?(isDone?'<span class="stag">'+T('completedLbl')+'</span>':locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('qaTag')+'</span>'):(isDone?('<span class="stag">'+T('scoreLabel')+' <b>'+pct+'%</b></span>'):locked?('<span class="stag">'+T('completeModuleNFirst',{n:m.id-1})+'</span>'):'<span class="stag">'+T('hasShortCheck')+'</span>');
     el.innerHTML='<div class="mc-stripe" style="background:var(--blue)"></div><div class="mc-body"><div class="mc-top"><div class="mc-num">'+T('moduleN',{n:m.id})+'</div><div class="mc-em">'+m.emoji+'</div></div><div class="mc-title">'+m.title+'</div><div class="mc-desc">'+m.desc+'</div><div class="mc-foot">'+badge+stag+'</div></div>';
     if(!locked) el.onclick=()=>openModule(m);
     g.appendChild(el);
@@ -1626,6 +1740,9 @@ function openModule(m){
   }else if(m.final){
     if(isPassed(m.id)) html+='<button class="ctabtn" disabled>'+T('completedLbl')+'</button>';
     else html+='<button class="ctabtn" onclick="completeFinalExam('+m.id+')">'+T('markExamComplete')+'</button>';
+  }else if(m.qa){
+    if(isPassed(m.id)) html+='<button class="ctabtn" disabled>'+T('completedLbl')+'</button>';
+    else html+='<button class="ctabtn" onclick="completeQA('+m.id+')">'+T('markQAReviewed')+'</button>';
   }else{
     const lbl=isPassed(m.id)?T('retakeCheck'):T('startCheck');
     html+='<button class="ctabtn" onclick="startQuiz('+m.id+')">'+lbl+'</button>';
@@ -1676,9 +1793,35 @@ function rc(c){
     return '<div class="icl-grid'+(c.cols===1?' icl-grid-1':'')+'">'+items+'</div>';
   }
   if(c.type==='faq'){
-    return '<div class="faq-card"><div class="faq-ic">'+c.ic+'</div><div class="faq-body"><h4>'+c.q+'</h4><p>'+c.a+'</p></div></div>';
+    return '<div class="accordion"><div class="acc-q" onclick="this.parentElement.classList.toggle(\'open\')"><span>'+(c.ic?c.ic+' ':'')+c.q+'</span><span class="acc-chev">▾</span></div><div class="acc-a"><div class="acc-a-in">'+c.a+'</div></div></div>';
+  }
+  if(c.type==='ladder'){
+    const rows=c.items.map((pair,i)=>'<div class="ladder-row"><span class="ladder-rank">'+(i+1)+'</span><span class="ladder-chip win">'+pair[0]+'</span><span class="ladder-vs">'+(c.vs||'beats')+'</span><span class="ladder-chip lose">'+pair[1]+'</span></div>').join('');
+    return '<div class="card">'+(c.h?'<h4>'+c.h+'</h4>':'')+'<div class="ladder">'+rows+'</div></div>';
+  }
+  if(c.type==='drivevideo'){
+    return '<div class="media-card"><div class="drivewrap"><iframe src="'+c.src+'" allow="autoplay" loading="lazy"></iframe></div>'+(c.cap?'<div class="media-cap">'+c.cap+'</div>':'')+'</div>';
+  }
+  if(c.type==='consoletabs'){
+    const tabs=c.tabs.map((t,i)=>'<button class="ct-tab'+(i===0?' active':'')+'" onclick="ctSwitch(this,'+i+')">'+t.label+'</button>').join('');
+    const panes=c.tabs.map((t,i)=>'<div class="ct-pane'+(i===0?' active':'')+'">'+(t.h?'<h4>'+t.h+'</h4>':'')+'<p>'+t.b+'</p></div>').join('');
+    return '<div class="card consoletabs"><div class="ct-tabs">'+tabs+'</div>'+panes+'</div>';
+  }
+  if(c.type==='simlink'){
+    return '<div class="media-card" style="text-align:center;padding:26px 20px"><a class="ctabtn" style="text-decoration:none;display:inline-block;margin:0" target="_blank" rel="noopener" href="'+c.href+'">'+c.label+'</a>'+(c.cap?'<div class="media-cap" style="margin-top:12px">'+c.cap+'</div>':'')+'</div>';
   }
   return '';
+}
+
+function ctSwitch(btn,idx){
+  const wrap=btn.closest('.consoletabs');
+  wrap.querySelectorAll('.ct-tab').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  wrap.querySelectorAll('.ct-pane').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+function completeQA(id){
+  setResult(id,100,true);
+  const next=MODULES.find(x=>x.id===id+1);
+  if(next) openModule(next); else showComplete();
 }
 
 /* ───────────────────────── QUIZ ENGINE ───────────────────────── */
