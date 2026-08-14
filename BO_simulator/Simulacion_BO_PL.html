@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parallel Lessons — BO Simulation — Kodland Training</title>
+<style>
+:root{
+  --bg:#211E33; --sidebar:#1B1830; --card:#2C2846; --card2:#342E56; --card3:#3A3460;
+  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.12);
+  --text:#EDEAF9; --text2:#C3BEDA; --muted:#8B85A6;
+  --accent:#7B87F5; --accent-d:#6067D8; --accent-bg:rgba(123,135,245,.15);
+  --green:#34D399; --green-bg:rgba(52,211,153,.15);
+  --orange:#F2A93B; --orange-bg:rgba(242,169,59,.18);
+  --red:#F2716D; --red-bg:rgba(242,113,109,.15); --grey-bg:#413A66; --grey-t:#B4AFC9;
+  --r:14px; --rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Inter,system-ui,sans-serif;min-height:100vh;font-size:14px}
+button{font-family:inherit;cursor:pointer}
+a{color:#8FA0F5;text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+select,input{font-family:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:72px;background:var(--sidebar);display:flex;flex-direction:column;align-items:center;padding:20px 0;flex-shrink:0;border-right:1px solid var(--border);position:sticky;top:0;height:100vh}
+.side-logo{font-size:24px;font-weight:800;color:var(--accent);margin-bottom:28px;letter-spacing:-1px}
+.side-icon{width:44px;height:44px;border-radius:12px;background:transparent;border:none;color:var(--muted);display:flex;align-items:center;justify-content:center;margin-bottom:10px;transition:all .15s;position:relative}
+.side-icon:hover{background:var(--card2);color:var(--text)}
+.side-icon.active{background:var(--accent);color:#fff}
+.tour-hl{box-shadow:0 0 0 3px #FFD166 !important;animation:pulse 1.4s infinite;position:relative;z-index:30}
+.tour-hl::after{content:'';position:absolute;inset:-5px;border-radius:16px;border:2px solid #FFD166;box-shadow:0 0 0 4px rgba(255,209,102,.25);animation:pulse 1.4s infinite;pointer-events:none}
+.side-bottom{margin-top:auto}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border)}
+.sim-badge{background:var(--orange-bg);color:var(--orange);font-weight:700;font-size:12px;padding:6px 14px;border-radius:999px;border:1px solid rgba(242,169,59,.35)}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.tourbtn{background:#FFD166;color:#2a2205;border:none;border-radius:999px;padding:9px 16px;font-weight:800;font-size:12.5px}
+.ticon{width:36px;height:36px;border-radius:10px;background:transparent;border:none;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.ticon:hover{background:var(--card2);color:var(--text)}
+.content{flex:1;padding:26px 32px 90px;overflow-x:hidden}
+h1.pagetitle{font-size:26px;font-weight:700;margin-bottom:18px}
+.row3{display:grid;grid-template-columns:1.1fr 1.3fr 1fr;gap:16px;margin-bottom:18px}
+@media(max-width:980px){.row3{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.card h3{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.profile-name{font-size:19px;font-weight:700;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.field{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:var(--text2);border-bottom:1px solid var(--border)}
+.field:last-child{border-bottom:none}
+.field .ic{color:var(--muted);flex-shrink:0}
+.course-item{padding:12px 14px;background:var(--card2);border-radius:10px;margin-bottom:10px;font-size:13.5px;color:var(--text2)}
+.course-item:last-child{margin-bottom:0}
+.availrow{display:flex;justify-content:space-between;padding:6px 0;font-size:13.5px}
+.availrow .day{color:var(--text2)}
+.availrow .val{color:var(--muted);font-style:italic}
+.availrow .val.set{background:var(--accent-bg);color:#AEB8FA;font-style:normal;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.tabrow{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:9px 18px;background:var(--card);border:1px solid var(--border2);color:var(--text2);font-weight:700;font-size:13px;border-radius:8px}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab.ghost{opacity:.55;cursor:default}
+.tablewrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;overflow-x:auto;position:relative}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:12px 16px;background:var(--card2);white-space:nowrap}
+tbody td{padding:13px 16px;font-size:13.5px;color:var(--text2);border-top:1px solid var(--border);vertical-align:top;white-space:nowrap}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+.pill{display:inline-block;padding:3px 12px;border-radius:999px;font-size:11.5px;font-weight:700}
+.pill-green{background:var(--green-bg);color:var(--green)}
+.pill-blue{background:var(--accent-bg);color:#AEB8FA}
+.pill-grey{background:var(--grey-bg);color:var(--grey-t)}
+.pill-orange{background:var(--orange-bg);color:var(--orange)}
+.tbl-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 18px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.empty-row td{text-align:center;color:var(--muted);padding:26px;font-style:italic;white-space:normal}
+.iconbtn{width:36px;height:36px;border-radius:10px;background:var(--card2);border:1px solid var(--border2);color:var(--text2);display:flex;align-items:center;justify-content:center}
+.iconbtn:hover{background:var(--card3);color:var(--text)}
+.icontip{position:relative;display:inline-flex}
+.icontip .bubble{
+  display:none;position:absolute;top:44px;right:0;background:#fff;color:#2a2540;border-radius:8px;
+  padding:8px 12px;font-size:12.5px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:nowrap;z-index:80;
+}
+.icontip .bubble:before{content:'';position:absolute;top:-5px;right:14px;width:10px;height:10px;background:#fff;transform:rotate(45deg)}
+.icontip:hover .bubble{display:block}
+.icontip.tour-hl .bubble{display:block}
+.btn{border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent-d)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.detailhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:18px;flex-wrap:wrap}
+.detailhead h2{font-size:19px;font-weight:700;display:flex;align-items:center;gap:8px}
+.detailhead-actions{display:flex;gap:8px;align-items:center}
+.backlink{display:inline-flex;align-items:center;gap:6px;color:var(--text2);font-size:13px;font-weight:700;margin-bottom:16px}
+.sched-nav{display:flex;justify-content:center;align-items:center;gap:14px;margin-bottom:6px}
+.sched-range{text-align:center;color:var(--accent);font-size:12.5px;margin-bottom:16px}
+.arrowbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--accent);display:flex;align-items:center;justify-content:center}
+.gridcal{display:grid;grid-template-columns:70px repeat(7,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.gridcal .hd{padding:10px 6px;text-align:center;font-size:12px;font-weight:700;color:var(--text2);border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--card2)}
+.gridcal .hourlbl{padding:4px 8px;font-size:11px;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:50px}
+.gridcal .cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:50px;position:relative}
+.evt{position:absolute;inset:2px;border-radius:8px;padding:5px 7px;font-size:10px;font-weight:700;line-height:1.25;overflow:hidden;cursor:pointer}
+.evt.avail{background:rgba(52,211,153,.18);color:#7FE8BE;border:1px solid rgba(52,211,153,.35);cursor:default}
+.evt.pl{background:rgba(52,211,211,.85);color:#04302e}
+.evt.pl:hover{background:#3ad9d4}
+.evt.pl2{background:rgba(52,211,211,.55);color:#04302e;left:52%}
+.modal-back{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:26px;width:min(420px,94vw)}
+.modal-box h3{font-size:16px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.modal-grouplist{list-style:none;margin:2px 0 18px;padding-left:0}
+.modal-grouplist li{padding:8px 0 8px 26px;font-size:13.5px;color:var(--text2);border-bottom:1px solid var(--border)}
+.modal-grouplist li:last-child{border-bottom:none}
+.modal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2C2846;border:1px solid var(--accent);color:var(--text);padding:12px 20px;border-radius:10px;font-size:13.5px;z-index:1000;box-shadow:0 8px 26px rgba(0,0,0,.4);max-width:460px;text-align:center}
+.reflect{background:var(--accent-bg);border:1px solid rgba(123,135,245,.35);border-radius:12px;padding:16px 18px;margin-top:16px;font-size:13.5px;color:#D6DCFC;line-height:1.6}
+/* TOUR */
+.tour-card{position:fixed;bottom:20px;right:20px;width:min(360px,90vw);background:#221F3A;border:2px solid #FFD166;border-radius:16px;padding:16px 18px;box-shadow:0 10px 40px rgba(0,0,0,.5);z-index:999;display:flex;flex-direction:column;gap:9px;max-height:70vh;overflow-y:auto}
+.tour-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tour-step{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#FFD166}
+.tour-x{background:var(--card2);border:none;color:var(--text2);font-size:11px;font-weight:800;padding:5px 11px;border-radius:999px;white-space:nowrap}
+.tour-x:hover{background:var(--card3);color:#fff}
+.tour-title{font-size:15px;font-weight:800}
+.tour-body{font-size:13px;color:var(--text2);line-height:1.55}
+.tour-body b{color:#FFD166}
+.tour-progress{height:5px;background:var(--card2);border-radius:999px;overflow:hidden}
+.tour-progress i{display:block;height:100%;background:#FFD166;border-radius:999px;transition:width .3s}
+.tour-actions{display:flex;justify-content:flex-end;align-items:center;margin-top:2px}
+.tour-next{background:#FFD166;color:#2a2205;border:none;border-radius:8px;padding:9px 18px;font-weight:800;font-size:13px}
+/* LESSON VIEWER */
+.lesson-shell{background:#2A2C3D;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.lesson-top{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;background:#31344A;border-bottom:1px solid var(--border2)}
+.lesson-brand{font-weight:800;font-size:16px;display:flex;align-items:center;gap:14px;color:#fff}
+.lesson-crumb{color:var(--muted);font-size:13px}
+.lesson-top-right{display:flex;align-items:center;gap:12px}
+.lesson-lang{border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:700;color:var(--text2)}
+.lesson-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px}
+.lesson-body{display:flex}
+.lesson-rail{width:52px;background:#25273A;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding-top:16px}
+.lesson-rail .dot{width:34px;height:34px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center}
+.lesson-content{flex:1;padding:28px 30px 20px;max-height:600px;overflow-y:auto}
+.studentblock{background:#31344A;border-radius:12px;padding:24px 26px;margin-bottom:16px}
+.studentblock h2{font-size:21px;font-weight:800;color:#fff;margin-bottom:12px}
+.studentblock p.lead{color:var(--text2);line-height:1.65;margin-bottom:18px}
+.studentblock h4{font-size:14.5px;font-weight:800;color:#fff;margin:16px 0 8px}
+.studentblock ul{margin:0 0 8px 20px;color:var(--text2);line-height:1.7}
+.tipbox{background:#2B3350;border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;margin-top:16px}
+.tipbox .lbl{color:#AEB8FA;font-weight:800;font-size:11.5px;letter-spacing:.05em;margin-bottom:4px}
+.tipbox p{color:var(--text2);font-size:13.5px;line-height:1.6}
+.notecard{background:#2E2A22;border:1.5px dashed var(--orange);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.notecard .notelbl{color:var(--orange);font-weight:800;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.notecard h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:16px;line-height:1.3}
+.notecard h3{font-size:15px;font-weight:800;color:#fff;margin:18px 0 8px}
+.notecard p{color:var(--text2);line-height:1.65;margin-bottom:6px;font-size:14px}
+.notecard ul{margin:6px 0 6px 20px;color:var(--text2);line-height:1.65;font-size:14px}
+.notecard b{color:#fff}
+.note-callout{background:#333654;border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0;font-size:13.5px}
+.note-callout .lbl{color:#AEB8FA;font-weight:800;font-size:11.5px;letter-spacing:.05em;margin-bottom:4px}
+.videobox{background:linear-gradient(135deg,#dfe6f5,#c3d0ef);border-radius:10px;padding:22px;margin:14px 0;color:#20233a}
+.videobox .tag{background:#e2e7fb;display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:800;margin-bottom:10px}
+.videobox h4{font-size:19px;font-weight:800;margin-bottom:8px}
+.videobox p{font-size:12.5px;color:#454866}
+.lesson-foot{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px;background:#25273A;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:760px){.gridcal{font-size:11px}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="side-logo">K</div>
+    <button class="side-icon" data-page="profile" title="Profile" onclick="goPage('profile')"></button>
+    <button class="side-icon" data-page="courses" title="Courses" onclick="goPage('courses')"></button>
+    <button class="side-icon" data-page="groups" title="Groups" onclick="goPage('groups')"></button>
+    <div class="side-bottom">
+      <button class="side-icon" title="My account"></button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <span class="sim-badge">🧪 SIMULATION — Kodland Training (fictional data)</span>
+      <div class="topbar-right">
+        <button class="tourbtn" onclick="startTour()">🚀 Start guided walkthrough</button>
+        <button class="ticon" title="Language"></button>
+        <button class="ticon" title="Dark mode"></button>
+        <button class="ticon" title="Log out" onclick="location.reload()"></button>
+      </div>
+    </header>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<div class="modal-back" id="consoleModal">
+  <div class="modal-box">
+    <h3>🕐 DEMO_PARALLEL_POLAND</h3>
+    <div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px">GROUPS</div>
+    <ul class="modal-grouplist">
+      <li>DEMO_PARALLEL_POL_G1</li>
+      <li>DEMO_PARALLEL_POL_G2</li>
+      <li>DEMO_PARALLEL_POL_G3</li>
+      <li>DEMO_PARALLEL_POL_G4</li>
+    </ul>
+    <div class="modal-actions">
+      <a onclick="closeConsoleModal()">Exit</a>
+      <button class="btn btn-accent" id="consoleModalOpenBtn" onclick="openConsoleFromModal()">Open Console</button>
+    </div>
+  </div>
+</div>
+
+<div class="tour-card" id="tourCard" style="display:none">
+  <div class="tour-top">
+    <span class="tour-step" id="tourStepLbl">Step 1</span>
+    <button class="tour-x" onclick="minimizeTour()" title="Minimize the walkthrough">Minimize ▾</button>
+  </div>
+  <div class="tour-progress"><i id="tourBar" style="width:3%"></i></div>
+  <div class="tour-title" id="tourTitle"></div>
+  <div class="tour-body" id="tourBody"></div>
+  <div class="tour-actions">
+    <button class="tour-next" id="tourNextBtn" onclick="nextStep()">Next →</button>
+  </div>
+</div>
+<button id="tourReopenBtn" onclick="reopenTour()" style="display:none;position:fixed;bottom:20px;right:20px;background:#FFD166;color:#2a2205;border:none;border-radius:999px;padding:12px 20px;font-weight:800;font-size:13px;z-index:999;box-shadow:0 8px 26px rgba(0,0,0,.4)">📍 Resume guided walkthrough</button>
+
+<script>
+/* ---------- ICONS ---------- */
+const ICONS = {
+ person:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg>',
+ users:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.3"/><path d="M2.5 21c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15 15.3c2.7.4 4.8 2.3 5.5 5.7"/></svg>',
+ book:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5c2-1 5-1 7 0v14c-2-1-5-1-7 0V5Z"/><path d="M20 5c-2-1-5-1-7 0v14c2-1 5-1 7 0V5Z"/></svg>',
+ lang:'<span style="font-size:13px;font-weight:800">文A</span>',
+ monitor:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',
+ logout:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>',
+ mail:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>',
+ phone:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1.1.4 2.2.7 3.2a2 2 0 0 1-.5 2.1L8 10.5a16 16 0 0 0 6 6l1.5-1.5a2 2 0 0 1 2-.5c1 .3 2.1.6 3.2.7a2 2 0 0 1 1.7 2Z"/></svg>',
+ flag:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4c3-1.5 6-1.5 9 0s6 1.5 9 0v12c-3 1.5-6 1.5-9 0s-6-1.5-9 0Z"/></svg>',
+ clock:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ back:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+ arrow:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+ pencil:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+ gear:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>',
+};
+document.querySelector('[data-page="profile"]').innerHTML = ICONS.person;
+document.querySelector('[data-page="courses"]').innerHTML = ICONS.book;
+document.querySelector('[data-page="groups"]').innerHTML = ICONS.users;
+document.querySelectorAll('.ticon')[0].innerHTML = ICONS.lang;
+document.querySelectorAll('.ticon')[1].innerHTML = ICONS.monitor;
+document.querySelectorAll('.ticon')[2].innerHTML = ICONS.logout;
+document.querySelector('.side-bottom .side-icon').innerHTML = ICONS.person;
+
+/* ---------- FICTIONAL DEMO DATA ---------- */
+const TEACHER = {
+  name:'Poland Demo Teacher', status:'Active', country:'🇵🇱 Poland', tz:'UTC (UTC+00:00)',
+  course:'[2079] Digital Creativity. Level 2[2026][10-12][60 min][40 L][ENG][in progress]'
+};
+const AVAILABILITY = [
+ ['Monday','14:00-16:00'],['Tuesday','16:00-18:00'],['Wednesday','13:00-15:00'],
+ ['Thursday',null],['Friday',null],['Saturday',null],['Sunday',null]
+];
+const SUBGROUPS = [
+ {title:'DEMO_PARALLEL_POL_G1',time:'13.08, 17:00–18:00'},
+ {title:'DEMO_PARALLEL_POL_G3',time:'13.08, 17:00–18:00'},
+ {title:'DEMO_PARALLEL_POL_G4',time:'13.08, 17:00–18:00'},
+ {title:'DEMO_PARALLEL_POL_G2',time:'13.08, 17:10–18:10'},
+];
+const COURSE_NAME = '[2079] Digital Creativity. Level 2[2026][10-12][60 min][40 L][ENG][in progress]';
+const IN_CLASS = [
+ [1,196527,'Get ready for your first creative mission 🚀',true,false,5],
+ [2,196528,'Welcome to Creativia Studio! ✨',true,false,5],
+ [3,196529,"Let's get to know each other! 🤝",true,false,5],
+ [4,196530,'How will the lesson work? 🧭',true,false,5],
+ [5,196531,'What can your name tell people about you? ✨',false,false,10],
+ [6,196532,'Opening the animation workshop 🎬',true,false,5],
+ [7,196533,'First letter — first version of your project ✏️',true,false,5],
+ [8,196534,'Explore the drawing tools 🎨',true,false,5],
+ [9,196535,'Move, rotate and resize 🖼️',true,false,5],
+ [10,196536,'How can you make the second letter appear later? 🤔',false,false,10],
+ [11,196537,'Add more letters to your name 🔤',true,false,5],
+ [12,196538,'Bring your letters to life ✨',true,false,5],
+ [13,196539,'Check your progress so far 👀',false,false,5],
+ [14,196540,'Check your animation ✅',true,false,5],
+ [15,196541,'Save and submit your animation 💾',false,true,30],
+ [16,196542,'How does your animation work? 🔍',false,false,10],
+ [17,196543,'Mini Animation Premiere! 🎬',false,false,10],
+ [18,196544,'What did you discover today? ✨',true,false,5],
+ [19,196545,'Get ready to use Canva 📷',true,false,5],
+];
+const HOMEWORK = [
+ [1,196546,'Prepare an email account for Canva 📧',true,false,25],
+ [2,196547,"Check that you're ready for the next lesson ✅",false,true,75],
+];
+
+/* ---------- STATE ---------- */
+let state = {page:'groups', groupsView:'initial', ptab:'groups', ctab:'lessons'};
+
+function goPage(p){ state.page=p; render(); fire('go-'+p); }
+function toggleGroupsView(){
+  state.groupsView = (state.groupsView==='initial') ? 'parallel' : 'initial';
+  render();
+  fire(state.groupsView==='parallel' ? 'click-parallel-tab' : 'click-regular-tab');
+}
+function openGroupDetail(){ state.page='groupDetail'; render(); fire('open-group-detail'); }
+function goPTab(t){ state.ptab=t; render(); fire(t==='schedule'?'open-schedule-tab':'open-groups-tab'); }
+function goCTab(t){ state.ctab=t; render(); fire(t==='assignments'?'open-assignments-tab':'open-lessons-tab'); }
+function openCourseDetail(){ state.page='courseDetail'; state.ctab='lessons'; render(); fire('open-course-detail'); }
+function openLessonViewer(){ state.page='lesson'; render(); fire('open-lesson-viewer'); }
+
+function openConsoleFromDetail(){
+  toast('🔗 This opens the Classroom link for DEMO_PARALLEL_POLAND. It becomes active 60 minutes before the lesson starts.');
+  fire('open-console-detail');
+}
+function openConsoleModalFromSchedule(){
+  document.getElementById('consoleModal').style.display='flex';
+  fire('open-console-modal');
+}
+function closeConsoleModal(){ document.getElementById('consoleModal').style.display='none'; }
+function openConsoleFromModal(){
+  toast('🔗 This is the same Classroom link, reached from your Schedule. It becomes active 30 minutes before the lesson starts.');
+  closeConsoleModal();
+  fire('open-console-modal-btn');
+}
+function simClick(label){ toast('🧪 This is a simulation — in the real BO, this would: "'+label+'".'); }
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),3800);
+}
+
+/* ---------- RENDER ---------- */
+function render(){
+  const c = document.getElementById('content');
+  document.querySelectorAll('.side-icon[data-page]').forEach(b=>b.classList.toggle('active',
+    b.dataset.page===state.page ||
+    (state.page==='groupDetail' && b.dataset.page==='groups') ||
+    (state.page==='courseDetail' && b.dataset.page==='courses') ||
+    (state.page==='lesson' && b.dataset.page==='courses')
+  ));
+  if(state.page==='groups') c.innerHTML = renderGroups();
+  else if(state.page==='groupDetail') c.innerHTML = renderGroupDetail();
+  else if(state.page==='profile') c.innerHTML = renderProfile();
+  else if(state.page==='courses') c.innerHTML = renderCourses();
+  else if(state.page==='courseDetail') c.innerHTML = renderCourseDetail();
+  else if(state.page==='lesson') c.innerHTML = renderLesson();
+  applyTourHighlights();
+}
+
+function renderGroups(){
+  const label = state.groupsView==='initial' ? 'Parallel Groups' : 'Regular Groups';
+  const body = state.groupsView==='initial'
+    ? `<table><thead><tr><th>ID</th><th>Title</th><th>Tutor</th><th>Type</th></tr></thead>
+       <tbody><tr class="empty-row"><td colspan="4">No regular groups to show. This tutor's only assignment is a Parallel Group — click <b>Parallel Groups</b> above.</td></tr></tbody></table>`
+    : `<table><thead><tr><th>ID</th><th>Title</th><th>Tutor</th><th>Current course</th><th>Start</th><th>Students/Paid</th><th>Previous lesson</th><th>Next lesson</th><th>Type</th><th>Premium</th></tr></thead>
+       <tbody><tr>
+         <td>11</td>
+         <td><a class="tour-container-row" onclick="openGroupDetail()">DEMO_PARALLEL_POLAND</a></td>
+         <td>Poland Demo Teacher</td>
+         <td>—</td><td>—</td><td>—</td><td>-</td><td>—</td>
+         <td>Parallel group</td><td>No</td>
+       </tr></tbody></table>
+       <div class="tbl-foot">Items per page: 100 &nbsp;|&nbsp; 1-1 of 1</div>`;
+  return `
+  <h1 class="pagetitle">Groups</h1>
+  <div class="tabrow">
+    <button class="tab ghost">Extra Lessons</button>
+    <button class="tab ${state.groupsView==='parallel'?'active':''}" id="groupsToggleBtn" onclick="toggleGroupsView()">${label}</button>
+  </div>
+  <div class="tablewrap" id="groupsTable">${body}</div>`;
+}
+
+function renderGroupDetail(){
+  return `
+  <a class="backlink" onclick="goPage('groups')">${ICONS.back} Back to Groups</a>
+  <div class="detailhead">
+    <div>
+      <h2>DEMO_PARALLEL_POLAND</h2>
+      <div class="field" style="border:none;padding-top:8px">${ICONS.person}Tutor: <a>Poland Demo Teacher</a></div>
+    </div>
+    <div class="detailhead-actions">
+      <span class="icontip tour-console-btn" id="openConsoleBtn">
+        <button class="iconbtn" onclick="openConsoleFromDetail()">${ICONS.monitor}</button>
+        <span class="bubble">Open console</span>
+      </span>
+    </div>
+  </div>
+  <div class="tablewrap" id="groupDetailTable">
+    <table><thead><tr><th>Title</th><th>Lesson time</th><th>Course</th><th>Next lesson topic</th></tr></thead>
+    <tbody>${SUBGROUPS.map(g=>`<tr>
+      <td><a>${g.title}</a></td><td>${g.time}</td>
+      <td><a onclick="simClick('Open the course record from here too')">${COURSE_NAME}</a></td>
+      <td>—</td>
+    </tr>`).join('')}</tbody></table>
+    <div class="tbl-foot">Items per page: 10 &nbsp;|&nbsp; 1-4 of 4</div>
+  </div>`;
+}
+
+function renderProfile(){
+  return `
+  <h1 class="pagetitle">Profile</h1>
+  <div class="row3">
+    <div class="card">
+      <div class="profile-name">${TEACHER.name} <span class="pill pill-green">${TEACHER.status}</span></div>
+      <div class="field">${ICONS.mail}—</div>
+      <div class="field">${ICONS.phone}—</div>
+      <div class="field">${ICONS.flag}${TEACHER.country}</div>
+      <div class="field">${ICONS.clock}${TEACHER.tz}</div>
+    </div>
+    <div class="card">
+      <h3>Teacher courses</h3>
+      <div class="course-item">${TEACHER.course}</div>
+    </div>
+    <div class="card">
+      <h3>Availability hours ${ICONS.pencil}</h3>
+      ${AVAILABILITY.map(([d,v])=>`<div class="availrow"><span class="day">${d}:</span><span class="val ${v?'set':''}">${v||'Not assigned'}</span></div>`).join('')}
+    </div>
+  </div>
+  <div class="tabrow">
+    <button class="tab ${state.ptab==='groups'?'active':''}" data-ptab="groups" onclick="goPTab('groups')">${ICONS.users} Groups</button>
+    <button class="tab ${state.ptab==='schedule'?'active':''}" data-ptab="schedule" onclick="goPTab('schedule')">${ICONS.clock} Schedule</button>
+  </div>
+  ${state.ptab==='schedule' ? renderSchedule() : `<div class="tablewrap"><div class="empty-row" style="padding:26px;text-align:center;color:var(--muted);font-style:italic">Your regular groups list — see the Groups page in the sidebar for Parallel Groups.</div></div>`}
+  `;
+}
+
+function renderSchedule(){
+  const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const hours=['01:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM','06:00 PM','07:00 PM','08:00 PM'];
+  return `
+  <div class="sched-nav"><button class="arrowbtn">${ICONS.back}</button><button class="btn btn-ghost">Current Week</button><button class="arrowbtn">${ICONS.arrow}</button></div>
+  <div class="sched-range">10.08 - 16.08.2026 📅</div>
+  <div class="tablewrap" style="padding-bottom:6px" id="scheduleGrid">
+    <div class="gridcal">
+      <div class="hd"></div>${days.map(d=>`<div class="hd">${d}</div>`).join('')}
+      ${hours.map((h,i)=>`<div class="hourlbl">${h}</div>${days.map((d)=>{
+        let content='';
+        if(d==='Monday'&&i===0) content=`<div class="evt avail">14:00-16:00<br>Available</div>`;
+        if(d==='Tuesday'&&i===2) content=`<div class="evt avail">16:00-18:00<br>Available</div>`;
+        if(d==='Wednesday'&&i===0) content=`<div class="evt avail">13:00-15:00<br>Available</div>`;
+        if(d==='Thursday'&&i===4) content=`<div class="evt pl" onclick="openConsoleModalFromSchedule()">17:00-18:00<br>DEMO_PARALLEL_POLAND</div><div class="evt pl2" onclick="openConsoleModalFromSchedule()">17:10-18:10</div>`;
+        return `<div class="cell">${content}</div>`;
+      }).join('')}`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderCourses(){
+  return `
+  <h1 class="pagetitle">Courses</h1>
+  <div class="tablewrap">
+    <table><thead><tr><th>ID</th><th>Title</th><th>Business branch</th><th>Active</th><th>Number of lessons</th></tr></thead>
+    <tbody><tr>
+      <td>2079</td>
+      <td><a class="tour-course-link" onclick="openCourseDetail()">${COURSE_NAME}</a></td>
+      <td>ENG</td><td>Yes</td><td>40</td>
+    </tr></tbody></table>
+    <div class="tbl-foot">Items per page: 100 &nbsp;|&nbsp; 1-1 of 1</div>
+  </div>`;
+}
+
+function renderCourseDetail(){
+  return `
+  <a class="backlink" onclick="goPage('courses')">${ICONS.back} Back to Courses</a>
+  <div class="course-head-card card" style="margin-bottom:18px">
+    <h1 class="pagetitle" style="margin-bottom:10px">${COURSE_NAME}</h1>
+    <div style="display:flex;gap:10px;margin-bottom:14px"><span class="pill pill-green">Active</span><span class="pill" style="background:#4a3420;color:#e0a860">fwd</span></div>
+    <div class="row3" style="grid-template-columns:1fr 1fr">
+      <div>
+        <div class="field">${ICONS.users}Business branch: ENG</div>
+        <div class="field">${ICONS.lang}Language: English 🇬🇧</div>
+        <div class="field">${ICONS.clock}Course type: Paid courses</div>
+        <div class="field">${ICONS.users}Course group: Digital Creativity lvl 2</div>
+      </div>
+      <div>
+        <div class="field">Number of lessons: 40</div>
+        <div class="field">Number of modules: 10</div>
+        <div class="field">Excluded from overbooking: No</div>
+        <div class="field">Certificate: —</div>
+      </div>
+    </div>
+  </div>
+  <div class="tabrow">
+    <button class="tab ${state.ctab==='lessons'?'active':''}" data-ctab="lessons" onclick="goCTab('lessons')">Lessons</button>
+    <button class="tab ${state.ctab==='assignments'?'active':''}" data-ctab="assignments" onclick="goCTab('assignments')">Assignments</button>
+  </div>
+  ${state.ctab==='assignments' ? renderAssignments() : renderLessonsTab()}
+  `;
+}
+
+function renderLessonsTab(){
+  return `
+  <div class="tablewrap">
+    <table><thead><tr><th>ID</th><th>Title</th><th>Nº</th><th>Actions</th></tr></thead>
+    <tbody><tr><td>9001</td><td>M1. First steps</td><td>1</td><td><a onclick="goCTab('assignments')">View assignments →</a></td></tr></tbody></table>
+  </div>`;
+}
+
+function assignRows(list){
+  return list.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[0]===1?`<a class="tour-lesson-link" onclick="openLessonViewer()">${r[2]}</a>`:`<a onclick="openLessonViewer()">${r[2]}</a>`}</td><td>INTERACTIVE</td>
+    <td>${r[3]?'✅':'❌'}</td><td>${r[4]?'✅':'❌'}</td><td>${r[5]}</td></tr>`).join('');
+}
+
+function renderAssignments(){
+  return `
+  <div style="margin-bottom:14px">
+    <label style="font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px">Lesson</label>
+    <select class="tab" style="width:100%;max-width:360px;text-align:left"><option>L1. Introduction. Animation of your name in FlipAnim</option></select>
+  </div>
+  <div class="tablewrap" id="inClassTable" style="margin-bottom:18px">
+    <h3 style="padding:16px 18px 0">In-class assignments</h3>
+    <table><thead><tr><th>Number</th><th>ID</th><th>Assignment title</th><th>Type</th><th>Theory</th><th>Project</th><th>Max score</th></tr></thead>
+    <tbody>${assignRows(IN_CLASS)}</tbody></table>
+    <div class="tbl-foot">Items per page: 100 &nbsp;|&nbsp; 1-19 of 19</div>
+  </div>
+  <div class="tablewrap" style="margin-bottom:18px">
+    <h3 style="padding:16px 18px 0">Homework assignments</h3>
+    <table><thead><tr><th>Number</th><th>ID</th><th>Assignment title</th><th>Type</th><th>Theory</th><th>Project</th><th>Max score</th></tr></thead>
+    <tbody>${assignRows(HOMEWORK)}</tbody></table>
+  </div>
+  <div class="tablewrap" id="studyGuidesTable">
+    <h3 style="padding:16px 18px 0">Study guides</h3>
+    <table><thead><tr><th>ID</th><th>Title</th></tr></thead>
+    <tbody><tr class="empty-row"><td colspan="2">No data available</td></tr></tbody></table>
+    <div class="tbl-foot">No wiki links here — that's intentional. In Parallel-Lessons-format courses, the tutor's guide lives inside the activities themselves, as Teacher Notes, not as a separate wiki document.</div>
+  </div>`;
+}
+
+function renderLesson(){
+  return `
+  <a class="backlink" onclick="goCTab('assignments')">${ICONS.back} Back to Assignments</a>
+  <div class="lesson-shell">
+    <div class="lesson-top">
+      <div class="lesson-brand">kodland <span class="lesson-crumb">My courses &gt; Get ready for your first cr...</span></div>
+      <div class="lesson-top-right">
+        <div class="lesson-lang">EN ▾</div>
+        <div class="lesson-avatar">${ICONS.person}</div>
+      </div>
+    </div>
+    <div class="lesson-body">
+      <div class="lesson-rail"><div class="dot">${ICONS.gear}</div></div>
+      <div class="lesson-content">
+        <div class="notecard" id="lessonNotes">
+          <div class="notelbl">👁 Teacher note — only tutors see this block</div>
+          <h2>Preparing for the lesson: Animating a Name in FlipAnim</h2>
+          <h3>Lesson overview</h3>
+          <p>This is the first lesson in the Digital Creativity lvl 2 programme, delivered in a parallel format. The student works one-to-one with the tutor at the beginning and end of the lesson, then completes the main practical tasks independently using the cards. The lesson project is a GIF animation of the student's own name.</p>
+          <h3>Lesson Story Mission</h3>
+          <p>The student begins working in Creativia Studio as a digital animator. Their first mission is to bring their name to life by making the letters appear one by one.</p>
+          <h3>Main Lesson Goal</h3>
+          <p>Help the student understand the principle of frame-by-frame animation and use it to create their own GIF.</p>
+          <h3>Key Result</h3>
+          <ul>
+            <li>Created a GIF animation of their own name.</li>
+            <li>Made the letters appear in sequence across different frames.</li>
+            <li>Saved and downloaded their finished GIF.</li>
+          </ul>
+          <div class="note-callout"><div class="lbl">Please note!</div>References to group activities are not relevant to this lesson format.</div>
+          <div class="videobox"><div class="tag">LESSON 1</div><h4>Digital Creativity: A Gentle Introduction to the World of Animation</h4><p>The first lesson as a laboratory: a complete animation creation cycle in one hour — without overwhelming theory or complex interfaces. ▶ 10:38</p></div>
+          <h3>The tutor's role</h3>
+          <p>In the synchronous parts, the tutor sets the tone, explains the goal, and checks that the technical setup is ready. During self-study, the tutor does not lead the lesson for the student, but provides focused help when asked. The cards include reminders to call the tutor before saving and at key steps.</p>
+          <p>Key support algorithm: <b>one new letter — one new frame.</b> Start with a minimum working result, then add decorations.</p>
+          <h3>Teaching Focus</h3>
+          <p>The lesson follows a deductive approach: the student first sees a finished animation, then explores how it was made and applies the principle to their own project.</p>
+          <p>Feedback: <b>Tutor + Self.</b> There is no peer feedback. AI is not used in this lesson (N/A); in later lessons of the module, AI is added as a third feedback channel where appropriate.</p>
+          <p>The main focus is the feeling: "I can create a working digital project on my own." Mistakes are a normal part of the creative process.</p>
+          <h3>Important points</h3>
+          <ul>
+            <li>The student may draw their whole name on one frame — remind them to duplicate the frame before adding each new letter.</li>
+            <li>Leave time for saving, and check that the GIF has downloaded successfully and opens correctly.</li>
+            <li>Support students who are unhappy with their drawing: the idea, independence, and a working animation matter more than perfect lines.</li>
+          </ul>
+          <h3>Lesson ending</h3>
+          <p>The student shows their animation to the tutor by sharing their screen. The tutor highlights one specific strength and helps the student identify the next step for improvement.</p>
+          <h3>Next lesson</h3>
+          <p>In the next lesson, the student will explore Canva and begin creating a video introduction, where they can use the GIF of their name. For Canva registration, prepare an email address in advance: the student's own or a parent's.</p>
+        </div>
+        <div class="studentblock" id="lessonStudent">
+          <h2>Get ready for your first creative mission 🚀</h2>
+          <p class="lead">In just a few minutes, you'll enter Creativia Studio and create your first animation — bringing your own name to life! Check that everything is ready for a comfortable start.</p>
+          <h4>⚙️ Check your equipment</h4>
+          <ul>
+            <li>Your sound is on and you can hear the lesson clearly;</li>
+            <li>Your microphone is working;</li>
+            <li>The camera turns on and shows your picture.</li>
+          </ul>
+          <h4>✨ Get your space ready</h4>
+          <ul>
+            <li>Find a quiet place where you won't be distracted;</li>
+            <li>Put a glass of water nearby;</li>
+            <li>Sit comfortably and get ready to create!</li>
+          </ul>
+          <div class="tipbox"><div class="lbl">💡 The structure of the lesson</div><p>First, you'll work with your tutor for a little while. Then you'll work through the cards on your own. You can ask your tutor for help if something is unclear or isn't working.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="lesson-foot">◀ &nbsp; 1 / 21 &nbsp; ▶</div>
+  </div>`;
+}
+
+/* ---------- GUIDED TOUR ---------- */
+const STEPS = [
+ {page:'groups',groupsView:'initial',sel:'#groupsTable',title:'1 · Finding your Parallel Groups',body:'Parallel Groups don\'t show up by default. Next to <b>Extra Lessons</b> there\'s one more button — right now it reads <b>Parallel Groups</b>.',advance:'next'},
+ {page:'groups',groupsView:'initial',sel:'#groupsToggleBtn',hl:['#groupsToggleBtn'],title:'2 · Click Parallel Groups',body:'Click that button. It will reveal your parallel group and relabel itself to <b>Regular Groups</b>, so you can click it again to go back.',advance:'parallel',waitFor:'click-parallel-tab'},
+ {page:'groups',groupsView:'parallel',sel:'#groupsTable',title:'3 · The parent group, not each student',body:'This shows only the <b>one big group</b> that unites everyone — <b>DEMO_PARALLEL_POLAND</b>. You won\'t see each student\'s individual group at this level yet.',advance:'next'},
+ {page:'groups',groupsView:'parallel',sel:'.tour-container-row',hl:['.tour-container-row'],title:'4 · Open it',body:'Click on <b>DEMO_PARALLEL_POLAND</b> to open it.',advance:'detail',waitFor:'open-group-detail'},
+ {page:'groupDetail',sel:'#groupDetailTable',title:'5 · Inside a Parallel Group',body:'This is where you actually see each student: a Parallel Group unites several individual groups, one per student, each with its own lesson time.',advance:'next'},
+ {page:'groupDetail',sel:'#openConsoleBtn',hl:['#openConsoleBtn'],title:'6 · First way to enter the class',body:'This icon is <b>Open console</b> — hover or click it to go straight to the Classroom link for this parallel group.',advance:'console1',waitFor:'open-console-detail'},
+ {page:'groupDetail',sel:'#openConsoleBtn',title:'7 · 60 minutes before the lesson',body:'This link becomes <b>active 60 minutes before</b> the lesson starts. This is one of two ways to get into the class.',advance:'next'},
+ {page:'groupDetail',sel:'[data-page="profile"]',hl:['[data-page="profile"]'],title:'8 · The second way: from your profile',body:'There\'s a second way to reach the same class. Click <b>Profile</b> in the sidebar.',advance:'profile',waitFor:'go-profile'},
+ {page:'profile',ptab:'groups',sel:'.row3',title:'9 · Your profile',body:'Same profile page you already know: your info, your courses, your availability.',advance:'next'},
+ {page:'profile',ptab:'groups',sel:'[data-ptab="schedule"]',hl:['[data-ptab="schedule"]'],title:'10 · Open your Schedule',body:'Click the <b>Schedule</b> tab.',advance:'schedule',waitFor:'open-schedule-tab'},
+ {page:'profile',ptab:'schedule',sel:'#scheduleGrid',title:'11 · Your weekly schedule',body:'Green blocks are your available hours. The teal blocks are your Parallel Lesson slots — click one.',advance:'modal',waitFor:'open-console-modal',hl:['.evt.pl']},
+ {page:'profile',ptab:'schedule',sel:'#consoleModal .modal-box',title:'12 · Same group, same console',body:'This lists the same groups you saw before. Click <b>Open Console</b>.',advance:'console2',waitFor:'open-console-modal-btn',hl:['#consoleModalOpenBtn']},
+ {page:'profile',ptab:'schedule',sel:'#scheduleGrid',title:'13 · 30 minutes before the lesson',body:'From here, the link becomes <b>active 30 minutes before</b> the lesson — a bit earlier than from the Groups page.',advance:'next'},
+ {page:'profile',ptab:'schedule',sel:'[data-page="courses"]',hl:['[data-page="courses"]'],title:'14 · The new PL-format course',body:'Now let\'s look at how a course adapted for Parallel Lessons looks. To see a course\'s content, you go through <b>Courses</b>, not through Groups. Click it.',advance:'courses',waitFor:'go-courses'},
+ {page:'courses',sel:'.tour-course-link',hl:['.tour-course-link'],title:'15 · Open the course',body:'Click on <b>[2079] Digital Creativity. Level 2</b>.',advance:'coursedetail',waitFor:'open-course-detail'},
+ {page:'courseDetail',ctab:'lessons',sel:'.course-head-card',title:'16 · The course record',body:'Business branch, language, number of lessons and modules — same fields as any course.',advance:'next'},
+ {page:'courseDetail',ctab:'lessons',sel:'[data-ctab="assignments"]',hl:['[data-ctab="assignments"]'],title:'17 · Open Assignments',body:'Click the <b>Assignments</b> tab.',advance:'assignments',waitFor:'open-assignments-tab'},
+ {page:'courseDetail',ctab:'assignments',sel:'#inClassTable',title:'18 · The lesson\'s activities',body:'These 19 interactive cards ARE the lesson content — instructions, tips, images and videos, all inside each card. No separate manual needed.',advance:'next'},
+ {page:'courseDetail',ctab:'assignments',sel:'#studyGuidesTable',title:'19 · No wiki link — on purpose',body:'The <b>Study guides</b> table is empty. That\'s not a bug: in PL-format courses, the guide for the tutor lives inside the activities themselves as Teacher Notes — not as a separate wiki document.',advance:'next'},
+ {page:'courseDetail',ctab:'assignments',sel:'.tour-lesson-link',hl:['.tour-lesson-link'],title:'20 · Open the first activity',body:'Click on <b>Get ready for your first creative mission</b> to see what a Teacher Note looks like from the inside.',advance:'lesson',waitFor:'open-lesson-viewer'},
+ {page:'lesson',sel:'#lessonNotes',title:'21 · The tutor\'s note, right inside the card',body:'There\'s no separate "tutor" tab — it\'s the same scrollable card. This dashed, orange-bordered block is a <b>Teacher Note</b>: overview, story mission, goal, your role, teaching focus, important points. Only tutors ever see this block.',advance:'next'},
+ {page:'lesson',sel:'#lessonStudent',title:'22 · Scroll down: what the student sees',body:'Right below it, in the same card, is what the student actually sees: the equipment checklist and the lesson-structure tip. No Teacher Note, no toggle — the platform simply never shows that block to a student account.',advance:'next'},
+];
+let stepIdx = -1;
+
+function startTour(){
+  stepIdx = 0;
+  goToStepPage();
+  showStepCard();
+}
+function goToStepPage(){
+  closeConsoleModal();
+  const st = STEPS[stepIdx];
+  state.page = st.page;
+  if(st.groupsView) state.groupsView = st.groupsView;
+  if(st.ptab) state.ptab = st.ptab;
+  if(st.ctab) state.ctab = st.ctab;
+  render();
+}
+function showStepCard(){
+  const st = STEPS[stepIdx];
+  document.getElementById('tourCard').style.display='flex';
+  document.getElementById('tourReopenBtn').style.display='none';
+  document.getElementById('tourStepLbl').textContent = `Step ${stepIdx+1} of ${STEPS.length}`;
+  document.getElementById('tourBar').style.width = Math.round(((stepIdx+1)/STEPS.length)*100)+'%';
+  document.getElementById('tourTitle').innerHTML = st.title;
+  document.getElementById('tourBody').innerHTML = st.body;
+  const nb = document.getElementById('tourNextBtn');
+  if(st.advance==='next'){ nb.style.display='inline-block'; nb.textContent = (stepIdx===STEPS.length-1) ? 'Finish ✓' : 'Next →'; }
+  else { nb.style.display='none'; }
+}
+function nextStep(){
+  stepIdx++;
+  if(stepIdx>=STEPS.length){ endTour(); return; }
+  goToStepPage();
+  showStepCard();
+}
+function minimizeTour(){
+  document.getElementById('tourCard').style.display='none';
+  document.getElementById('tourReopenBtn').style.display='block';
+}
+function reopenTour(){
+  document.getElementById('tourReopenBtn').style.display='none';
+  document.getElementById('tourCard').style.display='flex';
+}
+function endTour(){
+  document.getElementById('tourCard').style.display='none';
+  document.getElementById('tourReopenBtn').style.display='none';
+  document.querySelectorAll('.tour-hl').forEach(e=>e.classList.remove('tour-hl'));
+  const c = document.getElementById('content');
+  c.insertAdjacentHTML('afterbegin', `<div class="reflect" style="margin-bottom:18px">🎉 <strong>Walkthrough complete!</strong> You now know where your Parallel Groups live, both ways to open the Classroom link (60 min from the group, 30 min from your Schedule), what a PL-format course looks like in Courses, and where to find your Teacher Notes inside each activity. Feel free to keep exploring this replica on your own.</div>`);
+}
+function tourActive(){ return stepIdx>=0 && stepIdx<STEPS.length; }
+document.addEventListener('click', function(e){
+  if(!tourActive()) return;
+  if(e.target.closest('.tour-card, #tourReopenBtn, .tour-hl')) return;
+  e.preventDefault();
+  e.stopPropagation();
+  toast('👉 Follow the highlighted step to continue — the walkthrough is required the first time through.');
+}, true);
+function fire(action){
+  if(stepIdx<0 || stepIdx>=STEPS.length) return;
+  if(STEPS[stepIdx].waitFor===action){
+    setTimeout(()=>{
+      stepIdx++;
+      if(stepIdx>=STEPS.length){ endTour(); } else { goToStepPage(); showStepCard(); }
+    }, 300);
+  }
+}
+function applyTourHighlights(){
+  document.querySelectorAll('.tour-hl').forEach(e=>e.classList.remove('tour-hl'));
+  if(stepIdx<0 || stepIdx>=STEPS.length) return;
+  const st = STEPS[stepIdx];
+  const targets = st.hl || [st.sel];
+  targets.forEach(sel=>{
+    if(!sel) return;
+    document.querySelectorAll(sel).forEach(el=>el.classList.add('tour-hl'));
+  });
+  if(st.sel){ const el=document.querySelector(st.sel); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+}
+
+render();
+startTour();
+</script>
+</body>
+</html>
